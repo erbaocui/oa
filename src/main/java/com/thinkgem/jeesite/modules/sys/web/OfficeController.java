@@ -165,7 +165,7 @@ public class OfficeController extends BaseController {
 				map.put("pId", e.getParentId());
 				map.put("pIds", e.getParentIds());
 				map.put("name", e.getName());
-				if (type != null && "3".equals(type)){
+				if (type != null &&("3".equals(type)||"4".equals(type))){
 					map.put("isParent", true);
 				}
 				mapList.add(map);

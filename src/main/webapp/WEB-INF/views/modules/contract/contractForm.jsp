@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
-	<title>用户管理</title>
+	<title>合同管理</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -29,142 +29,272 @@
 					}
 				}
 			});
+            console.log('oninput event ');
+            $("#type").change(function () {
+                console.log('run ');
+				alert("aaaa");
+            });
 		});
 	</script>
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/sys/user/list">用户列表</a></li>
-		<li class="active"><a href="${ctx}/sys/user/form?id=${user.id}">用户<shiro:hasPermission name="sys:user:edit">${not empty user.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="sys:user:edit">查看</shiro:lacksPermission></a></li>
+		<li><a href="${ctx}/contract/list">合同列表</a></li>
+		<li class="active"><a href="${ctx}/contract/form?id=${user.id}">合同<shiro:hasPermission name="sys:user:edit">${not empty user.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="sys:user:edit">查看</shiro:lacksPermission></a></li>
 	</ul><br/>
-	<form:form id="inputForm" modelAttribute="user" action="${ctx}/sys/user/save" method="post" class="form-horizontal">
+
+
+	<form:form id="inputForm" modelAttribute="contract" action="${ctx}/sys/user/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
 		<sys:message content="${message}"/>
-		<div class="control-group">
-			<label class="control-label">头像:</label>
-			<div class="controls">
-				<form:hidden id="nameImage" path="photo" htmlEscape="false" maxlength="255" class="input-xlarge"/>
-				<sys:ckfinder input="nameImage" type="images" uploadPath="/photo" selectMultiple="false" maxWidth="100" maxHeight="100"/>
+
+<div class="container-fluid">
+	<div class="control-group">
+		<div class="row-fluid">
+			<div class="span1">
 			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">归属公司:</label>
-			<div class="controls">
-                <sys:treeselect id="company" name="company.id" value="${user.company.id}" labelName="company.name" labelValue="${user.company.name}"
-					title="公司" url="/sys/office/treeData?type=1" cssClass="required"/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">归属部门:</label>
-			<div class="controls">
-                <sys:treeselect id="office" name="office.id" value="${user.office.id}" labelName="office.name" labelValue="${user.office.name}"
-					title="部门" url="/sys/office/treeData?type=2" cssClass="required" notAllowSelectParent="true"/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">工号:</label>
-			<div class="controls">
-				<form:input path="no" htmlEscape="false" maxlength="50" class="required"/>
+			<div class="span3">
+				<label >合同编号:</label>
+				<form:input path="name" htmlEscape="false" maxlength="50" class=" form-control input-small required"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">姓名:</label>
-			<div class="controls">
-				<form:input path="name" htmlEscape="false" maxlength="50" class="required"/>
-				<span class="help-inline"><font color="red">*</font> </span>
+			<div class="span7">
+				<label >合同名称:</label>
+				<input type="text" class="form-control input-xxlarge required" />
+			</div>
+			<div class="span1">
 			</div>
 		</div>
-		<div class="control-group">
-			<label class="control-label">登录名:</label>
-			<div class="controls">
-				<input id="oldLoginName" name="oldLoginName" type="hidden" value="${user.loginName}">
-				<form:input path="loginName" htmlEscape="false" maxlength="50" class="required userName"/>
-				<span class="help-inline"><font color="red">*</font> </span>
+	</div>
+	<div class="control-group">
+		<div class="row-fluid">
+			<div class="span1">
+			</div>
+			<div class="span3">
+				<label >项目经理:</label>
+				<sys:treeselect id="manager" name="user.id" value="${user.id}" labelName="user.name" labelValue="${user.name}" title="项目经理" url="/sys/office/treeData?type=3" cssClass="input-mini" allowClear="true" notAllowSelectParent="true"/>
+			</div>
+			<div class="span7">
+				<label >项目名称:</label>
+				<sys:treeselect id="project" name="office.id" value="${user.office.id}" labelName="office.name" labelValue="${user.office.name}" title="项目名称" url="/sys/office/treeData?type=4" cssClass="input-xxlarge" allowClear="true" notAllowSelectParent="true" />
+			</div>
+			<div class="span1">
 			</div>
 		</div>
-		<div class="control-group">
-			<label class="control-label">密码:</label>
-			<div class="controls">
-				<input id="newPassword" name="newPassword" type="password" value="" maxlength="50" minlength="3" class="${empty user.id?'required':''}"/>
-				<c:if test="${empty user.id}"><span class="help-inline"><font color="red">*</font> </span></c:if>
-				<c:if test="${not empty user.id}"><span class="help-inline">若不修改密码，请留空。</span></c:if>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">确认密码:</label>
-			<div class="controls">
-				<input id="confirmNewPassword" name="confirmNewPassword" type="password" value="" maxlength="50" minlength="3" equalTo="#newPassword"/>
-				<c:if test="${empty user.id}"><span class="help-inline"><font color="red">*</font> </span></c:if>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">邮箱:</label>
-			<div class="controls">
-				<form:input path="email" htmlEscape="false" maxlength="100" class="email"/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">电话:</label>
-			<div class="controls">
-				<form:input path="phone" htmlEscape="false" maxlength="100"/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">手机:</label>
-			<div class="controls">
-				<form:input path="mobile" htmlEscape="false" maxlength="100"/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">是否允许登录:</label>
-			<div class="controls">
-				<form:select path="loginFlag">
-					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-				</form:select>
-				<span class="help-inline"><font color="red">*</font> “是”代表此账号允许登录，“否”则表示此账号不允许登录</span>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">用户类型:</label>
-			<div class="controls">
-				<form:select path="userType" class="input-xlarge">
-					<form:option value="" label="请选择"/>
-					<form:options items="${fns:getDictList('sys_user_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-				</form:select>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">用户角色:</label>
-			<div class="controls">
-				<form:checkboxes path="roleIdList" items="${allRoles}" itemLabel="name" itemValue="id" htmlEscape="false" class="required"/>
-				<span class="help-inline"><font color="red">*</font> </span>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">备注:</label>
-			<div class="controls">
-				<form:textarea path="remarks" htmlEscape="false" rows="3" maxlength="200" class="input-xlarge"/>
-			</div>
-		</div>
-		<c:if test="${not empty user.id}">
-			<div class="control-group">
-				<label class="control-label">创建时间:</label>
-				<div class="controls">
-					<label class="lbl"><fmt:formatDate value="${user.createDate}" type="both" dateStyle="full"/></label>
+	</div>
+
+	<div class="control-group">
+			<div class="row-fluid">
+				<div class="span1">
 				</div>
-			</div>
-			<div class="control-group">
-				<label class="control-label">最后登陆:</label>
-				<div class="controls">
-					<label class="lbl">IP: ${user.loginIp}&nbsp;&nbsp;&nbsp;&nbsp;时间：<fmt:formatDate value="${user.loginDate}" type="both" dateStyle="full"/></label>
+				<div class="span2">
+					<label >合同类型:</label>
+					<form:select path="type" class="form-control input-small">
+							<form:option value="" label="请选择"/>
+							<form:options items="${fns:getDictList('contract_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					</form:select>
+
 				</div>
+				<div class="span2">
+					<label >合同种类:</label>
+					<form:select path="code" class="form-control input-small">
+						<form:option value="" label="请选择"/>
+						<form:options items="${fns:getDictList('sys_user_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					</form:select>
+				</div>
+				<div class="span2">
+					<label >是否分包:</label>
+					<form:select path="code" class="form-control input-small">
+						<form:option value="" label="请选择"/>
+						<form:options items="${fns:getDictList('sys_user_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					</form:select>
+				</div>
+				<div class="span2">
+					<label >合同状态:</label>
+					<form:select path="code" class="form-control input-small">
+						<form:option value="" label="请选择"/>
+						<form:options items="${fns:getDictList('sys_user_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					</form:select>
+				</div>
+
+				<div class="span1">
+				</div>
+
 			</div>
-		</c:if>
-		<div class="form-actions">
-			<shiro:hasPermission name="sys:user:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
-			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
+	</div>
+
+	<div class="control-group">
+		<div class="row-fluid">
+			<div class="span1">
+			</div>
+			<div class="span2">
+				<label >开始时间:</label>
+				<input type="text"  value=""  readonly="readonly"    onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" class="form-control input-small Wdate" />
+			</div>
+			<div class="span2">
+				<label >结束时间:</label>
+				<input type="text" value=""  readonly="readonly"    onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" class="form-control input-small Wdate" />
+			</div>
+			<div class="span2">
+				<label >合同金额:</label>
+				<input type="text"  class="form-control input-small" />
+			</div>
+			<div class="span2">
+				<label >已付金额:</label>
+				<input type="text"  class="form-control input-small" />
+			</div>
+			<div class="span1">
+			</div>
+
 		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="row-fluid">
+			<div class="span1">
+			</div>
+			<div class="span2">
+				<label >签约部门:</label>
+				<sys:treeselect id="office" name="office.id" value="${user.office.id}" labelName="office.name" labelValue="${user.office.name}" title="部门" url="/sys/office/treeData?type=2" cssClass="input-mini" allowClear="true" notAllowSelectParent="true"/>
+			</div>
+			<div class="span2">
+				<label >签约时间:</label>
+				<input type="text" value=""  readonly="readonly"    onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" class="form-control input-small Wdate" />
+			</div>
+			<div class="span2">
+				<label>&nbsp;&nbsp;联&nbsp;系&nbsp;人:</label>
+				<input type="text"  class="form-control input-small" />
+			</div>
+			<div class="span2">
+				<label >联系电话:</label>
+				<input type="text"  class="form-control input-small" />
+			</div>
+			<div class="span1">
+			</div>
+
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="row-fluid">
+			<div class="span1">
+			</div>
+			<div class="span2">
+				<label >盖章时间:</label>
+				<input type="text"   readonly="readonly"    onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" class="form-control input-small Wdate" />
+			</div>
+			<div class="span2">
+				<label >备案时间:</label>
+				<input type="text" readonly="readonly"    onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" class="form-control input-small Wdate" />
+			</div>
+			<div class="span2">
+				<label >返回时间:</label>
+				<input type="text"    value=""  readonly="readonly"    onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" class="form-control input-small Wdate" />
+			</div>
+			<div class="span2">
+				<label >财务时间:</label>
+				<input type="text"   value=""  readonly="readonly"    onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" class="form-control input-small Wdate" />
+			</div>
+			<div class="span1">
+			</div>
+
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="row-fluid">
+			<div class="span1">
+			</div>
+			<div class="span2">
+				<label >单&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价:</label>
+				<input type="text"   class="form-control input-small" />
+			</div>
+			<div class="span2">
+				<label >面&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;积:</label>
+				<input type="text" class="form-control input-small" />
+			</div>
+			<div class="span2">
+				<label >投&nbsp;&nbsp;资&nbsp;&nbsp;额:</label>
+				<input type="text"  class="form-control input-small" />
+			</div>
+			<div class="span2">
+				<label >进&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;度:</label>
+				<input type="text"  class="form-control input-small" />
+			</div>
+			<div class="span1">
+			</div>
+
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="row-fluid">
+			<div class="span1">
+			</div>
+			<div class="span3">
+				<label >图纸数量:</label>
+				<input type="text" class="form-control input-lg"  />
+			</div>
+			<div class="span7">
+				<label >付款约定:</label>
+				<input type="text" class="form-control input-xxlarge" />
+			</div>
+			<div class="span1">
+			</div>
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="row-fluid">
+			<div class="span1">
+			</div>
+			<div class="span10">
+				<label >子&nbsp;&nbsp;项&nbsp;&nbsp;目:</label>
+				<input type="text" class="input-xxlarge"  />
+			</div>
+
+			<div class="span1">
+			</div>
+		</div>
+    </div>
+
+	<div class="control-group">
+		<div class="row-fluid">
+			<div class="span1">
+			</div>
+			<div class="span10">
+				<label >工期要求:</label>
+				<form:input path="code" htmlEscape="false" maxlength="400" class="input-xxlarge" />
+					<%--	<input type="text" class="form-control input-lg" />--%>
+			</div>
+			<div class="span1">
+			</div>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="row-fluid">
+			<div class="span1">
+			</div>
+			<div class="span10">
+				<label >备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注:</label>
+				<form:textarea path="remarks" htmlEscape="false" rows="3" maxlength="500" class="input-xxlarge"/>
+			</div>
+			<div class="span1">
+			</div>
+		</div>
+	</div>
+	<div class="form-actions">
+		<ul class="breadcrumb form-search ul-form ">
+			<li class="clearfix center-block"></li>
+			<li class="btns ">
+				<input id="btnSubmit" class="btn btn-primary" type="submit" value="保存" onclick="return page();"/>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input id="btnExport" class="btn btn-primary" type="button" value="取消"/>
+			</li>
+			<li class="clearfix"></li>
+		</ul>
+	</div>
+</div>
+
 	</form:form>
+
 </body>
 </html>

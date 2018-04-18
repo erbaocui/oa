@@ -97,7 +97,7 @@
 		<div class="control-group">
 			<label class="control-label">上次登录:</label>
 			<div class="controls">
-				<label class="lbl">IP: ${user.oldLoginIp}&nbsp;&nbsp;&nbsp;&nbsp;时间：<fmt:formatDate value="${user.oldLoginDate}" type="both" dateStyle="full"/></label>
+				<label class="lbl">IP: ${user.oldLoginIp}C&nbsp;&nbsp;&nbsp;时间：<fmt:formatDate value="${user.oldLoginDate}" type="both" dateStyle="full"/></label>
 			</div>
 		</div>
 		<div class="form-actions">

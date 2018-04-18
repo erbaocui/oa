@@ -7,8 +7,19 @@
 	<%@include file="/WEB-INF/views/include/treeview.jsp" %>
 	<script type="text/javascript">
 		var key, lastValue = "", nodeList = [], type = getQueryString("type", "${url}");
+		var dataUrl="";
+        var asyncFlag=false;
+        if(type==4||type==3){
+            asyncFlag=true;
+		}
+		if(type==4){
+            dataUrl="${ctx}/project/treeData";
+		}
+		if(type==3){
+            dataUrl="${ctx}/sys/user/treeData";
+		}
 		var tree, setting = {view:{selectedMulti:false,dblClickExpand:false},check:{enable:"${checked}",nocheckInherit:true},
-				async:{enable:(type==3),url:"${ctx}/sys/user/treeData",autoParam:["id=officeId"]},
+				async:{enable:asyncFlag,url:dataUrl,autoParam:["id=officeId"]},
 				data:{simpleData:{enable:true}},callback:{<%--
 					beforeClick: function(treeId, treeNode){
 						if("${checked}" == "true"){
@@ -74,7 +85,7 @@
 		function selectCheckNode(){
 			var ids = "${selectIds}".split(",");
 			for(var i=0; i<ids.length; i++) {
-				var node = tree.getNodeByParam("id", (type==3?"u_":"")+ids[i]);
+				var node = tree.getNodeByParam("id", ((type==3||type==4)?"u_":"")+ids[i]);
 				if("${checked}" == "true"){
 					try{tree.checkNode(node, true, true);}catch(e){}
 					tree.selectNode(node, false);
