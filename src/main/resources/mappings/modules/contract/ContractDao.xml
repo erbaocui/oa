@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.contract.dao.ContractDao">
+    
+	<sql id="contractColumns">
+		a.id AS "id",
+		a.code AS "code",
+		a.project_id AS "project.id",
+		p.name AS "project.name",
+		a.name AS "name",
+		a.create_time AS "createTime",
+		a.creator_id AS "creatorId",
+		a.manager_id AS "manager.id",
+		m.name AS "manager.name",
+		a.value AS "value",
+		a.income AS "income",
+		a.type AS "type",
+		a.status AS "status",
+		a.signed_time AS "signedTime",
+		a.begin_time AS "beginTime",
+		a.end_time AS "endTime",
+		a.contact AS "contact",
+		a.contact_phone AS "contactPhone",
+		a.remark AS "remark",
+		a.is_sub AS "isSub",
+		a.blueprint_num AS "blueprintNum",
+		a.payment AS "payment",
+		a.seal_time AS "sealTime",
+		a.record_time AS "recordTime",
+		a.return_time AS "returnTime",
+		a.return_financial_time AS "returnFinancialTime",
+		a.sub_item AS "subItem",
+		a.time_limit AS "timeLimit",
+		a.price AS "price",
+		a.area AS "area",
+		a.investment AS "investment",
+		a.progress AS "progress",
+		a.office_id AS "office.id",
+		o.name AS "office.name"
+	</sql>
+	
+	<sql id="contractJoins">
+	    left join bm_project p on p.id=a.project_id
+		LEFT JOIN sys_user m ON m.id = a.manager_id
+		LEFT JOIN sys_office o ON o.id = a.office_id
+	</sql>
+    
+	<select id="get" resultType="Contract">
+		SELECT 
+			<include refid="contractColumns"/>
+		FROM bm_contract a
+		<include refid="contractJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Contract">
+		SELECT 
+			<include refid="contractColumns"/>
+		FROM bm_contract a
+		<include refid="contractJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="value != null and value != ''">
+				AND a.value = #{value}
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Contract">
+		SELECT 
+			<include refid="contractColumns"/>
+		FROM bm_contract a
+		<include refid="contractJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_contract(
+			id,
+			code,
+			project_id,
+			name,
+			create_time,
+			creator_id,
+			manager_id,
+			value,
+			income,
+			type,
+			status,
+			signed_time,
+			begin_time,
+			end_time,
+			contact,
+			contact_phone,
+			remark,
+			is_sub,
+			blueprint_num,
+			payment,
+			seal_time,
+			record_time,
+			return_time,
+			return_financial_time,
+			sub_item,
+			time_limit,
+			price,
+			area,
+			investment,
+			progress,
+			office_id
+		) VALUES (
+			#{id},
+			#{code},
+			#{project.id},
+			#{name},
+			#{createTime},
+			#{creatorId},
+			#{manager.id},
+			#{value},
+			#{income},
+			#{type},
+			#{status},
+			#{signedTime},
+			#{beginTime},
+			#{endTime},
+			#{contact},
+			#{contactPhone},
+			#{remark},
+			#{isSub},
+			#{blueprintNum},
+			#{payment},
+			#{sealTime},
+			#{recordTime},
+			#{returnTime},
+			#{returnFinancialTime},
+			#{subItem},
+			#{timeLimit},
+			#{price},
+			#{area},
+			#{investment},
+			#{progress},
+			#{office.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_contract SET 	
+			code = #{code},
+			project_id = #{project.id},
+			name = #{name},
+			create_time = #{createTime},
+			creator_id = #{creatorId},
+			manager_id = #{manager.id},
+			value = #{value},
+			income = #{income},
+			type = #{type},
+			status = #{status},
+			signed_time = #{signedTime},
+			begin_time = #{beginTime},
+			end_time = #{endTime},
+			contact = #{contact},
+			contact_phone = #{contactPhone},
+			remark = #{remark},
+			is_sub = #{isSub},
+			blueprint_num = #{blueprintNum},
+			payment = #{payment},
+			seal_time = #{sealTime},
+			record_time = #{recordTime},
+			return_time = #{returnTime},
+			return_financial_time = #{returnFinancialTime},
+			sub_item = #{subItem},
+			time_limit = #{timeLimit},
+			price = #{price},
+			area = #{area},
+			investment = #{investment},
+			progress = #{progress},
+			office_id = #{office.id}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bm_contract
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
