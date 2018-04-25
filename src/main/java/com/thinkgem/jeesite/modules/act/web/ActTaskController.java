@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.common.config.Global;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,21 @@ public class ActTaskController extends BaseController {
 			return renderString(response, list);
 		}
 		return "modules/act/actTaskTodoList";
+	}
+
+	/**
+	 * 获取待办列表
+	 * @param procDefKey 流程定义标识
+	 * @return
+	 */
+	@RequestMapping(value = {"mytodo", ""})
+	public String mytodoList(Act act, HttpServletResponse response, Model model) throws Exception {
+		List<Act> list = actTaskService.mytodoList(act);
+		model.addAttribute("list", list);
+		if (UserUtils.getPrincipal().isMobileLogin()){
+			return renderString(response, list);
+		}
+		return "modules/act/actTaskMyTodoList";
 	}
 	
 	/**
@@ -117,8 +133,9 @@ public class ActTaskController extends BaseController {
 		if (act.getProcInsId() != null){
 			act.setProcIns(actTaskService.getProcIns(act.getProcInsId()));
 		}
-		
-		return "redirect:" + ActUtils.getFormUrl(formKey, act);
+
+
+		return "redirect:" + Global.getAdminPath()+"/contract/contract/auditor";// ActUtils.getFormUrl(formKey, act);
 		
 //		// 传递参数到视图
 //		model.addAttribute("act", act);

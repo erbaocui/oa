@@ -4,6 +4,9 @@
 <head>
 	<title>合同管理</title>
 	<meta name="decorator" content="default"/>
+	<link href="${ctxStatic}/jqGrid/4.6/css/ui.jqgrid.css" type="text/css" rel="stylesheet" />
+	<script src="${ctxStatic}/jqGrid/4.7/js/jquery.jqGrid.js" type="text/javascript"></script>
+	<script src="${ctxStatic}/jqGrid/4.7/js/jquery.jqGrid.extend.js" type="text/javascript"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			
@@ -14,6 +17,21 @@
 			$("#searchForm").submit();
         	return false;
         }
+        function startProcess(id) {
+
+                $.post("${ctx}/contract/contract/startReview?",{id:id},function(data){
+                    var code=data.result;
+                    if(code=='success'){
+                        alert("启动流程成功");
+                        page();
+
+                    }else{
+
+                    }
+                });
+
+        }
+
 	</script>
 </head>
 <body>
@@ -86,6 +104,7 @@
 					${contract.value}
 				</td>
 				<shiro:hasPermission name="contract:contract:edit"><td>
+					<a href=" #;" onclick="startProcess('${contract.id}')">启动流程</a>
     				<a href="${ctx}/contract/contract/form?id=${contract.id}">修改</a>
 					<a href="${ctx}/contract/contract/delete?id=${contract.id}" onclick="return confirmx('确认要删除该保存合同成功吗？', this.href)">删除</a>
 				</td></shiro:hasPermission>

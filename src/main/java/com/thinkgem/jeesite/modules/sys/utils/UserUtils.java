@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.sys.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -151,6 +152,22 @@ public class UserUtils {
 			putCache(CACHE_ROLE_LIST, roleList);
 		}
 		return roleList;
+	}
+
+	/**
+	 * 获取当前用户角色name列表
+	 * @return
+	 */
+	public static List<String> getRoleStringList(){
+		@SuppressWarnings("unchecked")
+		List<Role> roleList = getRoleList();
+		List<String> roleStringList=new ArrayList<String>();
+		if (roleList == null) {
+			for(Role role:roleList) {
+				roleStringList.add(role.getName());
+			}
+		}
+		return roleStringList;
 	}
 	
 	/**

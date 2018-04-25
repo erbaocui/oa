@@ -51,7 +51,10 @@ public class Contract extends DataEntity<Contract> {
 	private BigDecimal investment;		// investment
 	private BigDecimal progress;		// progress
 	private Office office;		// office_id
-	
+
+	private String processInsId;
+	private Integer  processStatus;
+
 	public Contract() {
 		super();
 	}
@@ -323,4 +326,19 @@ public class Contract extends DataEntity<Contract> {
 		this.isSub = isSub;
 	}
 
+	public String getProcessInsId() {
+		return processInsId;
+	}
+
+	public void setProcessInsId(String processInsId) {
+		this.processInsId = processInsId;
+	}
+
+	public Integer getProcessStatus() {
+		return processStatus;
+	}
+
+	public void setProcessStatus(Integer processStatus) {
+		this.processStatus = processStatus;
+	}
 }

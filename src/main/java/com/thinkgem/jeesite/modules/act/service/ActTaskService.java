@@ -101,20 +101,22 @@ public class ActTaskService extends BaseService {
 	
 	/**
 	 * 获取待办列表
-	 * @param procDefKey 流程定义标识
+	 * @param
 	 * @return
 	 */
 	public List<Act> todoList(Act act){
 		String userId = UserUtils.getUser().getLoginName();//ObjectUtils.toString(UserUtils.getUser().getId());
 		
 		List<Act> result = new ArrayList<Act>();
-		
+		System.out.println(UserUtils.getUser().getRoleEnnameList().toString());
 		// =============== 已经签收的任务  ===============
-		TaskQuery todoTaskQuery = taskService.createTaskQuery().taskAssignee(userId).active()
-				.includeProcessVariables().orderByTaskCreateTime().desc();
+		TaskQuery todoTaskQuery = taskService.createTaskQuery().processInstanceId("07e788f35e4047bf9de42629f7f71daf");
+				//.taskCandidateGroupIn( UserUtils.getUser(). getRoleEnnameList())
+				//.taskAssignee(userId).active()
+				//.includeProcessVariables().orderByTaskCreateTime().desc();
 		
 		// 设置查询条件
-		if (StringUtils.isNotBlank(act.getProcDefKey())){
+	/*	if (StringUtils.isNotBlank(act.getProcDefKey())){
 			todoTaskQuery.processDefinitionKey(act.getProcDefKey());
 		}
 		if (act.getBeginDate() != null){
@@ -122,8 +124,8 @@ public class ActTaskService extends BaseService {
 		}
 		if (act.getEndDate() != null){
 			todoTaskQuery.taskCreatedBefore(act.getEndDate());
-		}
-		
+		}*/
+
 		// 查询列表
 		List<Task> todoList = todoTaskQuery.list();
 		for (Task task : todoList) {
@@ -139,10 +141,10 @@ public class ActTaskService extends BaseService {
 			result.add(e);
 		}
 		
-		// =============== 等待签收的任务  ===============
+		/*// =============== 等待签收的任务  ===============
 		TaskQuery toClaimQuery = taskService.createTaskQuery().taskCandidateUser(userId)
 				.includeProcessVariables().active().orderByTaskCreateTime().desc();
-		
+
 		// 设置查询条件
 		if (StringUtils.isNotBlank(act.getProcDefKey())){
 			toClaimQuery.processDefinitionKey(act.getProcDefKey());
@@ -153,7 +155,7 @@ public class ActTaskService extends BaseService {
 		if (act.getEndDate() != null){
 			toClaimQuery.taskCreatedBefore(act.getEndDate());
 		}
-		
+
 		// 查询列表
 		List<Task> toClaimList = toClaimQuery.list();
 		for (Task task : toClaimList) {
@@ -167,14 +169,88 @@ public class ActTaskService extends BaseService {
 //			e.setProcExecUrl(ActUtils.getProcExeUrl(task.getProcessDefinitionId()));
 			e.setStatus("claim");
 			result.add(e);
+		}*/
+		return result;
+	}
+
+
+
+	/**
+	 * 获取待办列表
+	 * @param
+	 * @return
+	 */
+	public List<Act> mytodoList(Act act){
+		String userId = UserUtils.getUser().getLoginName();//ObjectUtils.toString(UserUtils.getUser().getId());
+
+		List<Act> result = new ArrayList<Act>();
+		// =============== 已经签收的任务  ===============
+		TaskQuery todoTaskQuery = taskService.createTaskQuery()
+				.taskAssignee(userId).active()
+		.includeProcessVariables().orderByTaskCreateTime().desc();
+
+		// 设置查询条件
+		if (StringUtils.isNotBlank(act.getProcDefKey())){
+			todoTaskQuery.processDefinitionKey(act.getProcDefKey());
 		}
+		if (act.getBeginDate() != null){
+			todoTaskQuery.taskCreatedAfter(act.getBeginDate());
+		}
+		if (act.getEndDate() != null){
+			todoTaskQuery.taskCreatedBefore(act.getEndDate());
+		}
+
+		// 查询列表
+		List<Task> todoList = todoTaskQuery.list();
+		for (Task task : todoList) {
+			Act e = new Act();
+			e.setTask(task);
+			e.setVars(task.getProcessVariables());
+//			e.setTaskVars(task.getTaskLocalVariables());
+//			System.out.println(task.getId()+"  =  "+task.getProcessVariables() + "  ========== " + task.getTaskLocalVariables());
+			e.setProcDef(ProcessDefCache.get(task.getProcessDefinitionId()));
+//			e.setProcIns(runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult());
+//			e.setProcExecUrl(ActUtils.getProcExeUrl(task.getProcessDefinitionId()));
+			e.setStatus("todo");
+			result.add(e);
+		}
+
+		/*// =============== 等待签收的任务  ===============
+		TaskQuery toClaimQuery = taskService.createTaskQuery().taskCandidateUser(userId)
+				.includeProcessVariables().active().orderByTaskCreateTime().desc();
+
+		// 设置查询条件
+		if (StringUtils.isNotBlank(act.getProcDefKey())){
+			toClaimQuery.processDefinitionKey(act.getProcDefKey());
+		}
+		if (act.getBeginDate() != null){
+			toClaimQuery.taskCreatedAfter(act.getBeginDate());
+		}
+		if (act.getEndDate() != null){
+			toClaimQuery.taskCreatedBefore(act.getEndDate());
+		}
+
+		// 查询列表
+		List<Task> toClaimList = toClaimQuery.list();
+		for (Task task : toClaimList) {
+			Act e = new Act();
+			e.setTask(task);
+			e.setVars(task.getProcessVariables());
+//			e.setTaskVars(task.getTaskLocalVariables());
+//			System.out.println(task.getId()+"  =  "+task.getProcessVariables() + "  ========== " + task.getTaskLocalVariables());
+			e.setProcDef(ProcessDefCache.get(task.getProcessDefinitionId()));
+//			e.setProcIns(runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult());
+//			e.setProcExecUrl(ActUtils.getProcExeUrl(task.getProcessDefinitionId()));
+			e.setStatus("claim");
+			result.add(e);
+		}*/
 		return result;
 	}
 	
 	/**
 	 * 获取已办任务
-	 * @param page
-	 * @param procDefKey 流程定义标识
+	 * @param  page
+	 * @param act
 	 * @return
 	 */
 	public Page<Act> historicList(Page<Act> page, Act act){

@@ -198,7 +198,9 @@
 			area = #{area},
 			investment = #{investment},
 			progress = #{progress},
-			office_id = #{office.id}
+			office_id = #{office.id},
+			process_ins_id=#{processInsId},
+			process_status=#{processStatus}
 		WHERE id = #{id}
 	</update>
 	

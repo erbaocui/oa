@@ -293,6 +293,14 @@ public class User extends DataEntity<User> {
 		return roleIdList;
 	}
 
+	public List<String> getRoleEnnameList() {
+		List<String> roleIdList = Lists.newArrayList();
+		for (Role role : roleList) {
+			roleIdList.add(role.getEnname());
+		}
+		return roleIdList;
+	}
+
 	public void setRoleIdList(List<String> roleIdList) {
 		roleList = Lists.newArrayList();
 		for (String roleId : roleIdList) {
@@ -307,6 +315,10 @@ public class User extends DataEntity<User> {
 	 */
 	public String getRoleNames() {
 		return Collections3.extractToString(roleList, "name", ",");
+	}
+
+	public String getRoleEnNames() {
+		return Collections3.extractToString(roleList, "enname", ",");
 	}
 	
 	public boolean isAdmin(){
