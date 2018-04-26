@@ -32,7 +32,7 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/contract/contract/auditor?id=${user.id}">合同信息</a></li>
+		<li class="active"><a>合同风险审核</a></li>
 	</ul><br/>
 	<form:form id="inputForm" modelAttribute="contract" action="${ctx}/contract/contract/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>

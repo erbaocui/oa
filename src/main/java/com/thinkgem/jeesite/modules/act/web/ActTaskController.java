@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.modules.act.entity.BaseReview;
+import org.activiti.engine.task.Comment;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,14 +47,14 @@ public class ActTaskController extends BaseController {
 	 * @param procDefKey 流程定义标识
 	 * @return
 	 */
-	@RequestMapping(value = {"todo", ""})
-	public String todoList(Act act, HttpServletResponse response, Model model) throws Exception {
+	@RequestMapping(value = {"commonPool", ""})
+	public String commonPoolList(Act act, HttpServletResponse response, Model model) throws Exception {
 		List<Act> list = actTaskService.todoList(act);
 		model.addAttribute("list", list);
 		if (UserUtils.getPrincipal().isMobileLogin()){
 			return renderString(response, list);
 		}
-		return "modules/act/actTaskTodoList";
+		return "modules/act/actTaskCommonPoolList";
 	}
 
 	/**
@@ -85,6 +87,21 @@ public class ActTaskController extends BaseController {
 			return renderString(response, page);
 		}
 		return "modules/act/actTaskHistoricList";
+	}
+
+	/**
+	 * 获取已办任务
+	 * @param taskId
+	 * @param
+	 * @return
+	 */
+	@RequestMapping(value = "commentHistoric")
+	public String commentHistoric(String taskId,Model model) throws Exception {
+		List<Comment> comments=actTaskService.getTaskHistoryCommentList(taskId);
+		model.addAttribute("comments",comments);
+
+
+		return "modules/act/actTaskCommentHistoric";
 	}
 
 	/**

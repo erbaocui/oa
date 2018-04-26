@@ -15,9 +15,10 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/act/task/todo/">待办任务</a></li>
+		<li ><a href="${ctx}/act/task/mytodo/">我的待办任务</a></li>
 		<li class="active"><a href="${ctx}/act/task/historic/">已办任务</a></li>
-		<li><a href="${ctx}/act/task/process/">新建任务</a></li>
+		<li ><a href="${ctx}/act/task/commonPool/">公共任务池</a></li>
+
 	</ul>
 	<form:form id="searchForm" modelAttribute="act" action="${ctx}/act/task/historic/" method="get" class="breadcrumb form-search">
 		<div>
@@ -72,7 +73,7 @@
 					<td><b title='流程版本号'>V: ${procDef.version}</b></td>
 					<td><fmt:formatDate value="${task.endTime}" type="both"/></td>
 					<td>
-						<a href="${ctx}/act/task/form?taskId=${task.id}&taskName=${fns:urlEncode(task.name)}&taskDefKey=${task.taskDefinitionKey}&procInsId=${task.processInstanceId}&procDefId=${task.processDefinitionId}&status=${status}">详情</a>
+						<a href="${ctx}/act/task/commentHistoric?taskId=${task.id}">批注历史</a>
 					</td>
 				</tr>
 			</c:forEach>
