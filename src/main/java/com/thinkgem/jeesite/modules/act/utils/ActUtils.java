@@ -133,12 +133,13 @@ public class ActUtils {
 		}
 		
 		formUrl.append(formKey).append(formUrl.indexOf("?") == -1 ? "?" : "&");
-		formUrl.append("act.taskId=").append(act.getTaskId() != null ? act.getTaskId() : "");
-		formUrl.append("&act.taskName=").append(act.getTaskName() != null ? Encodes.urlEncode(act.getTaskName()) : "");
-		formUrl.append("&act.taskDefKey=").append(act.getTaskDefKey() != null ? act.getTaskDefKey() : "");
-		formUrl.append("&act.procInsId=").append(act.getProcInsId() != null ? act.getProcInsId() : "");
-		formUrl.append("&act.procDefId=").append(act.getProcDefId() != null ? act.getProcDefId() : "");
-		formUrl.append("&act.status=").append(act.getStatus() != null ? act.getStatus() : "");
+		formUrl.append("taskId=").append(act.getTaskId() != null ? act.getTaskId() : "");
+		formUrl.append("&taskName=").append(act.getTaskName() != null ? Encodes.urlEncode(act.getTaskName()) : "");
+		formUrl.append("&taskDefKey=").append(act.getTaskDefKey() != null ? act.getTaskDefKey() : "");
+		formUrl.append("&procInsId=").append(act.getProcInsId() != null ? act.getProcInsId() : "");
+		formUrl.append("&procDefId=").append(act.getProcDefId() != null ? act.getProcDefId() : "");
+		formUrl.append("&status=").append(act.getStatus() != null ? act.getStatus() : "");
+		formUrl.append("&title=").append(act.getTitle() != null ? act.getTitle()  : "");
 		formUrl.append("&id=").append(act.getBusinessId() != null ? act.getBusinessId() : "");
 		
 		return formUrl.toString();

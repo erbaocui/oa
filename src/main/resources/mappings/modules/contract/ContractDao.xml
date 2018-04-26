@@ -199,8 +199,8 @@
 			investment = #{investment},
 			progress = #{progress},
 			office_id = #{office.id},
-			process_ins_id=#{processInsId},
-			process_status=#{processStatus}
+			proc_ins_id=#{procInsId},
+			proc_status=#{procStatus}
 		WHERE id = #{id}
 	</update>
 	
