@@ -26,7 +26,7 @@
 <body>
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/act/task/todo/">公共待办任务</a></li>
-		<li class="active"><a href="${ctx}/act/task/mytodo/">我的待办任务</a></li>
+		<li><a href="${ctx}/act/task/mytodo/">我的待办任务</a></li>
 		<li><a href="${ctx}/act/task/historic/">已办任务</a></li>
 
 	</ul>
@@ -48,7 +48,7 @@
 			&nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
 		</div>
 	</form:form>
-	<sys:message content="${message}"/>
+    <sys:message content="${message}"/>
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead>
 			<tr>

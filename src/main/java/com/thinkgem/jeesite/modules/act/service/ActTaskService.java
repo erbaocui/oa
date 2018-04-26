@@ -4,11 +4,7 @@
 package com.thinkgem.jeesite.modules.act.service;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.FormService;
@@ -69,6 +65,8 @@ import com.thinkgem.jeesite.modules.act.utils.ProcessDefUtils;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * 流程定义相关Service
  * @author ThinkGem
@@ -110,13 +108,12 @@ public class ActTaskService extends BaseService {
 		List<Act> result = new ArrayList<Act>();
 		System.out.println(UserUtils.getUser().getRoleEnnameList().toString());
 		// =============== 已经签收的任务  ===============
-		TaskQuery todoTaskQuery = taskService.createTaskQuery().processInstanceId("07e788f35e4047bf9de42629f7f71daf");
-				//.taskCandidateGroupIn( UserUtils.getUser(). getRoleEnnameList())
-				//.taskAssignee(userId).active()
-				//.includeProcessVariables().orderByTaskCreateTime().desc();
+		TaskQuery todoTaskQuery = taskService.createTaskQuery()
+				 .taskCandidateGroupIn( UserUtils.getUser(). getRoleEnnameList())
+				 .includeProcessVariables().orderByTaskCreateTime().desc();
 		
 		// 设置查询条件
-	/*	if (StringUtils.isNotBlank(act.getProcDefKey())){
+	    if (StringUtils.isNotBlank(act.getProcDefKey())){
 			todoTaskQuery.processDefinitionKey(act.getProcDefKey());
 		}
 		if (act.getBeginDate() != null){
@@ -124,7 +121,7 @@ public class ActTaskService extends BaseService {
 		}
 		if (act.getEndDate() != null){
 			todoTaskQuery.taskCreatedBefore(act.getEndDate());
-		}*/
+		}
 
 		// 查询列表
 		List<Task> todoList = todoTaskQuery.list();
@@ -517,7 +514,25 @@ public class ActTaskService extends BaseService {
 	public Task getTask(String taskId){
 		return taskService.createTaskQuery().taskId(taskId).singleResult();
 	}
-	
+
+	/**
+            * 获取任务
+	 * @param taskId 任务ID
+	 */
+    public Object getTaskVariable(String taskId,String variableName){
+        return taskService.getVariable( taskId,variableName);
+    }
+
+	public List<Comment> getTaskHistoryCommentList(String taskId)throws Exception {
+		if (taskId == null) {
+			return null;
+		}
+		HistoricTaskInstance historicTaskInstance =historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+		String processInstanceId =historicTaskInstance.getProcessInstanceId();
+		List<Comment> comments = taskService.getProcessInstanceComments(processInstanceId);
+		return comments;
+
+	}
 	/**
 	 * 删除任务
 	 * @param taskId 任务ID
@@ -632,6 +647,7 @@ public class ActTaskService extends BaseService {
 	/**
 	 * 添加任务意见
 	 */
+	@Transactional(readOnly = false)
 	public void addTaskComment(String taskId, String procInsId, String comment){
 		taskService.addComment(taskId, procInsId, comment);
 	}

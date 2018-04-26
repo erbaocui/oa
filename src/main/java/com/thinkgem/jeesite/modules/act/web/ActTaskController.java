@@ -133,9 +133,11 @@ public class ActTaskController extends BaseController {
 		if (act.getProcInsId() != null){
 			act.setProcIns(actTaskService.getProcIns(act.getProcInsId()));
 		}
+		String businessId=(String)actTaskService.getTaskVariable(act.getTaskId(),"businessId");
+		businessId="001";
 
 
-		return "redirect:" + Global.getAdminPath()+"/contract/contract/auditor";// ActUtils.getFormUrl(formKey, act);
+		return "redirect:" + Global.getAdminPath()+"/contract/contract/auditor"+"?id="+businessId+"&taskId="+act.getTaskId();// ActUtils.getFormUrl(formKey?, act);
 		
 //		// 传递参数到视图
 //		model.addAttribute("act", act);

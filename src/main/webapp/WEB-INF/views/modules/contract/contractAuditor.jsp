@@ -23,12 +23,16 @@
 				}
 			});
 		});
+
+		function review(state){
+            $("#state").val(state);
+            $("#reviewForm").submit();
+		}
 	</script>
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/contract/contract/list">合同列表</a></li>
-		<li class="active"><a href="${ctx}/contract/contract/form?id=${user.id}">合同<shiro:hasPermission name="contract:contract:edit">${not empty contract.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="contract:contract:edit">查看</shiro:lacksPermission></a></li>
+		<li class="active"><a href="${ctx}/contract/contract/auditor?id=${user.id}">合同信息</a></li>
 	</ul><br/>
 	<form:form id="inputForm" modelAttribute="contract" action="${ctx}/contract/contract/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
@@ -61,7 +65,6 @@
 				<div class="span3">
 
 					<label >项目经理:</label>
-					<label >${contract.manager.name}<label >
 					<sys:treeselect id="manager" name="manager.id" value="${contract.manager.id}" labelName="manager.name" labelValue="${contract.manager.name}" title="项目经理" url="/sys/office/treeData?type=3" cssClass="input-mini" allowClear="true" notAllowSelectParent="true" disabled="disabled"/>
 				</div>
 				<div class="span7">
@@ -121,13 +124,13 @@
 					<label >开始时间:</label>
 					<input name="beginTime" type="text" readonly="readonly" maxlength="20" class="form-control input-small Wdate "
 						   value="<fmt:formatDate value="${contract.beginTime}" pattern="yyyy-MM-dd"/>"
-						   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" readonly="true"/>
+						   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" disabled="disabled"/>
 				</div>
 				<div class="span2">
 					<label >结束时间:</label>
 					<input name="endTime" type="text" readonly="readonly" maxlength="20" class="form-control input-small Wdate "
 						   value="<fmt:formatDate value="${contract.endTime}" pattern="yyyy-MM-dd"/>"
-						   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" readonly="true"/></div>
+						   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"  disabled="disabled"/></div>
 				<div class="span2">
 					<label >合同金额:</label>
 					<form:input path="value" htmlEscape="false" class="form-control input-small" readonly="true"/>
@@ -149,7 +152,7 @@
 				<div class="span2">
 					<label >签约部门:</label>
 					<sys:treeselect id="office" name="office.id" value="${contract.office.id}" labelName="office.name" labelValue="${contract.office.name}"
-									title="部门" url="/sys/office/treeData?type=2" cssClass="input-mini" allowClear="true" notAllowSelectParent="true" disabled="true"/>
+									title="部门" url="/sys/office/treeData?type=2" cssClass="input-mini" allowClear="true" notAllowSelectParent="true" disabled="disabled"/>
 				</div>
 				<div class="span2">
 					<label >签约时间:</label>
@@ -288,11 +291,46 @@
 		</div>
 
 	</div>
-
-		<div class="form-actions">
-			<shiro:hasPermission name="contract:contract:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
-			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
+	</form:form>
+	<form:form id="reviewForm" modelAttribute="review"   action="${ctx}/contract/contract/auditorReview" method="post" class="form-horizontal">
+		<form:hidden path="taskId"  value="${taskId}"/>
+		<form:hidden path="state" />
+	<div class="container-fluid">
+		<div class="control-group">
+			<div class="row-fluid">
+				<div class="span1">
+				</div>
+				<div class="span10">
+					<label >审核意见:</label>
+					<form:textarea path="comment" htmlEscape="false" rows="3" maxlength="500" class="input-xxlarge" />
+				</div>
+				<div class="span1">
+				</div>
+			</div>
 		</div>
+		<div class="form-actions">
+			<input id="btnSubmit" class="btn btn-primary" type="submit" value="通过"  onclick="review(1)"/>&nbsp;
+			<input id="btnCancel" class="btn" type="button" value="驳回" onclick="review(2)"/>
+		</div>
+	</div>
+		<table title="批注列表" class="table table-striped table-bordered table-condensed">
+			<thead>
+			<tr>
+				<th>批注时间</th>
+				<th>批注人</th>
+				<th>批注信息</th>
+			</tr>
+			</thead>
+			<tbody>
+			<c:forEach items="${comments}" var="item">
+				<tr>
+					<td><fmt:formatDate value="${item.time}" type="both"/></td>
+					<td> ${item.userId}</td>
+					<td> ${item.message}</td>
+				</tr>
+			</c:forEach>
+			</tbody>
+		</table>
 	</form:form>
 </body>
 </html>
