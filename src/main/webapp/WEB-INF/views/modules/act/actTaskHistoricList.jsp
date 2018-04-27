@@ -15,7 +15,7 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li ><a href="${ctx}/act/task/mytodo/">我的待办任务</a></li>
+		<li ><a href="${ctx}/act/task/mytodo/">待办任务</a></li>
 		<li class="active"><a href="${ctx}/act/task/historic/">已办任务</a></li>
 		<li ><a href="${ctx}/act/task/commonPool/">公共任务池</a></li>
 

@@ -8,19 +8,17 @@ import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.act.constant.ActConstant;
-import com.thinkgem.jeesite.modules.act.entity.Act;
 import com.thinkgem.jeesite.modules.act.entity.BaseReview;
 import com.thinkgem.jeesite.modules.act.service.ActTaskService;
-import com.thinkgem.jeesite.modules.contract.constant.ContractConstant;
+import com.thinkgem.jeesite.modules.contract.constant.ContConstant;
 import com.thinkgem.jeesite.modules.contract.entity.Contract;
 import com.thinkgem.jeesite.modules.contract.entity.QueryContract;
-import com.thinkgem.jeesite.modules.contract.service.ContractService;
+import com.thinkgem.jeesite.modules.contract.service.ContService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -32,7 +30,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,20 +40,15 @@ import java.util.Map;
  * @version 2018-04-19
  */
 @Controller
-@RequestMapping(value = "${adminPath}/contract/contract")
-public class ContractController extends BaseController {
+@RequestMapping(value = "${adminPath}/cont/audit")
+public class ContAuditController extends BaseController {
 
 	@Autowired
-	private ContractService contractService;
+	private ContService contractService;
 
 	@Autowired
 	private ActTaskService actTaskService;
 
-	@Autowired
-	private RuntimeService runtimeService;
-
-	@Autowired
-	private TaskService taskService;
 
 
 	@ModelAttribute
@@ -78,15 +70,15 @@ public class ContractController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/startReview")
+	@RequestMapping("/start")
 	@ResponseBody
-	public Map startReview(String id) throws Exception {
+	public Map start(String id) throws Exception {
 		Map<String,Object> result=new HashMap<String, Object>();
 		try {
 			Map<String,Object> variables = null;
 			variables = new HashMap<String, Object>();
 			variables.put("businessId", id);
-			String processInstanceId=actTaskService.startProcess(ActConstant.CONTRACT_REVIEW_PROCESS_KEY, ContractConstant.CONTRACT_TABLE_NAME,id,ActConstant.CONTRACT_REVIEW_PROCESS_TITLE,variables);
+			String processInstanceId=actTaskService.startProcess(ActConstant.CONTRACT_REVIEW_PROCESS_KEY, ContConstant.CONTRACT_TABLE_NAME,id,ActConstant.CONTRACT_REVIEW_PROCESS_TITLE,variables);
 			actTaskService.completeFirstTask(processInstanceId);
 			Contract contract =contractService.get(id);
 			contract.setStatus(2);
@@ -133,8 +125,8 @@ public class ContractController extends BaseController {
 		Authentication.setAuthenticatedUserId(  user.getName()+ "【"+UserUtils.getUser().getLoginName()+"】");// 设置用户id
 		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
 		addMessage(redirectAttributes, "操作成功");
-		return "redirect:"+adminPath+"/act/task/todo?repage";
-		//return "redirect:"+adminPath+"/act/task/todo/";
+		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
+
 	}
 
 	@RequiresPermissions("contract:contract:view")
@@ -166,7 +158,7 @@ public class ContractController extends BaseController {
 		Authentication.setAuthenticatedUserId(  user.getName()+ "【"+UserUtils.getUser().getLoginName()+"】");// 设置用户id
 		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
 		addMessage(redirectAttributes, "操作成功");
-		return "redirect:"+adminPath+"/act/task/todo?repage";
+		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
 
 	}
 
@@ -199,7 +191,7 @@ public class ContractController extends BaseController {
 		Authentication.setAuthenticatedUserId(  user.getName()+ "【"+UserUtils.getUser().getLoginName()+"】");// 设置用户id
 		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
 		addMessage(redirectAttributes, "操作成功");
-		return "redirect:"+adminPath+"/act/task/todo?repage";
+		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
 	}
 
 	@RequiresPermissions("contract:contract:view")
@@ -226,7 +218,7 @@ public class ContractController extends BaseController {
 		Authentication.setAuthenticatedUserId(  user.getName()+ "【"+UserUtils.getUser().getLoginName()+"】");// 设置用户id
 		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
 		addMessage(redirectAttributes, "操作成功");
-		return "redirect:"+adminPath+"/act/task/todo?repage";
+		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
 	}
 
 

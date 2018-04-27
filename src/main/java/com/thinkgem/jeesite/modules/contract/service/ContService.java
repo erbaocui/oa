@@ -5,7 +5,7 @@ package com.thinkgem.jeesite.modules.contract.service;
 
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
-import com.thinkgem.jeesite.modules.contract.dao.ContractDao;
+import com.thinkgem.jeesite.modules.contract.dao.ContDao;
 import com.thinkgem.jeesite.modules.contract.entity.Contract;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +19,12 @@ import java.util.List;
  */
 @Service
 @Transactional(readOnly = true)
-public class ContractService extends CrudService<ContractDao, Contract> {
+public class ContService extends CrudService<ContDao, Contract> {
 
 	public Contract get(String id) {
-		return super.get(id);
+		Contract contract=new Contract();
+		contract.setId(id);
+		return super.get(contract);
 	}
 	
 	public List<Contract> findList(Contract contract) {

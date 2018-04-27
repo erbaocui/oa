@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.thinkgem.jeesite.modules.contract.dao.ContractDao">
+<mapper namespace="com.thinkgem.jeesite.modules.contract.dao.ContDao">
     
 	<sql id="contractColumns">
 		a.id AS "id",
@@ -50,8 +50,17 @@
 			<include refid="contractColumns"/>
 		FROM bm_contract a
 		<include refid="contractJoins"/>
-		WHERE a.id = #{id}
+		WHERE 1=1
+		<if test="id != null and id!= ''">
+		 and	a.id = #{id}
+		</if>
+		<if test="code != null and code!= ''">
+		 and    a.code = #{code}
+		</if>
+
 	</select>
+
+
 	
 	<select id="findList" resultType="Contract">
 		SELECT 

@@ -70,7 +70,7 @@ public class UserController extends BaseController {
 	public String list(User user, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<User> page = systemService.findUser(new Page<User>(request, response), user);
         model.addAttribute("page", page);
-		return "modules/sys/userList-jq";
+		return "modules/sys/userList";
 	}
 	
 	@ResponseBody

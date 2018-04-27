@@ -13,6 +13,6 @@ import com.thinkgem.jeesite.modules.contract.entity.Contract;
  * @version 2018-04-19
  */
 @MyBatisDao
-public interface ContractDao extends CrudDao<Contract> {
+public interface ContDao extends CrudDao<Contract> {
 	
 }
