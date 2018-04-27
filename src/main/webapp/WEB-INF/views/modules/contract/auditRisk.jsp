@@ -292,7 +292,7 @@
 
 	</div>
 	</form:form>
-	<form:form id="reviewForm" modelAttribute="review"   action="${ctx}/contract/contract/auditorReview" method="post" class="form-horizontal">
+	<form:form id="reviewForm" modelAttribute="review"   action="${ctx}/cont/audit/riskSubmit" method="post" class="form-horizontal">
 		<form:hidden path="taskId"  value="${taskId}"/>
 		<form:hidden path="state" />
 	<div class="container-fluid">

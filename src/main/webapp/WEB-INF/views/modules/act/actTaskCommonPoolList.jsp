@@ -15,7 +15,7 @@
 			$.get('${ctx}/act/task/claim' ,{taskId: taskId}, function(data) {
 				if (data == 'true'){
 		        	top.$.jBox.tip('签收完成');
-		            location = '${ctx}/act/task/todo/';
+		            location = '${ctx}/act/task/mytodo/';
 				}else{
 		        	top.$.jBox.tip('签收失败');
 				}

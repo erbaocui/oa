@@ -95,9 +95,8 @@ public class ContAuditController extends BaseController {
 
 	}
 
-	@RequiresPermissions("contract:contract:view")
 	@RequestMapping(value = {"auditor"})
-	public String auditor(String id,String taskId, Model model) throws Exception{
+	public String auditorView(String id,String taskId, Model model) throws Exception{
 	    Contract contract=contractService.get(id);
 		List<Comment> comments=actTaskService.getTaskHistoryCommentList(taskId);
 
@@ -105,12 +104,11 @@ public class ContAuditController extends BaseController {
 		model.addAttribute("contract",contract);
 		model.addAttribute("comments",comments);
 		model.addAttribute("review", new BaseReview());
-		return "modules/contract/contractAuditor";
+		return "modules/contract/auditAuditor";
 	}
 
-	@RequiresPermissions("contract:contract:view")
-	@RequestMapping(value = {"auditorReview"},method= RequestMethod.POST)
-	public String auditorReview(BaseReview review,RedirectAttributes redirectAttributes) {
+	@RequestMapping(value = {"auditorSubmit"},method= RequestMethod.POST)
+	public String auditorSubmit(BaseReview review,RedirectAttributes redirectAttributes) {
 		Task task=actTaskService.getTask( review.getTaskId());
 		String taskId=task.getId();
 		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
@@ -129,21 +127,20 @@ public class ContAuditController extends BaseController {
 
 	}
 
-	@RequiresPermissions("contract:contract:view")
+
 	@RequestMapping(value = {"risk"})
-	public String risk(String id,String taskId, Model model) throws Exception{
+	public String riskView(String id,String taskId, Model model) throws Exception{
 		Contract contract=contractService.get(id);
 		List<Comment> comments=actTaskService.getTaskHistoryCommentList( taskId);
 		model.addAttribute("taskId", taskId);
 		model.addAttribute("contract",contract);
 		model.addAttribute("comments",comments);
 		model.addAttribute("review", new BaseReview());
-		return "modules/contract/contractRisk";
+		return "modules/contract/auditRisk";
 	}
 
-	@RequiresPermissions("contract:contract:view")
-	@RequestMapping(value = {"riskReview"},method= RequestMethod.POST)
-	public String riskReview(BaseReview review,RedirectAttributes redirectAttributes) {
+	@RequestMapping(value = {"riskSubmit"},method= RequestMethod.POST)
+	public String riskSubmit(BaseReview review,RedirectAttributes redirectAttributes) {
 		Task task=actTaskService.getTask( review.getTaskId());
 		String taskId=task.getId();
 		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
@@ -162,21 +159,20 @@ public class ContAuditController extends BaseController {
 
 	}
 
-	@RequiresPermissions("contract:contract:view")
 	@RequestMapping(value = {"leader"})
-	public String leader(String id,String taskId, Model model) throws Exception{
+	public String leaderView(String id,String taskId, Model model) throws Exception{
 		Contract contract=contractService.get(id);
 		List<Comment> comments=actTaskService.getTaskHistoryCommentList( taskId);
 		model.addAttribute("taskId", taskId);
 		model.addAttribute("contract",contract);
 		model.addAttribute("comments",comments);
 		model.addAttribute("review", new BaseReview());
-		return "modules/contract/contractLeader";
+		return "modules/contract/auditLeader";
 	}
 
-	@RequiresPermissions("contract:contract:view")
-	@RequestMapping(value = {"leaderReview"},method= RequestMethod.POST)
-	public String leaderReview(BaseReview review,RedirectAttributes redirectAttributes) {
+
+	@RequestMapping(value = {"leaderSubmit"},method= RequestMethod.POST)
+	public String leaderSubmit(BaseReview review,RedirectAttributes redirectAttributes) {
 		Task task=actTaskService.getTask( review.getTaskId());
 		String taskId=task.getId();
 		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
@@ -194,21 +190,21 @@ public class ContAuditController extends BaseController {
 		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
 	}
 
-	@RequiresPermissions("contract:contract:view")
+
 	@RequestMapping(value = {"improve"})
-	public String improve(String id,String taskId, Model model) throws Exception{
+	public String improveView(String id,String taskId, Model model) throws Exception{
 		Contract contract=contractService.get(id);
 		List<Comment> comments=actTaskService.getTaskHistoryCommentList( taskId);
 		model.addAttribute("taskId", taskId);
 		model.addAttribute("contract",contract);
 		model.addAttribute("comments",comments);
 		model.addAttribute("review", new BaseReview());
-		return "modules/contract/contractImprove";
+		return "modules/contract/auditImprove";
 	}
 
-	@RequiresPermissions("contract:contract:view")
-	@RequestMapping(value = {"improveReview"},method= RequestMethod.POST)
-	public String improveReview(BaseReview review,RedirectAttributes redirectAttributes) {
+
+	@RequestMapping(value = {"improveSubmit"},method= RequestMethod.POST)
+	public String improveSubmit(BaseReview review,RedirectAttributes redirectAttributes) {
 		Task task=actTaskService.getTask( review.getTaskId());
 		String taskId=task.getId();
 		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
@@ -219,44 +215,6 @@ public class ContAuditController extends BaseController {
 		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
 		addMessage(redirectAttributes, "操作成功");
 		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
-	}
-
-
-
-
-	@RequiresPermissions("contract:contract:view")
-	@RequestMapping(value = {"list", ""})
-	public String list(QueryContract queryContract, HttpServletRequest request, HttpServletResponse response, Model model) {
-		Page<Contract> page = contractService.findPage(new Page<Contract>(request, response), queryContract);
-		model.addAttribute("page", page);
-		model.addAttribute("queryContract", queryContract);
-		return "modules/contract/contractList";
-	}
-
-	@RequiresPermissions("contract:contract:view")
-	@RequestMapping(value = "form")
-	public String form(Contract contract, Model model) {
-		model.addAttribute("contract", contract);
-		return "modules/contract/contractForm";
-	}
-
-	@RequiresPermissions("contract:contract:edit")
-	@RequestMapping(value = "save")
-	public String save(Contract contract, Model model, RedirectAttributes redirectAttributes) {
-		if (!beanValidator(model, contract)){
-			return form(contract, model);
-		}
-		contractService.save(contract);
-		addMessage(redirectAttributes, "合同保存成功");
-		return "redirect:"+adminPath+"/contract/contract/?repage";
-	}
-	
-	@RequiresPermissions("contract:contract:edit")
-	@RequestMapping(value = "delete")
-	public String delete(Contract contract, RedirectAttributes redirectAttributes) {
-		contractService.delete(contract);
-		addMessage(redirectAttributes, "删除保存合同成功成功");
-		return "redirect:"+Global.getAdminPath()+"/contract/contract/?repage";
 	}
 
 }
