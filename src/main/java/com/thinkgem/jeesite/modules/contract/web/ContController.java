@@ -86,6 +86,18 @@ public class ContController extends BaseController {
 	}
 
 	@RequiresPermissions("cont:base:view")
+	@RequestMapping(value = {"briefList", ""})
+	public String briefList(QueryContract queryContract,String notContractIds, HttpServletRequest request, HttpServletResponse response, Model model) {
+		System.out.println(notContractIds);
+		Page<Contract> page=new Page<Contract>(request, response);
+		page.setPageSize(10);
+		page = contService.findPage(page, queryContract);
+		model.addAttribute("page", page);
+		model.addAttribute("queryContract", queryContract);
+		return "modules/contract/contractBriefList";
+	}
+
+	@RequiresPermissions("cont:base:view")
 	@RequestMapping(value = "form")
 	public String form(Contract contract, Model model) {
 		model.addAttribute("contract", contract);

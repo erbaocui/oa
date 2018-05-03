@@ -14,7 +14,7 @@
 		function claim(taskId) {
 			$.get('${ctx}/act/task/claim' ,{taskId: taskId}, function(data) {
 				if (data == 'true'){
-		        	top.$.jBox.tip('签收完成');
+		        	//top.$.jBox.tip('签收完成');
 		            location = '${ctx}/act/task/todo/';
 				}else{
 		        	top.$.jBox.tip('签收失败');
@@ -85,14 +85,10 @@
 					<td><b title='流程版本号'>V: ${procDef.version}</b></td>
 					<td><fmt:formatDate value="${task.createTime}" type="both"/></td>
 					<td>
-						<c:if test="${not empty task.assignee}"><%--
-							<a href="${ctx}${procExecUrl}/exec/${task.taskDefinitionKey}?procInsId=${task.processInstanceId}&act.taskId=${task.id}">办理</a> --%>
-							<a href="${ctx}/act/task/form?taskId=${task.id}&taskName=${fns:urlEncode(task.name)}&taskDefKey=${task.taskDefinitionKey}&procInsId=${task.processInstanceId}&procDefId=${task.processDefinitionId}&status=${status}">任务办理</a>
-						</c:if>
 
-						<a target="_blank" href="${pageContext.request.contextPath}/act/diagram-viewer?processDefinitionId=${task.processDefinitionId}&processInstanceId=${task.processInstanceId}">跟踪</a><%-- 
-						<a target="_blank" href="${ctx}/act/task/trace/photo/${task.processDefinitionId}/${task.executionId}">跟踪2</a> 
-						<a target="_blank" href="${ctx}/act/task/trace/info/${task.processInstanceId}">跟踪信息</a> --%>
+						<a href="${ctx}/act/task/form?taskId=${task.id}&taskName=${fns:urlEncode(task.name)}&taskDefKey=${task.taskDefinitionKey}&procInsId=${task.processInstanceId}&procDefId=${task.processDefinitionId}&status=${status}">任务办理</a>
+						<a target="_blank" href="${pageContext.request.contextPath}/act/diagram-viewer?processDefinitionId=${task.processDefinitionId}&processInstanceId=${task.processInstanceId}">跟踪</a>
+
 					</td>
 				</tr>
 			</c:forEach>

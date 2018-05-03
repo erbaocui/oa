@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.income.dao.ApplyPayDao">
+	<resultMap id="applyPayMap" type="ApplyPay" >
+		    <result property="id" column="id" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<result property="name" column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<result property="applyValue" column="applyValue" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+			<result property="firstParty"  column="firstParty" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<result property="remarks"  column="remarks" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<result property="enterValue"  column="enterValue" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+			<result property="status"  column="status" jdbcType="INTEGER" javaType="java.lang.Integer" />
+			<result property="createBy.id"   column="createBy.id" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<result property="createTime"   column="createTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+			<result property="updateBy.id"   column="updateBy.id" jdbcType="VARCHAR" javaType="java.lang.String" />
+			<result property="updateTime"   column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+		   <collection property="contractList" ofType="Contract" select="findRelateContract" column="id">
+	       </collection>
+	</resultMap>
+
+
+	<sql id="applyPayColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.apply_value AS "applyValue",
+		a.first_party AS "firstParty",
+		a.remarks AS "remarks",
+		a.enter_value AS "enterValue",
+		a.status AS "status",
+		a.create_by AS "createBy.id",
+		a.create_time AS "createTime",
+		a.update_by AS "updateBy.id",
+		a.update_time AS "updateTime"
+	</sql>
+	
+	<sql id="applyPayJoins">
+
+	</sql>
+    
+	<select id="get" resultMap="applyPayMap" >
+		SELECT 
+			<include refid="applyPayColumns"/>
+		FROM bm_apply_pay a
+		<include refid="applyPayJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultMap="applyPayMap" >
+		SELECT 
+			<include refid="applyPayColumns"/>
+		FROM bm_apply_pay a
+		<include refid="applyPayJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="firstParty != null and firstParty != ''">
+				AND a.first_party = #{firstParty}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList"  resultMap="applyPayMap" >
+		SELECT 
+			<include refid="applyPayColumns"/>
+		FROM bm_apply_pay a
+		<include refid="applyPayJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findRelateContract" parameterType="String" resultType="Contract">
+		select
+		c.id as "id",
+		c.code as "code",
+		c.name as "name"
+		from bm_apply_pay a
+		inner join bm_apply_pay_cont b on a.id=b.apply_pay_id
+		inner join bm_contract c on b.contract_id= c.id
+		where a.id = #{id}
+	</select>
+
+	<insert id="insert">
+		INSERT INTO bm_apply_pay(
+			id,
+			name,
+			apply_value,
+			first_party,
+			remarks,
+			enter_value,
+			status,
+			create_by,
+			create_time,
+			update_by,
+			update_time
+		) VALUES (
+			#{id},
+			#{name},
+			#{applyValue},
+			#{firstParty},
+			#{remarks},
+			#{enterValue},
+			#{status},
+			#{createBy.id},
+			#{createTime},
+			#{updateBy.id},
+			#{updateTime}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_apply_pay SET 	
+			name = #{name},
+			apply_value = #{applyValue},
+			first_party = #{firstParty},
+			remarks = #{remarks},
+			enter_value = #{enterValue},
+			status = #{status},
+			create_time = #{createTime},
+			update_by = #{updateBy.id},
+			update_time = #{updateTime}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM bm_apply_pay
+		WHERE id = #{id}
+	</delete>
+	
+</mapper>

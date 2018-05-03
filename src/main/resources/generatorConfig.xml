@@ -85,7 +85,7 @@
             <property name="rootInterface" value=""/>
 
         </javaClientGenerator>
-        <table tableName="bm_contract" domainObjectName="Contract" enableCountByExample="false" enableUpdateByExample="false"
+        <table tableName="bm_apply_pay" domainObjectName="ApplyPay" enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/>
 
         <!--
