@@ -30,6 +30,13 @@ public interface UserDao extends CrudDao<User> {
 	 * @return
 	 */
 	public List<User> findUserByOfficeId(User user);
+
+	/**
+	 * 通过role enname获取用户列表，仅返回用户id和name（
+	 * @param enname
+	 * @return
+	 */
+	public List<User> findUserByRoleEnname(String  enname);
 	
 	/**
 	 * 查询全部用户数目

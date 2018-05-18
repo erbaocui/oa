@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.income.dao.IncomeDao">
+
+
+	<resultMap  id="incomeMap" type="Income">
+		<result property="id" column="id" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="applyId" column="applyId" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="contract.id" column="contract.id" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="contract.code"  column="contract.code" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="contract.name" column="contract.name" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="status" column="status" jdbcType="INTEGER" javaType="java.lang.Integer" />
+		<result property="value" column="value" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+		<result property="createBy.id" column="createBy" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="createBy.name" column="createBy.name" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="createDate" column="createDate" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+		<result property="procInsId" column="procInsId" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<collection property="distOfficeList" ofType="DistOffice" select="com.thinkgem.jeesite.modules.income.dao.DistOfficeDao.findAllList" column="id">
+		</collection>
+	</resultMap>
+	<sql id="incomeColumns">
+		a.id AS "id",
+		a.apply_id AS "applyId",
+		a.contract_id as "contract.id",
+		c.name as "contract.name",
+		c.code as "contract.code",
+		c.value as "contract.value",
+		c.income as "contract.income",
+		a.status AS "status",
+		a.value AS "value",
+		a.create_by AS "createBy.id",
+		u.name AS "createBy.name",
+		a.create_date AS "createDate",
+		a.proc_ins_id AS "procInsId"
+	</sql>
+	
+	<sql id="incomeJoins">
+		left join sys_user u on u.id=a.create_by
+		left join bm_contract c on c.id=a.contract_id
+	</sql>
+    
+	<select id="get"  resultMap="incomeMap">
+		SELECT 
+			<include refid="incomeColumns"/>
+		FROM bm_income a
+		<include refid="incomeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultMap="incomeMap">
+		SELECT 
+			<include refid="incomeColumns"/>
+		FROM bm_income a
+		<include refid="incomeJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findAllList" resultType="Income" parameterType="String">
+		SELECT
+		<include refid="incomeColumns"/>
+		FROM bm_income a
+		<include refid="incomeJoins"/>
+		<where>
+			<if test ="_parameter!= null">
+				a.apply_id=#{_parameter}
+			</if>
+		</where>
+		ORDER BY a.create_date DESC
+	</select>
+
+	<insert id="insert">
+		INSERT INTO bm_income(
+		id,
+		apply_id,
+		status,
+		value,
+		create_by,
+		create_date,
+		proc_ins_id
+		) VALUES (
+		#{id},
+		#{applyId},
+		#{status},
+		#{value},
+		#{createBy.id},
+		#{createDate},
+		#{procInsId}
+		)
+	</insert>
+
+	<update id="update">
+		UPDATE bm_income SET
+		apply_id = #{applyId},
+		status = #{status},
+		value = #{value},
+		proc_ins_id = #{procInsId}
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM bm_income
+		WHERE id = #{id}
+	</update>
+
+
+</mapper>

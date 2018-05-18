@@ -617,7 +617,7 @@ var ProcessDiagramGenerator = {
 				progress += step;
 				pb1.set('value', parseInt(progress));
 				
-				//console.log(flowsLength, "--> flow: " + flow.flow);
+				//console.log(flowsLength, "--> proc: " + proc.proc);
 				
 				processDiagramCanvas.setConextObject(flow);
 				processDiagramCanvas.drawSequenceflow(waypoints, isConditional, isDefault, isHighLighted);
@@ -825,7 +825,7 @@ var ProcessDiagramGenerator = {
 			console.log('Get HighLights['+processDefinitionId+'] failure: ', textStatus, jqXHR);
 		});
 		*/
-		// ½â¾öÎÞÁ÷³ÌÊµÀýµÄÊ±ºòÅ×³öÒì³£ÎÊÌâ¡£
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½×³ï¿½ï¿½ì³£ï¿½ï¿½ï¿½â¡£
 		var url = Lang.sub(ActivitiRest.options.processInstanceUrl, {processInstanceId: processInstanceId});
 		var _drawHighLights = this._drawHighLights;
 		$.ajax({
@@ -1032,7 +1032,7 @@ var ProcessDiagramGenerator = {
 			sourceActivityId: flow.sourceActivityId,
 			destinationActivityId: flow.destinationActivityId
 		};
-		var TPL_FLOW_INFO = '<div>{flow}</div>' 
+		var TPL_FLOW_INFO = '<div>{proc}</div>'
 				+ '<div><b>sourceActivityId</b>: {sourceActivityId}</div>'
 				+ '<div><b>destinationActivityId</b>: {destinationActivityId}</div>'
 				+ '<div><b>isDefault</b>: {isDefault}</div>'

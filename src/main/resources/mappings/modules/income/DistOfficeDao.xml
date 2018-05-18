@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.income.dao.DistOfficeDao">
+    
+	<sql id="distOfficeColumns">
+		a.id AS "id",
+		a.income_id AS "incomeId",
+		a.office_id AS "office.id",
+		a.value AS "value",
+		a.create_by AS "createBy.id",
+		u.name as "createBy.name",
+		a.create_date AS "createDate",
+		a.rule_id AS "ruleId",
+		o3.name AS "office.name"
+	</sql>
+	
+	<sql id="distOfficeJoins">
+		LEFT JOIN sys_office o3 ON o3.id = a.office_id
+		LEFT JOIN sys_user u ON u.id = a.create_by
+	</sql>
+    
+	<select id="get" resultType="DistOffice">
+		SELECT 
+			<include refid="distOfficeColumns"/>
+		FROM bm_dist_office a
+		<include refid="distOfficeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="DistOffice">
+		SELECT 
+			<include refid="distOfficeColumns"/>
+		FROM bm_dist_office a
+		<include refid="distOfficeJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="DistOffice" parameterType="String">
+		SELECT 
+			<include refid="distOfficeColumns"/>
+		FROM bm_dist_office a
+		<include refid="distOfficeJoins"/>
+		<where>
+			<if test ="_parameter!= null">
+				a.income_id=#{_parameter}
+			</if>
+		</where>		
+
+	</select>
+
+<!--
+	<select id="findAllList" resultType="DistOffice" parameterType="String">
+		select
+		a.name as "name",
+		a.percent,
+		a.is_tax,
+		a.is_filing_fee,
+		case ifnull(a.account,'0') when '0' then c.account else a.account end as "account"
+		from bm_rule_item a
+		left join bm_rule_office b on b.rule_id=a.rule_id
+		left join bm_account c on c.office_id=b.office_id;
+		<where>
+			<if test ="_parameter!= null">
+				a.income_id=#{_parameter}
+			</if>
+		</where>
+
+
+	</select>
+-->
+
+
+
+
+	<insert id="insert">
+		INSERT INTO bm_dist_office(
+			id,
+			income_id,
+			office_id,
+			value,
+			create_by,
+			create_date,
+			rule_id
+		) VALUES (
+			#{id},
+			#{incomeId},
+			#{office.id},
+			#{value},
+			#{createBy.id},
+			#{createDate},
+			#{ruleId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_dist_office SET 	
+			income_id = #{incomeId},
+			office_id = #{office.id},
+			value = #{value},
+			rule_id = #{ruleId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bm_dist_office
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

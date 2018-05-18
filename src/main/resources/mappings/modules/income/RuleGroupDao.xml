@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.income.dao.RuleGroupDao">
+    
+	<sql id="ruleGroupColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.del_flag AS "delFlag",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="ruleGroupJoins">
+	</sql>
+    
+	<select id="get" resultType="RuleGroup">
+		SELECT 
+			<include refid="ruleGroupColumns"/>
+		FROM bm_rule_group a
+		<include refid="ruleGroupJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="RuleGroup">
+		SELECT 
+			<include refid="ruleGroupColumns"/>
+		FROM bm_rule_group a
+		<include refid="ruleGroupJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findAllList" resultType="RuleGroup">
+		SELECT
+		<include refid="ruleGroupColumns"/>
+		FROM bm_rule_group a
+		<include refid="ruleGroupJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findListByOfficeId" resultType="RuleGroup" parameterType="String">
+		select DISTINCT
+		d.id AS "id",
+		d.name AS "name",
+		d.del_flag AS "delFlag",
+		d.remarks AS "remarks"
+		from bm_dist_office a
+		inner join  bm_rule_office b on a.office_id=b.office_id
+		inner join  bm_rule c on c.id=b.rule_id
+		inner join  bm_rule_group d on d.id=c.group_id
+		<where>
+			<if test ="_parameter!= null">
+				a.office_id=#{_parameter}
+			</if>
+		</where>
+
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_rule_group(
+			id,
+			name,
+			del_flag,
+			remarks
+		) VALUES (
+			#{id},
+			#{name},
+			#{delFlag},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_rule_group SET 	
+			name = #{name},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE bm_rule_group SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -848,7 +848,7 @@ ProcessDiagramCanvas.prototype = {
 			var ninjaBBSourceActivity = ninjaPathSourceActivity.getBBox();
 			var ninjaBBDestinationActivity = ninjaPathDestinationActivity.getBBox();
 			
-			// set target of the flow to the center of the taskObject
+			// set target of the proc to the center of the taskObject
 			var newPath = path;
 			var originalSource = {x: newPath[0][1], y: newPath[0][2]};
 			var originalTarget = {x: newPath[newPath.length-1][1], y: newPath[newPath.length-1][2]};
@@ -911,7 +911,7 @@ ProcessDiagramCanvas.prototype = {
 			var newWaypoints = this._connectFlowToActivity(contextObject.sourceActivityId, contextObject.destinationActivityId, waypoints);
 			
 			if (!newWaypoints) {
-				console.error("Error draw flow from '"+contextObject.sourceActivityId+"' to '"+contextObject.destinationActivityId+"' ");
+				console.error("Error draw proc from '"+contextObject.sourceActivityId+"' to '"+contextObject.destinationActivityId+"' ");
 				return;
 			}
 		}
@@ -969,7 +969,7 @@ ProcessDiagramCanvas.prototype = {
 			conditionalSequenceFlowIndicator = this._drawConditionalSequenceFlowIndicator(firstLine);
 		}
 
-        // draw flow name
+        // draw proc name
         var flowName = contextObject.name;
         if (flowName) {
             var xPointArray = contextObject.xPointArray;
@@ -1002,7 +1002,7 @@ ProcessDiagramCanvas.prototype = {
 			var object = this.paper.getById(objectId);
 			var contextObject = object.data("contextObject");
 			if (contextObject) {
-				console.log("[flow], objectId: " + object.id +", flow: " + contextObject.flow);
+				console.log("[proc], objectId: " + object.id +", proc: " + contextObject.flow);
 				ProcessDiagramGenerator.showFlowInfo(contextObject);
 			}
 		}).dblclick(function(){
@@ -1897,7 +1897,7 @@ ProcessDiagramCanvas.prototype = {
 		var contextObject = shapeFlow.data("contextObject");
 		if (contextObject)
 			console.log("--> highLightFlow: ["+contextObject.id+"] " + contextObject.flow);
-		//console.log("--> highLightFlow: ", flow.flow, flow.data("set"));
+		//console.log("--> highLightFlow: ", proc.proc, proc.data("set"));
 		
 		var st = shapeFlow.data("set");
 		

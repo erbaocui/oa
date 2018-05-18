@@ -121,7 +121,7 @@ public class ProcessInstanceHighlightsResource {
 	 * 
 	 * code logic: 1. Loop all activities by id asc order; 2. Check each activity's outgoing transitions and eventBoundery outgoing transitions, if
 	 * outgoing transitions's destination.id is in other executed activityIds, add this transition to highLightedFlows List; 3. But if activity is not
-	 * a parallelGateway or inclusiveGateway, only choose the earliest flow.
+	 * a parallelGateway or inclusiveGateway, only choose the earliest proc.
 	 * 
 	 * @param activityList
 	 * @param hisActInstList
@@ -146,7 +146,7 @@ public class ProcessInstanceHighlightsResource {
 		//These codes is used to avoid a bug: 
 		//ACT-1728 If the process instance was started by a callActivity, it will be not have the startEvent activity in ACT_HI_ACTINST table 
 		//Code logic:
-		//Check the first activity if it is a startEvent, if not check out the startEvent's highlight outgoing flow.
+		//Check the first activity if it is a startEvent, if not check out the startEvent's highlight outgoing proc.
 		HistoricActivityInstance firstHistActInst = hisActInstList.getFirst();
 		String firstActType = (String) firstHistActInst.getActivityType();
 		if (firstActType != null && firstActType.toLowerCase().indexOf("startevent") < 0) {

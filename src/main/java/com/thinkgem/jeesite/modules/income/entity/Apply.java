@@ -7,10 +7,7 @@ import com.thinkgem.jeesite.modules.contract.entity.Contract;
 import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import com.thinkgem.jeesite.common.persistence.DataEntity;
 
@@ -19,7 +16,7 @@ import com.thinkgem.jeesite.common.persistence.DataEntity;
  * @author cuijp
  * @version 2018-05-02
  */
-public class ApplyPay extends DataEntity<ApplyPay> {
+public class Apply extends DataEntity<Apply> {
 	
 	private static final long serialVersionUID = 1L;
 	private String name;		// 请款名称
@@ -27,14 +24,16 @@ public class ApplyPay extends DataEntity<ApplyPay> {
 	private String firstParty;		// 甲方名称
 	private BigDecimal enterValue;		// 到账金额
 	private Integer status;		// 1申请开票;2已开票；3全部入账
-	private List<Contract> contractList;
+
+	private Contract contract;
+	private List<Income> incomeList;
 
 	
-	public ApplyPay() {
+	public Apply() {
 		super();
 	}
 
-	public ApplyPay(String id){
+	public Apply(String id){
 		super(id);
 	}
 
@@ -57,13 +56,13 @@ public class ApplyPay extends DataEntity<ApplyPay> {
 		this.firstParty = firstParty;
 	}
 
-	public List<Contract> getContractList() {
+	/*public List<Contract> getContractList() {
 		return contractList;
 	}
 
 	public void setContractList(List<Contract> contractList) {
 		this.contractList = contractList;
-	}
+	}*/
 
 	public BigDecimal getApplyValue() {
 		return applyValue;
@@ -89,6 +88,19 @@ public class ApplyPay extends DataEntity<ApplyPay> {
 		this.status = status;
 	}
 
+	public Contract getContract() {
+		return contract;
+	}
 
+	public void setContract(Contract contract) {
+		this.contract = contract;
+	}
 
+	public List<Income> getIncomeList() {
+		return incomeList;
+	}
+
+	public void setIncomeList(List<Income> incomeList) {
+		this.incomeList = incomeList;
+	}
 }

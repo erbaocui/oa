@@ -18,7 +18,7 @@
  */
 
 /*
- * Sequence flow order controller
+ * Sequence proc order controller
  */
 
 var KisBpmSequenceFlowOrderCtrl = [ '$scope', '$modal', '$timeout', '$translate', function($scope, $modal, $timeout, $translate) {
@@ -34,15 +34,15 @@ var KisBpmSequenceFlowOrderCtrl = [ '$scope', '$modal', '$timeout', '$translate'
 
 var KisBpmSequenceFlowOrderPopupCtrl = ['$scope', '$translate', function($scope, $translate) {
 
-    // Find the outgoing sequence flow of the current selected shape
+    // Find the outgoing sequence proc of the current selected shape
     var outgoingSequenceFlow = [];
     var selectedShape = $scope.selectedShape;
     if (selectedShape) {
         var outgoingNodes = selectedShape.getOutgoingShapes();
         for (var i=0; i<outgoingNodes.length; i++) {
-            if (outgoingNodes[i].getStencil().title() === 'Sequence flow') {
+            if (outgoingNodes[i].getStencil().title() === 'Sequence proc') {
                 var targetActivity = outgoingNodes[i].getTarget();
-                // We need the resourceId of a sequence flow, not the id because that will change with every editor load
+                // We need the resourceId of a sequence proc, not the id because that will change with every editor load
                 outgoingSequenceFlow.push({
                     id : outgoingNodes[i].resourceId,
                     targetTitle : targetActivity.properties['oryx-name'],
@@ -60,10 +60,10 @@ var KisBpmSequenceFlowOrderPopupCtrl = ['$scope', '$translate', function($scope,
 
         var sequenceFlowOrderList = $scope.property.value.sequenceFlowOrder;
 
-        // Loop the list of sequence flow that was saved  in the json model and match them with the outgoing sequence flow found above
+        // Loop the list of sequence proc that was saved  in the json model and match them with the outgoing sequence proc found above
         for (var flowIndex=0; flowIndex < sequenceFlowOrderList.length; flowIndex++) {
 
-            // find the sequence flow in the outgoing sequence flows.
+            // find the sequence proc in the outgoing sequence flows.
 
             for (var outgoingFlowIndex=0; outgoingFlowIndex < outgoingSequenceFlow.length; outgoingFlowIndex++) {
                 if (outgoingSequenceFlow[outgoingFlowIndex].id === sequenceFlowOrderList[flowIndex]) {
@@ -74,7 +74,7 @@ var KisBpmSequenceFlowOrderPopupCtrl = ['$scope', '$translate', function($scope,
             }
         }
 
-        // Now all the matching sequence flow we're removed from the outgoing sequence flow list
+        // Now all the matching sequence proc we're removed from the outgoing sequence proc list
         // We can simply apply the remaining ones (these are new vs. the time when the values were saved to the model)
         orderedOutgoingSequenceFlow = orderedOutgoingSequenceFlow.concat(outgoingSequenceFlow);
 

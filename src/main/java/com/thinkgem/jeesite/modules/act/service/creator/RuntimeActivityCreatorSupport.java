@@ -62,7 +62,7 @@ public abstract class RuntimeActivityCreatorSupport {
 		for (int i = 0; i < activities.size(); i++) {
 			//设置各活动的下线
 			activities.get(i).getOutgoingTransitions().clear();
-			activities.get(i).createOutgoingTransition("flow" + (i + 1))
+			activities.get(i).createOutgoingTransition("proc" + (i + 1))
 					.setDestination(i == activities.size() - 1 ? nextActivity : activities.get(i + 1));
 		}
 	}

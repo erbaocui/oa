@@ -9,7 +9,7 @@ public class QueryContract extends Contract {
 
    private String year;
 
-   private  String notIn;
+   private  String[] noInArray;
 
     public QueryContract() {
     }
@@ -22,11 +22,11 @@ public class QueryContract extends Contract {
         this.year = year;
     }
 
-    public String getNotIn() {
-        return notIn;
+    public String[] getNoInArray() {
+        return noInArray;
     }
 
-    public void setNotIn(String notIn) {
-        this.notIn = notIn;
+    public void setNoInArray(String[] noInArray) {
+        this.noInArray = noInArray;
     }
 }

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.income.dao.ReceiveDao">
+    
+	<sql id="receiveColumns">
+		a.id AS "id",
+		a.apply_id AS "applyId",
+		a.value AS "value",
+		a.create_by AS "createBy.id",
+		u.name AS "createBy.name",
+		a.create_date AS "createDate"
+	</sql>
+	
+	<sql id="receiveJoins">
+		left join sys_user u on u.id=a.create_by
+	</sql>
+    
+	<select id="get" resultType="Receive">
+		SELECT 
+			<include refid="receiveColumns"/>
+		FROM bm_receive a
+		<include refid="receiveJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Receive">
+		SELECT 
+			<include refid="receiveColumns"/>
+		FROM bm_receive a
+		<include refid="receiveJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Receive" parameterType="String">
+		SELECT 
+			<include refid="receiveColumns"/>
+		FROM bm_receive a
+		<include refid="receiveJoins"/>
+		<where>
+			<if test ="_parameter!= null">
+				a.apply_id=#{_parameter}
+			</if>
+		</where>		
+		  ORDER BY a.create_date DESC
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_receive(
+			id,
+			apply_id,
+			value,
+			create_by,
+			create_date
+		) VALUES (
+			#{id},
+			#{applyId},
+			#{value},
+			#{createBy.id},
+			#{createDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_receive SET 	
+			apply_id = #{applyId},
+			value = #{value},
+			create_date = #{createDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bm_receive
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

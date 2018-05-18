@@ -106,7 +106,7 @@ public class ActTaskService extends BaseService {
 		String userId = UserUtils.getUser().getLoginName();//ObjectUtils.toString(UserUtils.getUser().getId());
 		
 		List<Act> result = new ArrayList<Act>();
-		System.out.println(UserUtils.getUser().getRoleEnnameList().toString());
+
 		// =============== 已经签收的任务  ===============
 		TaskQuery todoTaskQuery = taskService.createTaskQuery()
 				 .taskCandidateGroupIn( UserUtils.getUser(). getRoleEnnameList())

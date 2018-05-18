@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.thinkgem.jeesite.modules.income.dao.ApplyPayDao">
-	<resultMap id="applyPayMap" type="ApplyPay" >
+<mapper namespace="com.thinkgem.jeesite.modules.income.dao.ApplyDao">
+	<resultMap id="applyMap" type="Apply" >
 		    <result property="id" column="id" jdbcType="VARCHAR" javaType="java.lang.String" />
 			<result property="name" column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
 			<result property="applyValue" column="applyValue" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
@@ -13,12 +13,12 @@
 			<result property="createTime"   column="createTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
 			<result property="updateBy.id"   column="updateBy.id" jdbcType="VARCHAR" javaType="java.lang.String" />
 			<result property="updateTime"   column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
-		   <collection property="contractList" ofType="Contract" select="findRelateContract" column="id">
+		    <collection property="incomeList" ofType="Income" select="com.thinkgem.jeesite.modules.income.dao.IncomeDao.findAllList" column="id">
 	       </collection>
 	</resultMap>
 
 
-	<sql id="applyPayColumns">
+	<sql id="applyColumns">
 		a.id AS "id",
 		a.name AS "name",
 		a.apply_value AS "applyValue",
@@ -32,23 +32,23 @@
 		a.update_time AS "updateTime"
 	</sql>
 	
-	<sql id="applyPayJoins">
+	<sql id="applyJoins">
 
 	</sql>
     
-	<select id="get" resultMap="applyPayMap" >
+	<select id="get" resultMap="applyMap" >
 		SELECT 
-			<include refid="applyPayColumns"/>
-		FROM bm_apply_pay a
-		<include refid="applyPayJoins"/>
+			<include refid="applyColumns"/>
+		FROM bm_apply a
+		<include refid="applyJoins"/>
 		WHERE a.id = #{id}
 	</select>
 	
-	<select id="findList" resultMap="applyPayMap" >
+	<select id="findList" resultMap="applyMap" >
 		SELECT 
-			<include refid="applyPayColumns"/>
-		FROM bm_apply_pay a
-		<include refid="applyPayJoins"/>
+			<include refid="applyColumns"/>
+		FROM bm_apply a
+		<include refid="applyJoins"/>
 		<where>
 			
 			<if test="name != null and name != ''">
@@ -70,11 +70,11 @@
 		</choose>
 	</select>
 	
-	<select id="findAllList"  resultMap="applyPayMap" >
+	<select id="findAllList"  resultMap="applyMap" >
 		SELECT 
-			<include refid="applyPayColumns"/>
-		FROM bm_apply_pay a
-		<include refid="applyPayJoins"/>
+			<include refid="applyColumns"/>
+		FROM bm_apply a
+		<include refid="applyJoins"/>
 		<where>
 			
 		</where>		
@@ -87,19 +87,28 @@
 		</choose>
 	</select>
 
-	<select id="findRelateContract" parameterType="String" resultType="Contract">
-		select
-		c.id as "id",
-		c.code as "code",
-		c.name as "name"
-		from bm_apply_pay a
-		inner join bm_apply_pay_cont b on a.id=b.apply_pay_id
-		inner join bm_contract c on b.contract_id= c.id
-		where a.id = #{id}
-	</select>
+
+
+	<!--<select id="findAllReceiveList" resultType="Receive" parameterType="String">
+		SELECT
+		a.id AS "id",
+		a.apply_id AS "applyId",
+		a.value AS "value",
+		a.create_by AS "createBy.id",
+		u.name AS "createBy.name",
+		a.create_date AS "createDate"
+		FROM bm_receive a
+		left join sys_user u on u.id=a.create_by
+		<where>
+			<if test ="_parameter!= null">
+				a.apply_id=#{_parameter}
+			</if>
+		</where>
+		ORDER BY create_date DESC
+	</select>-->
 
 	<insert id="insert">
-		INSERT INTO bm_apply_pay(
+		INSERT INTO bm_apply(
 			id,
 			name,
 			apply_value,
@@ -127,7 +136,7 @@
 	</insert>
 	
 	<update id="update">
-		UPDATE bm_apply_pay SET 	
+		UPDATE bm_apply SET 	
 			name = #{name},
 			apply_value = #{applyValue},
 			first_party = #{firstParty},
@@ -141,7 +150,7 @@
 	</update>
 	
 	<delete id="delete">
-		DELETE FROM bm_apply_pay
+		DELETE FROM bm_apply
 		WHERE id = #{id}
 	</delete>
 	

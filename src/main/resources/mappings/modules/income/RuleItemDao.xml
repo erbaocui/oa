@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.income.dao.RuleItemDao">
+
+	<sql id="ruleItemColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.percent AS "percent",
+		a.rule_id AS "ruleId",
+		a.is_tax as "isTax",
+		a.is_filing_fee as "isFilingFee",
+		a.account as "account",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="ruleItemJoins">
+	</sql>
+    
+	<select id="get" resultType="RuleItem">
+		SELECT 
+			<include refid="ruleItemColumns"/>
+		FROM bm_rule_item a
+		<include refid="ruleItemJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="RuleItem">
+		SELECT 
+			<include refid="ruleItemColumns"/>
+		FROM bm_rule_item a
+		<include refid="ruleItemJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="ruleId != null and ruleId != ''">
+				AND a.rule_id = #{ruleId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="RuleItem" parameterType="String">
+		SELECT
+		<include refid="ruleItemColumns"/>
+		FROM bm_rule_item a
+		<include refid="ruleItemJoins"/>
+		<where>
+			<if test ="_parameter!= null">
+				a.rule_id=#{_parameter}
+			</if>
+
+		</where>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_rule_item(
+			id,
+			name,
+			percent,
+			rule_id,
+			remarks
+		) VALUES (
+			#{id},
+			#{name},
+			#{percent},
+			#{ruleId},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_rule_item SET 	
+			name = #{name},
+			percent = #{percent},
+			rule_id = #{ruleId},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM bm_rule_item
+		WHERE id = #{id}
+	</delete>
+	
+</mapper>

@@ -5,7 +5,6 @@
 	<title>收款管理</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
-        var contractId=null;
 		$(document).ready(function() {
 			//$("#name").focus();
 			$("#inputForm").validate({
@@ -33,9 +32,8 @@
                  //$("#incomeForm").submit();
                  $.post("${ctx}/income/applyPay/addIncome",{applyId:$("#id").val(),incomeValue:$("#incomeValue").val()},function(result){
 					 if(result=="success"){
-                         $.jBox.tip("收款保存成功");
                          window.location="${ctx}/income/applyPay/form?id="+$("#id").val();
-
+                         $.jBox.tip("收款保存成功");
 					 }
                  });
               }else{
@@ -104,11 +102,7 @@
 					<td>${income.createBy.name}</td>
 
 					<td>
-						<c:if test="${income.status==1}">
-						<a href="#" onclick="">启动流程</a>
-						<a href="${ctx}/income/applyPay/delIncome?applyId=${apply.id}&incomeId=${income.id}" onclick="return confirmx('确认要删除该收款吗？', this.href)">删除</a>
-					<%--	<a href="#" onclick="return confirmx('确认要删除该收款吗？', this.href)">删除</a>--%>
-						</c:if>
+						<a href="${ctx}/income/applyPay/contDelete?id=${applyPay.id}&contractId=${contract.id}" onclick="return confirmx('确认要删除该合同吗？', this.href)">删除</a>
 					</td>
 				</tr>
 				<c:set value="${sum + income.value}" var="sum" />
@@ -127,10 +121,7 @@
 		<div class="form-actions">
 <%--			<shiro:hasPermission name="income:applyPay:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>--%>
-			<c:if test="${sum<apply.applyValue}">
-				<input id="btnOpenIncome" class="btn btn-primary" type="button" value="添加收款" />
-			</c:if>
-
+			<input id="btnOpenIncome" class="btn btn-primary" type="button" value="添加收款" />
 		</div>
 
 	</form:form>

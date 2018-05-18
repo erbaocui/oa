@@ -112,7 +112,7 @@ public class SystemService extends BaseService implements InitializingBean {
 
 	/**
 	 * 通过部门ID获取用户列表，仅返回用户id和name（树查询用户时用）
-	 * @param user
+	 * @param officeId
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
@@ -124,6 +124,17 @@ public class SystemService extends BaseService implements InitializingBean {
 			list = userDao.findUserByOfficeId(user);
 			CacheUtils.put(UserUtils.USER_CACHE, UserUtils.USER_CACHE_LIST_BY_OFFICE_ID_ + officeId, list);
 		}
+		return list;
+	}
+
+	/**
+	 * 通过Role enname获取用户列表，仅返回用户id和name
+	 * @param enname
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<User> findUserByRuleEnname(String enname) {
+		List<User> list = userDao.findUserByRoleEnname(enname);
 		return list;
 	}
 	

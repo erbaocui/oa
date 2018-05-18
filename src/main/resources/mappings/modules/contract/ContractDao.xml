@@ -62,7 +62,7 @@
 
 
 	
-	<select id="findList" resultType="Contract">
+	<select id="findList" resultType="Contract" parameterType="QueryContract">
 		SELECT 
 			<include refid="contractColumns"/>
 		FROM bm_contract a
@@ -81,6 +81,12 @@
 			<if test="type != null and type != ''">
 				AND a.type = #{type}
 			</if>
+			<if test="noInArray != null and noInArray.length> 0">
+				and a.id not in
+				<foreach collection="noInArray" index="index" item="item" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -97,7 +103,7 @@
 		FROM bm_contract a
 		<include refid="contractJoins"/>
 		<where>
-			
+
 		</where>		
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

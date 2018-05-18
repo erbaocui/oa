@@ -89,6 +89,9 @@ public class ContController extends BaseController {
 	@RequestMapping(value = {"briefList", ""})
 	public String briefList(QueryContract queryContract,String notContractIds, HttpServletRequest request, HttpServletResponse response, Model model) {
 		System.out.println(notContractIds);
+		if(!StringUtils.isEmpty(notContractIds.trim())){
+			queryContract.setNoInArray(notContractIds.trim().split(","));
+		}
 		Page<Contract> page=new Page<Contract>(request, response);
 		page.setPageSize(10);
 		page = contService.findPage(page, queryContract);

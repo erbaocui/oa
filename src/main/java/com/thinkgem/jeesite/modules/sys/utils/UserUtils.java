@@ -169,6 +169,22 @@ public class UserUtils {
 		}
 		return roleStringList;
 	}
+
+	/**
+	 * 获取当前用户角色name列表
+	 * @return
+	 */
+	public static List<String> getLoginNameListByRoleEnname(String enname){
+		@SuppressWarnings("unchecked")
+		List<String> loginNameList=new ArrayList<String>();
+		List<User> userList=userDao.findUserByRoleEnname(enname);
+		if (userList == null) {
+			for(User user:userList) {
+				loginNameList.add(user.getLoginName());
+			}
+		}
+		return loginNameList;
+	}
 	
 	/**
 	 * 获取当前用户授权菜单
@@ -189,6 +205,23 @@ public class UserUtils {
 			putCache(CACHE_MENU_LIST, menuList);
 		}
 		return menuList;
+	}
+
+
+	/**
+	 * 获取当前用户角色name列表
+	 * @return
+	 */
+	public static List<String> getUserStringListByRoleList(){
+		@SuppressWarnings("unchecked")
+		List<Role> roleList = getRoleList();
+		List<String> roleStringList=new ArrayList<String>();
+		if (roleList == null) {
+			for(Role role:roleList) {
+				roleStringList.add(role.getName());
+			}
+		}
+		return roleStringList;
 	}
 	
 	/**

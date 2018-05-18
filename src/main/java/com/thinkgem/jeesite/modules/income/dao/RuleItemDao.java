@@ -5,14 +5,14 @@ package com.thinkgem.jeesite.modules.income.dao;
 
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
-import com.thinkgem.jeesite.modules.income.entity.ApplyPay;
+import com.thinkgem.jeesite.modules.income.entity.RuleItem;
 
 /**
- * 请款功能DAO接口
+ * 分配规则细则DAO接口
  * @author cuijp
- * @version 2018-05-02
+ * @version 2018-05-04
  */
 @MyBatisDao
-public interface ApplyPayDao extends CrudDao<ApplyPay> {
+public interface RuleItemDao extends CrudDao<RuleItem> {
 	
 }

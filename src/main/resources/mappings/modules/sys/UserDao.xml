@@ -204,6 +204,18 @@
 			AND a.office_id = #{office.id}
 		ORDER BY a.name
 	</select>
+
+	<!-- 根据OfficeId获取用户（树查询用户时用） -->
+	<select id="findUserByRoleEnname" resultType="User" useCache="true">
+		SELECT
+		a.id, a.name, a.login_name
+		FROM sys_user a
+		inner join  sys_user_role ur  on ur.user_id= a.id
+        inner join sys_role r on r.id=ur.role_id
+		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
+		AND r.enname = #{office.id}
+
+	</select>
 	
 	<!-- 查询全部用户 -->
 	<select id="findAllList" resultType="User">

@@ -64,11 +64,11 @@ var KisBpmBooleanPropertyCtrl = ['$scope', function ($scope) {
             if (selectedShape) {
                 var incomingNodes = selectedShape.getIncomingShapes();
                 if (incomingNodes && incomingNodes.length > 0) {
-                    // get first node, since there can be only one for a sequence flow
+                    // get first node, since there can be only one for a sequence proc
                     var rootNode = incomingNodes[0];
                     var flows = rootNode.getOutgoingShapes();
                     if (flows && flows.length > 1) {
-                        // in case there are more flows, check if another flow is already defined as default
+                        // in case there are more flows, check if another proc is already defined as default
                         for (var i = 0; i < flows.length; i++) {
                             if (flows[i].resourceId != selectedShape.resourceId) {
                                 var defaultFlowProp = flows[i].properties['oryx-defaultflow'];

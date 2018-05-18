@@ -294,7 +294,7 @@ public class BaseProcessDefinitionDiagramLayoutResource {
 			ObjectNode flowJSON = new ObjectMapper().createObjectNode();
 			flowJSON.put("id", sequenceFlow.getId());
 			flowJSON.put("name", flowName);
-			flowJSON.put("flow", "(" + sequenceFlow.getSource().getId() + ")--" + sequenceFlow.getId() + "-->("
+			flowJSON.put("proc", "(" + sequenceFlow.getSource().getId() + ")--" + sequenceFlow.getId() + "-->("
 					+ sequenceFlow.getDestination().getId() + ")");
 
 			if (isConditional)

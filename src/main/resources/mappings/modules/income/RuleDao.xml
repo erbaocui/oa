@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.income.dao.RuleDao">
+	<resultMap id="ruleMap" type="Rule" >
+		<result property="id" column="id" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="name" column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="remarks"  column="remarks" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<collection property="itemList" ofType="RuleItem" select="com.thinkgem.jeesite.modules.income.dao.RuleItemDao.findAllList" column="id">
+		</collection>
+	</resultMap>
+	<sql id="ruleColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="ruleJoins">
+		inner join bm_rule_office b on b.rule_id=a.id
+	</sql>
+    
+	<select id="get" resultType="Rule">
+		SELECT 
+			<include refid="ruleColumns"/>
+		FROM bm_rule a
+		<include refid="ruleJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Rule">
+		SELECT 
+			<include refid="ruleColumns"/>
+		FROM bm_rule a
+		<include refid="ruleJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="remarks != null and remarks != ''">
+				AND a.remarks = #{remarks}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--<select id="findAllList" resultMap="ruleMap" parameterType="String">
+		SELECT 
+			<include refid="ruleColumns"/>
+		FROM bm_rule a
+		<include refid="ruleJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>-->
+
+	<select id="findAllListByOfficeId"  resultMap="ruleMap" parameterType="Rule">
+		SELECT
+		<include refid="ruleColumns"/>
+		FROM bm_rule a
+		<include refid="ruleJoins"/>
+		<where>
+			<if test ="officeId!= null">
+				b.office_id=#{officeId}
+			</if>
+			<if test ="groupId!= null">
+				and a.group_id=#{groupId}
+			</if>
+		</where>
+
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_rule(
+			id,
+			name,
+			remarks
+		) VALUES (
+			#{id},
+			#{name},
+			#{remarks}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_rule SET 	
+			name = #{name},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bm_rule
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
