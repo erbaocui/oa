@@ -23,6 +23,7 @@ public class RuleItem extends DataEntity<RuleItem> {
 	private String officeId;
 	private Integer isTax;
 	private Integer isFilingFee;
+	private String account;
 	
 	public RuleItem() {
 		super();
@@ -80,5 +81,13 @@ public class RuleItem extends DataEntity<RuleItem> {
 
 	public void setIsFilingFee(Integer isFilingFee) {
 		this.isFilingFee = isFilingFee;
+	}
+
+	public String getAccount() {
+		return account;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
 	}
 }

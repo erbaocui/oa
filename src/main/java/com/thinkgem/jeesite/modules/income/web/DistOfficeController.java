@@ -3,17 +3,14 @@
  */
 package com.thinkgem.jeesite.modules.income.web;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.common.utils.NumberOperateUtils;
-import com.thinkgem.jeesite.modules.income.entity.DistOffice;
-import com.thinkgem.jeesite.modules.income.entity.Rule;
-import com.thinkgem.jeesite.modules.income.entity.RuleGroup;
-import com.thinkgem.jeesite.modules.income.entity.RuleItem;
-import com.thinkgem.jeesite.modules.income.service.RuleGroupService;
-import com.thinkgem.jeesite.modules.income.service.RuleItemService;
-import com.thinkgem.jeesite.modules.income.service.RuleService;
+import com.thinkgem.jeesite.modules.income.entity.*;
+import com.thinkgem.jeesite.modules.income.service.*;
 import com.thinkgem.jeesite.modules.income.vo.*;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -30,7 +27,6 @@ import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.common.utils.StringUtils;
-import com.thinkgem.jeesite.modules.income.service.DistOfficeService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -55,6 +51,8 @@ public class DistOfficeController extends BaseController {
 	private RuleService ruleService;
 	@Autowired
 	private RuleItemService ruleItemService;
+	@Autowired
+	private DistributeService distributeService;
 	
 	@ModelAttribute
 	public DistOffice get(@RequestParam(required=false) String id) {
@@ -78,7 +76,7 @@ public class DistOfficeController extends BaseController {
 
 	/*@RequiresPermissions("income:distributeOffice:view")*/
 	@RequestMapping(value = "form")
-	public String form(DistOffice distOffice,String[] groups, Model model) {
+	public String form(DistOffice distOffice,String[] groups, Model model)  throws Exception{
 		List<DistOfficeVo> distOffices=new ArrayList<DistOfficeVo>();
 		List<DistOffice> distOfficeList= distOfficeService.findList(distOffice);
 		for(int k=0;k<distOfficeList.size();k++){
@@ -92,6 +90,14 @@ public class DistOfficeController extends BaseController {
 			RuleGroupVo rgv=new RuleGroupVo();
 			if(groups!=null&&(!groups[k].equals("-1"))){
 				dov.setRuleGroupId(groups[k]);
+			}else{
+				Map<String,String> paramMap=new HashMap<String, String>();
+				paramMap.put("incomeId",item.getIncomeId());
+				paramMap.put("officeId",item.getOffice().getId());
+				String groupId=distributeService.findGroupId(paramMap);
+				if(groupId!=null&&!groupId.equals("")){
+					dov.setRuleGroupId(groupId);
+				}
 			}
 
 			rgv.setId("-1");
@@ -103,6 +109,7 @@ public class DistOfficeController extends BaseController {
 				rgv.setName(rg.getName());
 				ruleGroups.add(rgv);
 			}
+
 			dov.setRuleGroups(ruleGroups);
 			if(dov.getRuleGroupId()!=null) {
 				Rule r=new Rule();
@@ -116,10 +123,40 @@ public class DistOfficeController extends BaseController {
 					Integer ruleRowspan = 0;
 					for (Rule rule : ruleList) {
 						RuleVo rv = new RuleVo();
+						Double ruleValue=0d;
 						if (ruleList.size() == 1) {
 							rv.setValue(item.getValue().toString());
+							ruleValue=item.getValue().doubleValue();
 						} else {
 							//多条规则
+							String sql=rule.getBaseSql();
+							String conditon=rule.getCondition();
+							Double baseValue=ruleService.runSql(sql).doubleValue();
+
+							ScriptEngineManager manager = new ScriptEngineManager();
+							ScriptEngine engine = manager.getEngineByName("js");
+							engine.put("value", baseValue);
+							engine.put("threshold",rule.getThreshold());
+							Boolean before= (Boolean)engine.eval(conditon);
+							engine.put("value", NumberOperateUtils.add(baseValue,item.getValue().doubleValue()));
+							engine.put("threshold", rule.getThreshold());
+							Boolean after= (Boolean)engine.eval(conditon);
+							//触发条件
+							if(before==false||after==true){
+								ruleValue=Math.abs(NumberOperateUtils.sub(rule.getThreshold().doubleValue(),NumberOperateUtils.add(baseValue,item.getValue().doubleValue())));
+							}
+							if(before==true||after==false){
+								ruleValue=Math.abs(NumberOperateUtils.sub(rule.getThreshold().doubleValue(),baseValue));
+							}
+							if(before==true&&after==true){
+								ruleValue=item.getValue().doubleValue();
+
+							}
+							rv.setValue(ruleValue.toString());
+							if(before==false&&after==false){
+								continue;
+							}
+
 
 						}
 						RuleItem ruleItem = new RuleItem();
@@ -133,7 +170,7 @@ public class DistOfficeController extends BaseController {
 								Double itemValue = 0.0;
 								Double tax = 0.0;
 								Double filingFee = 0.0;
-								itemValue = NumberOperateUtils.mul(new Double(rv.getValue()), ri.getPercent().doubleValue());
+								itemValue = NumberOperateUtils.mul(ruleValue, ri.getPercent().doubleValue());
 								RuleItemVo riv = new RuleItemVo();
 								riv.setName(ri.getName());
 								riv.setValue(itemValue.toString());
@@ -238,6 +275,129 @@ public class DistOfficeController extends BaseController {
 			distOffices.add(dov);
 		}
 		return distOffices;
+	}
+
+
+	/*@RequiresPermissions("income:distributeOffice:view")*/
+	@RequestMapping(value = "saveDist")
+	public String saveDist(DistOffice distOffice,String[] groups, Model model)  throws Exception{
+
+		List<DistOffice> distOfficeList= distOfficeService.findList(distOffice);
+		List<Distribute> distributeList = new ArrayList<Distribute>();
+		for(int k=0;k<distOfficeList.size();k++){
+			DistOffice item=distOfficeList.get(k);
+
+			if(groups[k]!=null) {
+				Rule r=new Rule();
+				r.setGroupId(groups[k]);
+				r.setOfficeId(item.getOffice().getId());
+				List<Rule> ruleList = ruleService.findListByOfficeId(r);
+				if (ruleList != null && !ruleList.isEmpty()) {
+					for (Rule rule : ruleList) {
+
+						Double ruleValue=0d;
+						if (ruleList.size() == 1) {
+							ruleValue=item.getValue().doubleValue();
+						} else {
+							//多条规则
+							String sql=rule.getBaseSql();
+							String conditon=rule.getCondition();
+							Double baseValue=ruleService.runSql(sql).doubleValue();
+
+							ScriptEngineManager manager = new ScriptEngineManager();
+							ScriptEngine engine = manager.getEngineByName("js");
+							engine.put("value", baseValue);
+							engine.put("threshold",rule.getThreshold());
+							Boolean before= (Boolean)engine.eval(conditon);
+							engine.put("value", NumberOperateUtils.add(baseValue,item.getValue().doubleValue()));
+							engine.put("threshold", rule.getThreshold());
+							Boolean after= (Boolean)engine.eval(conditon);
+							//触发条件
+							if(before==false||after==true){
+								ruleValue=Math.abs(NumberOperateUtils.sub(rule.getThreshold().doubleValue(),NumberOperateUtils.add(baseValue,item.getValue().doubleValue())));
+							}
+							if(before==true||after==false){
+								ruleValue=Math.abs(NumberOperateUtils.sub(rule.getThreshold().doubleValue(),baseValue));
+							}
+							if(before==true&&after==true){
+								ruleValue=item.getValue().doubleValue();
+
+							}
+							if(before==false&&after==false){
+								continue;
+							}
+
+						}
+						RuleItem ruleItem = new RuleItem();
+						ruleItem.setOfficeId(item.getOffice().getId());
+						ruleItem.setRuleId(rule.getId());
+						List<RuleItem> ruleItemList = ruleItemService.findList(ruleItem);
+						if (ruleItemList != null && !ruleItemList.isEmpty()) {
+							for (RuleItem ri : ruleItemList) {
+								Double itemValue = 0.0;
+								Double tax = 0.0;
+								Double filingFee = 0.0;
+								itemValue = NumberOperateUtils.mul(ruleValue, ri.getPercent().doubleValue());
+								RuleItemVo riv = new RuleItemVo();
+								riv.setName(ri.getName());
+								riv.setValue(itemValue.toString());
+
+								Distribute  distribute;
+								if (ri.getIsTax().equals(0)) {
+									distribute = new Distribute();
+									distribute.preInsert();
+									distribute.setRuleItemId(ri.getId());
+									distribute.setStatus(1);
+									distribute.setAccount(ri.getAccount());
+									distribute.setDes("税");
+									distribute.setIncomeId(item.getIncomeId());
+									tax = NumberOperateUtils.mul(itemValue, 0.067);
+									distribute.setValue(new BigDecimal(tax));
+									distributeList.add(distribute);
+								}
+								if (ri.getIsFilingFee().equals(0)) {
+									distribute = new Distribute();
+									distribute.preInsert();
+									distribute.setRuleItemId(ri.getId());
+									distribute.setStatus(1);
+									distribute.setAccount(ri.getAccount());
+									distribute.setDes("归档费");
+									distribute.setIncomeId(item.getIncomeId());
+									filingFee = NumberOperateUtils.sub(itemValue, tax);
+									filingFee = NumberOperateUtils.mul(filingFee, 0.02);
+									distribute.setValue(new BigDecimal(filingFee));
+									distributeList.add(distribute);
+								}
+								itemValue = NumberOperateUtils.sub(itemValue, tax);
+								itemValue = NumberOperateUtils.sub(itemValue, filingFee);
+								distribute = new Distribute();
+								distribute.preInsert();
+								distribute.setRuleItemId(ri.getId());
+								distribute.setStatus(1);
+								distribute.setAccount(ri.getAccount());
+								distribute.setDes("净值");
+								distribute.setIncomeId(item.getIncomeId());
+								distribute.setValue(new BigDecimal(itemValue));
+								distributeList.add(distribute);
+
+							}
+						}
+
+					}
+				}
+
+			}
+
+		}
+		distributeService.addBatch( distributeList);
+		return "modules/income/distOfficeForm";
+	}
+
+
+	@RequestMapping(value = "saveAccount")
+	public String saveAccount(String  incomeId, Model model)  throws Exception{
+		distributeService.saveAcount(incomeId);
+		return "modules/income/distOfficeForm";
 	}
 
 }

@@ -25,7 +25,7 @@ public class NumberOperateUtils {
     public static double add(double value1,double value2){
         BigDecimal b1 = new BigDecimal(Double.valueOf(value1));
         BigDecimal b2 = new BigDecimal(Double.valueOf(value2));
-        return b1.add(b2).doubleValue();
+        return b1.add(b2).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     /**
@@ -37,7 +37,7 @@ public class NumberOperateUtils {
     public static double sub(double value1,double value2){
         BigDecimal b1 = new BigDecimal(Double.valueOf(value1));
         BigDecimal b2 = new BigDecimal(Double.valueOf(value2));
-        return b1.subtract(b2).doubleValue();
+        return b1.subtract(b2).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     /**
@@ -67,7 +67,7 @@ public class NumberOperateUtils {
         }
         BigDecimal b1 = new BigDecimal(Double.valueOf(value1));
         BigDecimal b2 = new BigDecimal(Double.valueOf(value2));
-        return b1.divide(b2, scale).doubleValue();
+        return b1.divide(b2, scale).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
 }

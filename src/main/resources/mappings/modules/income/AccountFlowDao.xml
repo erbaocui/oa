@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.income.dao.AccountFlowDao">
+    
+	<sql id="accountFlowColumns">
+		a.id AS "id",
+		a.value AS "value",
+		a.type AS "type",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.income_id AS "incomeId",
+		a.remarks AS "remarks"
+	</sql>
+	
+	<sql id="accountFlowJoins">
+	</sql>
+    
+	<select id="get" resultType="AccountFlow">
+		SELECT 
+			<include refid="accountFlowColumns"/>
+		FROM bm_account_flow a
+		<include refid="accountFlowJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="AccountFlow">
+		SELECT 
+			<include refid="accountFlowColumns"/>
+		FROM bm_account_flow a
+		<include refid="accountFlowJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="AccountFlow">
+		SELECT 
+			<include refid="accountFlowColumns"/>
+		FROM bm_account_flow a
+		<include refid="accountFlowJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_account_flow(
+			id,
+			value,
+			type,
+			create_date,
+			create_by,
+			income_id,
+			remarks
+		) VALUES (
+			#{id},
+			#{value},
+			#{type},
+			#{createDate},
+			#{createBy.id},
+			#{incomeId},
+			#{remarks}
+		)
+	</insert>
+
+	<insert id="insertBatch" parameterType="java.util.List">
+		INSERT INTO bm_account_flow(
+		id,
+		value,
+		type,
+		create_date,
+		create_by,
+		income_id,
+		account
+
+		) VALUES
+		<foreach collection="accountFlowList" item="item" index="index" separator=",">
+			(
+			#{item.id},
+			#{item.value},
+			#{item.type},
+			#{item.createDate},
+			#{item.createBy.id},
+			#{item.incomeId},
+			#{item.account}
+
+			)
+		</foreach>
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_account_flow SET 	
+			value = #{value},
+			type = #{type},
+			create_time = #{createTime},
+			income_id = #{incomeId},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bm_account_flow
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

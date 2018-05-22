@@ -37,6 +37,16 @@
                 });*/
 		});
 		function test() {
+            $("#inputForm").attr("action", "${ctx}/income/distOffice/form");
+            $("#inputForm").submit();
+        }
+
+        function save() {
+            $("#inputForm").attr("action", "${ctx}/income/distOffice/saveDist");
+            $("#inputForm").submit();
+        }
+        function saveAccount() {
+            $("#inputForm").attr("action", "${ctx}/income/distOffice/saveAccount");
             $("#inputForm").submit();
         }
 	</script>
@@ -46,13 +56,16 @@
 		<li class="active"><a href="${ctx}/income/distOffice/">分配</a></li>
 
 	</ul><br/>
+	<c:set var="saveFlag" value="true"></c:set>
 	<form:form id="inputForm" modelAttribute="distOffice" action="${ctx}/income/distOffice/form" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
+		<form:hidden path="incomeId"/>
 		<sys:message content="${message}"/>
 		<div id="content" >
+			<table id="contentTable" class="table table-striped table-bordered table-condensed">
+				<thead><tr><th>分配部门</th><th>部门金额</th><th>规则选择</th><th>规则内费用</th><th>费用项</th><th>明细</th></tr></thead>
 			<c:forEach items="${distOffices}" var="distOffice">
-				<table id="contentTable" class="table table-striped table-bordered table-condensed">
-					<thead><tr><th>分配部门</th><th>部门金额</th><th>规则选择</th><th>规则内费用</th><th>费用项</th><th>明细</th></tr></thead>
+
 					<tr>
 						<td rowspan="${distOffice.rowspan}">${distOffice.officeName}</td>
 						<td rowspan="${distOffice.rowspan}">${distOffice.value}</td>
@@ -69,13 +82,15 @@
 											<option value="${ruleGroup.id}">${ruleGroup.name}</option>
 										</c:otherwise>
 									</c:choose>
-								<%--	<c:if test="${distOffice.ruleGroupId == ruleGroup.id}">
-										<option value="${ruleGroup.id}">${ruleGroup.name}</option>
-									</c:if>
-									<option value="${ruleGroup.id}">${ruleGroup.name}</option>--%>
 								</c:forEach>
 						    </select>
 						</td>
+						<c:if test="${distOffice.ruleGroupId== null||distOffice.ruleGroupId==''}">
+							<c:set value="false" var="saveFlag" />
+						</c:if>
+				       <c:if test="${distOffice.rules == null}">
+						<td ></td><td ></td><td ></td>
+					   </c:if>
 						<c:forEach items="${distOffice.rules}" var="rule">
 
 							<td rowspan="${rule.rowspan}">${rule.value}</td>
@@ -93,25 +108,16 @@
 						</c:forEach>
 
 					</tr>
-				</table>
 			</c:forEach>
+			</table>
 		</div>
-		<%--<div class="control-group">
-			<label class="control-label">分配部门：</label>
-			<div class="controls">
-				<sys:treeselect id="office" name="office.id" value="${distOffice.office.id}" labelName="office.name" labelValue="${distOffice.office.name}"
-					title="部门" url="/sys/office/treeData?type=2" cssClass="" allowClear="true" notAllowSelectParent="true" disabled="disabled"/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">分配金额：</label>
-			<div class="controls">
-				<form:input path="value" htmlEscape="false" maxlength="255" class="input-xlarge " readonly="true"/>
-			</div>
-		</div>--%>
+
 		<div class="form-actions">
-			<shiro:hasPermission name="income:distOffice:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
-			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="test();"/>
+			<c:if test="${saveFlag==true}">
+				<input id="btnSubmit" class="btn btn-primary" type="button" value="保 存" onclick="save()"/>&nbsp;
+				<input id="btnSubmit" class="btn btn-primary" type="button" value="保存账户" onclick="saveAccount()"/>&nbsp;
+			</c:if>
+
 		</div>
 	</form:form>
 </body>

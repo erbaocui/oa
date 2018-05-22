@@ -5,23 +5,22 @@ package com.thinkgem.jeesite.modules.income.dao;
 
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
-import com.thinkgem.jeesite.modules.income.entity.Rule;
-import com.thinkgem.jeesite.modules.income.entity.RuleGroup;
+import com.thinkgem.jeesite.modules.income.entity.Distribute;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
- * 分配规则DAO接口
+ * 分配DAO接口
  * @author cuijp
- * @version 2018-05-04
+ * @version 2018-05-21
  */
 @MyBatisDao
-public interface RuleDao extends CrudDao<Rule> {
+public interface DistributeDao extends CrudDao<Distribute> {
+    public int insertBatch(@Param("distributeList")List<Distribute> distributeList);
 
-    public List<Rule> findAllListByOfficeId(Rule rule);
-
-    public BigDecimal runSql(String sql);
-	
+    public String findGroupId(Map paramMap);
+    public List<Distribute> findDistAccountSum(Distribute distribute);
 }

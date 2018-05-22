@@ -5,13 +5,19 @@
 		<result property="id" column="id" jdbcType="VARCHAR" javaType="java.lang.String" />
 		<result property="name" column="name" jdbcType="VARCHAR" javaType="java.lang.String" />
 		<result property="remarks"  column="remarks" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="condition"  column="condition" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="baseSql"  column="baseSql" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="threshold"  column="threshold" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
 		<collection property="itemList" ofType="RuleItem" select="com.thinkgem.jeesite.modules.income.dao.RuleItemDao.findAllList" column="id">
 		</collection>
 	</resultMap>
 	<sql id="ruleColumns">
 		a.id AS "id",
 		a.name AS "name",
-		a.remarks AS "remarks"
+		a.remarks AS "remarks",
+		a.condition AS "condition",
+		a.base_sql AS "baseSql",
+		a.threshold as "threshold"
 	</sql>
 	
 	<sql id="ruleJoins">
@@ -52,13 +58,15 @@
 		</choose>
 	</select>
 	
-	<!--<select id="findAllList" resultMap="ruleMap" parameterType="String">
+	<select id="findAllList" resultMap="ruleMap" parameterType="String">
 		SELECT 
 			<include refid="ruleColumns"/>
 		FROM bm_rule a
 		<include refid="ruleJoins"/>
 		<where>
-			
+			<if test ="_parameter!= null">
+				a.rule_id=#{_parameter}
+			</if>
 		</where>		
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -67,7 +75,7 @@
 			<otherwise>
 			</otherwise>
 		</choose>
-	</select>-->
+	</select>
 
 	<select id="findAllListByOfficeId"  resultMap="ruleMap" parameterType="Rule">
 		SELECT
@@ -108,5 +116,9 @@
 		DELETE FROM bm_rule
 		WHERE id = #{id}
 	</update>
+
+	<select id="runSql" parameterType="String" resultType="Bigdecimal">
+		${value}
+	</select>
 	
 </mapper>

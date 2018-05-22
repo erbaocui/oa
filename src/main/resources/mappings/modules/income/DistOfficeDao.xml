@@ -10,7 +10,6 @@
 		a.create_by AS "createBy.id",
 		u.name as "createBy.name",
 		a.create_date AS "createDate",
-		a.rule_id AS "ruleId",
 		o3.name AS "office.name"
 	</sql>
 	
@@ -57,26 +56,8 @@
 
 	</select>
 
-<!--
-	<select id="findAllList" resultType="DistOffice" parameterType="String">
-		select
-		a.name as "name",
-		a.percent,
-		a.is_tax,
-		a.is_filing_fee,
-		case ifnull(a.account,'0') when '0' then c.account else a.account end as "account"
-		from bm_rule_item a
-		left join bm_rule_office b on b.rule_id=a.rule_id
-		left join bm_account c on c.office_id=b.office_id;
-		<where>
-			<if test ="_parameter!= null">
-				a.income_id=#{_parameter}
-			</if>
-		</where>
 
 
-	</select>
--->
 
 
 
@@ -88,16 +69,15 @@
 			office_id,
 			value,
 			create_by,
-			create_date,
-			rule_id
+			create_date
 		) VALUES (
 			#{id},
 			#{incomeId},
 			#{office.id},
 			#{value},
 			#{createBy.id},
-			#{createDate},
-			#{ruleId}
+			#{createDate}
+
 		)
 	</insert>
 	

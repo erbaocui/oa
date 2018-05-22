@@ -24,7 +24,7 @@
 		WHERE a.id = #{id}
 	</select>
 	
-	<select id="findList" resultType="RuleItem">
+	<!--<select id="findList" resultType="RuleItem">
 		SELECT 
 			<include refid="ruleItemColumns"/>
 		FROM bm_rule_item a
@@ -49,8 +49,8 @@
 			</otherwise>
 		</choose>
 	</select>
-	
-	<select id="findAllList" resultType="RuleItem" parameterType="String">
+	-->
+	<!--<select id="findAllList" resultType="RuleItem" parameterType="String">
 		SELECT
 		<include refid="ruleItemColumns"/>
 		FROM bm_rule_item a
@@ -61,8 +61,51 @@
 			</if>
 
 		</where>
+	</select>-->
+
+	<select id="findList" resultType="RuleItem" >
+		select
+		a.id as "id",
+		a.name as "name",
+		a.percent as "percent",
+		a.is_tax as "isTax",
+		a.is_filing_fee as "isFilingFee",
+		case ifnull(a.account,'0') when '0' then c.account else a.account end as "account"
+		from bm_rule_item a
+		left join bm_rule_office b on b.rule_id=a.rule_id
+		left join bm_account c on c.office_id=b.office_id
+		<where>
+			<if test ="_parameter!= null">
+				a.rule_id=#{ruleId}
+			</if>
+		</where>
+
+
 	</select>
-	
+
+
+
+	<select id="findAllList" resultType="RuleItem" parameterType="String">
+		select
+		a.id as "id",
+		a.name as "name",
+		a.percent as "percent",
+		a.is_tax as "isTax",
+		a.is_filing_fee as "isFilingFee",
+		case ifnull(a.account,'0') when '0' then c.account else a.account end as "account"
+		from bm_rule_item a
+		left join bm_rule_office b on b.rule_id=a.rule_id
+		left join bm_account c on c.office_id=b.office_id
+		<where>
+			<if test ="_parameter!= null">
+				a.rule_id=#{_parameter}
+			</if>
+		</where>
+
+
+	</select>
+
+
 	<insert id="insert">
 		INSERT INTO bm_rule_item(
 			id,

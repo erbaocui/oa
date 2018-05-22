@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.income.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -47,5 +48,7 @@ public class RuleService extends CrudService<RuleDao, Rule> {
 	public void delete(Rule rule) {
 		super.delete(rule);
 	}
+
+	public BigDecimal runSql(String sql){return dao.runSql(sql);}
 	
 }

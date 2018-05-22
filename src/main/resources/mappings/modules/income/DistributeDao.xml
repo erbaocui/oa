@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.income.dao.DistributeDao">
+    
+	<sql id="distributeColumns">
+		a.id AS "id",
+		a.rule_item_id AS "ruleItemId",
+		a.des AS "des",
+		a.value AS "value",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.status AS "status",
+		a.account AS "account",
+		a.income_id AS "incomeId"
+	</sql>
+	
+	<sql id="distributeJoins">
+	</sql>
+    
+	<select id="get" resultType="Distribute">
+		SELECT 
+			<include refid="distributeColumns"/>
+		FROM bm_distribute a
+		<include refid="distributeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Distribute">
+		SELECT 
+			<include refid="distributeColumns"/>
+		FROM bm_distribute a
+		<include refid="distributeJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Distribute">
+		SELECT 
+			<include refid="distributeColumns"/>
+		FROM bm_distribute a
+		<include refid="distributeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findGroupId" resultType="String" parameterType="Map">
+	select distinct c.group_id from bm_distribute a
+	inner join bm_rule_item b on a.rule_item_id=b.id
+	inner join bm_rule c on b.rule_id=c.id
+	inner join bm_rule_office d on d.rule_id=c.id
+	where 1=1
+		<if test ="incomeId!= null">
+		   and a.income_id=#{incomeId}
+		</if>
+		<if test ="officeId!= null">
+			and d.office_id=#{officeId}
+		</if>
+	</select>
+
+	<select id="findDistributeSum" resultType="Distribute">
+		SELECT
+		 account as "account",
+		sum(value) as "value",
+		income_id  as "incomeId"
+		from bm_distribute
+		where 1=1
+		<where>
+			<if test ="incomeId!= null">
+				income_id=#{incomeId}
+			</if>
+		</where>
+	</select>
+
+	<select id="findDistAccountSum" resultType="Distribute">
+		SELECT
+		account as "account",
+		sum(value) as "value",
+		income_id  as "incomeId"
+		from bm_distribute
+		<where>
+			<if test ="incomeId!= null">
+				income_id=#{incomeId}
+			</if>
+		</where>
+		group by account
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_distribute(
+			id,
+			rule_item_id,
+			des,
+			value,
+			create_by,
+			create_date,
+			status,
+			account,
+			income_id
+		) VALUES (
+			#{id},
+			#{ruleItemId},
+			#{des},
+			#{value},
+			#{createBy.id},
+			#{createDate},
+			#{status},
+			#{account},
+			#{incomeId}
+		)
+	</insert>
+
+	<insert id="insertBatch">
+		INSERT INTO bm_distribute(
+		id,
+		rule_item_id,
+		des,
+		value,
+		create_by,
+		create_date,
+		status,
+		account,
+		income_id
+		) VALUES
+		<foreach collection="distributeList" item="item" index="index" separator=",">
+			(
+			#{item.id},
+			#{item.ruleItemId},
+			#{item.des},
+			#{item.value},
+			#{item.createBy.id},
+			#{item.createDate},
+			#{item.status},
+			#{item.account},
+			#{item.incomeId}
+			)
+	    </foreach>
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_distribute
+		SET status = #{status}
+        WHERE income_id= #{incomeId}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bm_distribute
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

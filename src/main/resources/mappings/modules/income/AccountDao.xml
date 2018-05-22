@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.income.dao.AccountDao">
+    
+	<sql id="accountColumns">
+		a.id AS "id",
+		a.account AS "account",
+		a.name AS "name",
+		a.remarks AS "remarks",
+		a.value AS "value",
+		a.office_id AS "office.id",
+		o6.name AS "office.name"
+	</sql>
+	
+	<sql id="accountJoins">
+		LEFT JOIN sys_office o6 ON o6.id = a.office_id
+	</sql>
+    
+	<select id="get" resultType="Account">
+		SELECT 
+			<include refid="accountColumns"/>
+		FROM bm_account a
+		<include refid="accountJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Account">
+		SELECT 
+			<include refid="accountColumns"/>
+		FROM bm_account a
+		<include refid="accountJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Account">
+		SELECT 
+			<include refid="accountColumns"/>
+		FROM bm_account a
+		<include refid="accountJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_account(
+			id,
+			account,
+			name,
+			remarks,
+			value,
+			office_id
+		) VALUES (
+			#{id},
+			#{account},
+			#{name},
+			#{remarks},
+			#{value},
+			#{office.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_account
+		SET value = value+#{value}
+		WHERE account = #{account}
+	</update>
+
+	<update id="updateAdd">
+		UPDATE bm_account
+		SET value = value+#{value}
+		WHERE account = #{account}
+	</update>
+
+	<update id="updateSub">
+		UPDATE bm_account
+		SET value = value-#{value}
+		WHERE account = #{account}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bm_account
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

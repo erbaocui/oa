@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 
 import com.thinkgem.jeesite.common.persistence.DataEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -21,6 +22,9 @@ public class Rule extends DataEntity<Rule> {
 	private String name;		// 名字
 	private String status;
 	private String officeId;
+	private String condition;
+	private String baseSql;
+	private BigDecimal threshold;
 	private List<RuleItem> itemList;
 
 	
@@ -71,5 +75,29 @@ public class Rule extends DataEntity<Rule> {
 
 	public void setOfficeId(String officeId) {
 		this.officeId = officeId;
+	}
+
+	public String getCondition() {
+		return condition;
+	}
+
+	public void setCondition(String condition) {
+		this.condition = condition;
+	}
+
+	public String getBaseSql() {
+		return baseSql;
+	}
+
+	public void setBaseSql(String baseSql) {
+		this.baseSql = baseSql;
+	}
+
+	public BigDecimal getThreshold() {
+		return threshold;
+	}
+
+	public void setThreshold(BigDecimal threshold) {
+		this.threshold = threshold;
 	}
 }
