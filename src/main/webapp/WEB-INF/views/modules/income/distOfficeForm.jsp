@@ -59,7 +59,7 @@
 	<c:set var="saveFlag" value="true"></c:set>
 	<form:form id="inputForm" modelAttribute="distOffice" action="${ctx}/income/distOffice/form" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
-		<form:hidden path="incomeId"/>
+		<form:hidden path="incomeId" value="${incomeId}"/>
 		<sys:message content="${message}"/>
 		<div id="content" >
 			<table id="contentTable" class="table table-striped table-bordered table-condensed">

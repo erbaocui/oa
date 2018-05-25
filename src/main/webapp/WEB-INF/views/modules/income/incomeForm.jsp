@@ -34,6 +34,18 @@
                         $.jBox.tip("请选择部门", 'error');
                         return;
                     }
+                    var officeId=$("#officeId").val()+"";
+                    var officeIds=$("#officeIds").val().split(",");
+                    var flag=true;
+                    $.each(officeIds,function(index,value){
+                          if(value==officeId){
+                              $.jBox.tip("部门已分配", 'error');
+                              flag=false;
+						  }
+                    });
+                    if(!flag){
+                        return;
+					}
                     var sum=parseFloat($("#distValue").val())+parseFloat($("#distSum").val());
                     if(sum>$("#value").val()){
                         $.jBox.tip("部门分配金额累计大于分配总金额", 'error');
@@ -135,6 +147,7 @@
 			</tr>
 			</thead>
 			<tbody>
+			<c:set var="officeIds" value=""></c:set>
 			<c:set var="sum" value="0"></c:set>
 			<c:forEach items="${income.distOfficeList}" var="distOffice">
 				<tr>
@@ -150,10 +163,12 @@
 					</td>
 				</tr>
 				<c:set value="${sum + distOffice.value}" var="sum" />
+				<c:set value="${officeIds},${distOffice.office.id}" var="officeIds" />
 			</c:forEach>
 			<tr>
 				<td colspan="5">已分配合计金额：${sum}</td>
 				<input type="hidden" id="distSum" value="${sum}" />
+				<input type="hidden" id="officeIds" value="${officeIds}" />
 			</tr>
 			</tbody>
 		</table>

@@ -79,8 +79,10 @@ public class DistOfficeController extends BaseController {
 	public String form(DistOffice distOffice,String[] groups, Model model)  throws Exception{
 		List<DistOfficeVo> distOffices=new ArrayList<DistOfficeVo>();
 		List<DistOffice> distOfficeList= distOfficeService.findList(distOffice);
+		String incomeId="";
 		for(int k=0;k<distOfficeList.size();k++){
 			DistOffice item=distOfficeList.get(k);
+			incomeId=item.getIncomeId();
 			DistOfficeVo dov=new DistOfficeVo();
 			dov.setId(item.getId());
 			dov.setOfficeName(item.getOffice().getName());
@@ -219,8 +221,8 @@ public class DistOfficeController extends BaseController {
 			}
 
 		}
+		model.addAttribute("incomeId", incomeId);
 		model.addAttribute("distOffices", distOffices);
-		//model.addAttribute("distOffice", distOffice);
 		return "modules/income/distOfficeForm";
 	}
 
