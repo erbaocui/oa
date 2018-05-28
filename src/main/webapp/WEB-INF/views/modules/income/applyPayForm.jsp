@@ -50,6 +50,21 @@
 
 		});
 
+        function startProcess(id) {
+
+            $.post("${ctx}/income/distProc/start?",{id:id},function(data){
+                var code=data.result;
+                if(code=='success'){
+                    $.jBox.tip("流程启动成功");
+                    page();
+
+                }else{
+                    $.jBox.tip("流程启动失败", 'error');
+                }
+            });
+
+        }
+
 	</script>
 </head>
 <body>
@@ -105,7 +120,7 @@
 
 					<td>
 						<c:if test="${income.status==1}">
-						<a href="#" onclick="">启动流程</a>
+						<a href="#" onclick="startProcess('${income.id}')">启动流程</a>
 						<a href="${ctx}/income/applyPay/delIncome?applyId=${apply.id}&incomeId=${income.id}" onclick="return confirmx('确认要删除该收款吗？', this.href)">删除</a>
 					<%--	<a href="#" onclick="return confirmx('确认要删除该收款吗？', this.href)">删除</a>--%>
 						</c:if>

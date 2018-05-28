@@ -60,7 +60,6 @@
 	
     <sql id="userColumns">
     	a.id,
-    	a.company_id AS "company.id",
     	a.office_id AS "office.id",
     	a.login_name,
     	a.password,
@@ -238,8 +237,7 @@
 	<!-- 插入用户 -->
 	<insert id="insert">
 		INSERT INTO sys_user(
-			id, 
-			company_id, 
+			id,
 			office_id, 
 			login_name, 
 			password, 
@@ -258,8 +256,7 @@
 			photo, 
 			del_flag
 		) VALUES (
-			#{id}, 
-			#{company.id}, 
+			#{id},
 			#{office.id}, 
 			#{loginName}, 
 			#{password}, 
@@ -282,8 +279,7 @@
 	
 	<!-- 更新用户 -->
 	<update id="update">
-		UPDATE sys_user SET 
-			company_id = #{company.id}, 
+		UPDATE sys_user SET
 			office_id = #{office.id}, 
 			login_name = #{loginName}, 
 			password = #{password}, 

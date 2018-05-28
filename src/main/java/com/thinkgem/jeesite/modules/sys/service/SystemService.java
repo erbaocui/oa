@@ -133,7 +133,7 @@ public class SystemService extends BaseService implements InitializingBean {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<User> findUserByRuleEnname(String enname) {
+	public List<User> findUserByRoleEnname(String enname) {
 		List<User> list = userDao.findUserByRoleEnname(enname);
 		return list;
 	}

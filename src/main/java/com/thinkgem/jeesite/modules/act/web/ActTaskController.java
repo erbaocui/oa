@@ -71,6 +71,21 @@ public class ActTaskController extends BaseController {
 		}
 		return "modules/act/actTaskMyTodoList";
 	}
+
+	/**
+	 * 获取待办列表
+	 * @param procDefKey 流程定义标识
+	 * @return
+	 */
+	@RequestMapping(value = {"todo", ""})
+	public String todoList(Act act, HttpServletResponse response, Model model) throws Exception {
+		List<Act> list = actTaskService.todoList(act);
+		model.addAttribute("list", list);
+		if (UserUtils.getPrincipal().isMobileLogin()){
+			return renderString(response, list);
+		}
+		return "modules/act/actTaskTodoList";
+	}
 	
 	/**
 	 * 获取已办任务

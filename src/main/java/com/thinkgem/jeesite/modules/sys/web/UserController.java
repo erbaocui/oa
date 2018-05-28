@@ -81,7 +81,7 @@ public class UserController extends BaseController {
 		return page;
 	}
 
-	/*@RequiresPermissions("sys:user:view")
+	@RequiresPermissions("sys:user:view")
 	@RequestMapping(value = "form")
 	public String form(User user, Model model) {
 		if (user.getCompany()==null || user.getCompany().getId()==null){
@@ -93,9 +93,9 @@ public class UserController extends BaseController {
 		model.addAttribute("user", user);
 		model.addAttribute("allRoles", systemService.findAllRole());
 		return "modules/sys/userForm";
-	}*/
+	}
 
-
+   /*
 	@RequiresPermissions("sys:user:view")
 	@RequestMapping(value = "form")
 	public String form(User user, Model model) {
@@ -103,6 +103,7 @@ public class UserController extends BaseController {
 
 		return "modules/sys/userForm";
 	}
+	*/
 
 
 	@RequiresPermissions("sys:user:edit")
