@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
-	<title>进款分配规则选择</title>
+	<title>进款分配运营审核</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -52,7 +52,7 @@
         }
 
         function review(state){
-            $("#inputForm").attr("action", "${ctx}/income/distProc/distRuleSubmit");
+            $("#inputForm").attr("action", "${ctx}/income/distProc/busAuditSubmit");
             $("#state").val(state);
             $("#inputForm").submit();
         }
@@ -61,7 +61,7 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/income/distOffice/">进款分配规则选择</a></li>
+		<li class="active"><a href="${ctx}/income/distOffice/">进款分配运营审核</a></li>
 
 	</ul><br/>
 	<c:set var="saveFlag" value="true"></c:set>
@@ -82,7 +82,7 @@
 						<td rowspan="${distOffice.rowspan}">${distOffice.value}</td>
 						<td rowspan="${distOffice.rowspan}">
 
-							<select name="groups" onchange="test()">
+							<select name="groups" onchange="test()" disabled="disabled">
 								<c:forEach items="${distOffice.ruleGroups}" var="ruleGroup">
 
 									<c:choose>
@@ -138,7 +138,7 @@
 								<div class="span1">
 								</div>
 								<div class="span10">
-									<label >备注:</label>
+									<label >审核意见:</label>
 									<form:textarea path="comment" htmlEscape="false" rows="3" maxlength="500" class="input-xxlarge" />
 								<div class="span1">
 								</div>

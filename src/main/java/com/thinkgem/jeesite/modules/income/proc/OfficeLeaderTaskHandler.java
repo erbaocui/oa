@@ -1,5 +1,6 @@
 package com.thinkgem.jeesite.modules.income.proc;
 
+import com.thinkgem.jeesite.modules.income.entity.Income;
 import com.thinkgem.jeesite.modules.income.service.IncomeService;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.service.OfficeService;
@@ -26,13 +27,15 @@ public class OfficeLeaderTaskHandler implements TaskListener {
 		IncomeService incomeService=(IncomeService)wac.getBean("incomeService");
 		OfficeService officeService=(OfficeService)wac.getBean("officeService");
 		String incomeId =(String)delegateTask.getVariable("businessId");
-		String officeId=incomeService.get(incomeId).getContract().getId();
-		String primaryId=((Office)officeService.get(officeId)).getPrimaryPerson().getId();
-		List<String> userIdList=new ArrayList<String>();
-		userIdList.add(primaryId);
-		String deputyId=((Office)officeService.get(officeId)).getDeputyPerson().getId();
-		userIdList.add(deputyId);
-		delegateTask.addCandidateUsers(userIdList);
+		Income income=incomeService.get(incomeId);
+		String officeId=income.getContract().getOffice().getId();
+		Office office=(Office)officeService.get(officeId);
+		String loginName=office.getPrimaryPerson().getLoginName();
+		List<String> userList=new ArrayList<String>();
+		userList.add(loginName);
+		loginName=office.getDeputyPerson().getLoginName();
+		userList.add(loginName);
+		delegateTask.addCandidateUsers(userList);
 	}
 
 }

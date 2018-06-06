@@ -51,6 +51,7 @@ public class AccountController extends BaseController {
 	public String list(Account account, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<Account> page = accountService.findPage(new Page<Account>(request, response), account); 
 		model.addAttribute("page", page);
+		model.addAttribute("account",account);
 		return "modules/income/accountList";
 	}
 

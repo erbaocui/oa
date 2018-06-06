@@ -18,7 +18,7 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/income/applyPay/">请款列表</a></li>
+		<li class="active"><a href="${ctx}/income/applyPay/list">请款列表</a></li>
 		<shiro:hasPermission name="income:applyPay:edit"><li><a href="${ctx}/income/applyPay/form">请款添加</a></li></shiro:hasPermission>
 	</ul>
 	<form:form id="searchForm" modelAttribute="apply" action="${ctx}/income/applyPay/" method="post" class="breadcrumb form-search">
@@ -40,6 +40,8 @@
 		<thead>
 			<tr>
 				<th>请款名称</th>
+				<th>请款金额</th>
+				<th>收款金额</th>
 				<th>状态</th>
 				<th>备注</th>
 				<shiro:hasPermission name="income:applyPay:edit"><th>操作</th></shiro:hasPermission>
@@ -48,20 +50,26 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="apply">
 			<tr>
-				<td><a href="${ctx}/income/applyPay/form?id=${apply.id}">
+				<td><%--<a href="${ctx}/income/applyPay/income?id=${apply.id}"></a>--%>
 					${apply.name}
-				</a></td>
+				</td>
+				<td>${apply.applyValue}</td>
+				<td>${apply.incomeValue}</td>
 				<td>
-						${apply.status}
+			      ${fns:getDictLabel(apply.status, 'apply_status', '无')}
 				</td>
 				<td>
 					${apply.remarks}
 				</td>
 				<shiro:hasPermission name="income:applyPay:edit"><td>
-					<c:if test="${apply.status ==3}">
-						<a href="${ctx}/income/applyPay/form?id=${apply.id}">收款</a>
+					<c:if test="${apply.status ==2}">
+						<a href="${ctx}/income/applyPay/income?id=${apply.id}">收款</a>
 					</c:if>
-					<a href="${ctx}/income/applyPay/contDelete?id=${apply.id}" onclick="return confirmx('确认要删除该成功吗？', this.href)">删除</a>
+					<c:if test="${apply.status ==1}">
+						<a href="${ctx}/income/applyPay/income?id=${apply.id}">发起流程</a>
+						<a href="${ctx}/income/applyPay/delete?id=${apply.id}" onclick="return confirmx('确认要删除该成功吗？', this.href)">删除</a>
+					</c:if>
+
 				</td></shiro:hasPermission>
 			</tr>
 		</c:forEach>

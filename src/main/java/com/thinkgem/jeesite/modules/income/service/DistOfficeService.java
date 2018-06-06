@@ -26,8 +26,8 @@ public class DistOfficeService extends CrudService<DistOfficeDao, DistOffice> {
 		return super.get(id);
 	}
 	
-	public List<DistOffice> findList(DistOffice distributeOffice) {
-		return super.findList(distributeOffice);
+	public List<DistOffice> findList(DistOffice distOffice) {
+		return super.findList(distOffice);
 	}
 	
 	public Page<DistOffice> findPage(Page<DistOffice> page, DistOffice distributeOffice) {

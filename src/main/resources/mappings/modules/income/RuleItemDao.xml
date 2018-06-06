@@ -73,7 +73,8 @@
 		case ifnull(a.account,'0') when '0' then c.account else a.account end as "account"
 		from bm_rule_item a
 		left join bm_rule_office b on b.rule_id=a.rule_id
-		left join bm_account c on c.office_id=b.office_id
+		left join bm_account c on c.office_id=b.office_id and a.account_seq=c.seq
+
 		<where>
 			<if test ="_parameter!= null">
 				a.rule_id=#{ruleId}

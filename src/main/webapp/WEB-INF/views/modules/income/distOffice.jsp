@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
-	<title>收款管理</title>
+	<title>收款部门分配</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -26,6 +26,10 @@
 			$("#btnDistributeOffice").click(function(){
                 $('#addModal').modal({backdrop: 'static', keyboard: true});
 			});
+
+            $("#btnSubmit").click(function(){
+                $("#reviewForm").submit();
+            });
 
             $("#addDistOffice").click(function(){
 
@@ -55,7 +59,7 @@
 						function(result){
 							if(result=="success"){
 								$.jBox.tip("收款保存成功");
-								window.location="${ctx}/income/income/form?id="+$("#id").val();
+								window.location="${ctx}/income/distProc/officeDist?id="+$("#id").val();
 							}else{
                                 $.jBox.tip("保存失败", 'error');
 							}
@@ -75,7 +79,7 @@
                  function(result){
                      if(result=="success"){
                          $.jBox.tip("操作成功");
-                         window.location="${ctx}/income/income/form?id="+$("#id").val();
+                         window.location="${ctx}/income/distProc/officeDist?id="+$("#id").val();
                      }else{
                          $.jBox.tip("操作失败", 'error');
                      }
@@ -96,7 +100,7 @@
                 });*/
 
  }
-	</script>
+ 	</script>
 </head>
 <body>
 	<ul class="nav nav-tabs">
@@ -172,14 +176,43 @@
 			</tr>
 			</tbody>
 		</table>
-
+	   </form:form>
+		<form:form id="reviewForm" modelAttribute="review"   action="${ctx}/income/distProc/officeDistSubmit" method="post" class="form-horizontal">
+			<form:hidden path="taskId"  value="${taskId}"/>
 
 		<div class="form-actions">
 			<c:if test="${income.value-sum>0}">
 			<input id="btnDistributeOffice" class="btn btn-primary" type="button" value="增加分配部门" />
 			</c:if>
 			<c:if test="${income.value-sum<=0}">
-				<input id="btnDistributeOffice" class="btn btn-primary" type="button" value="提交" />
+			<div class="container-fluid">
+
+					<div class="row-fluid">
+						<div class="span1">
+						</div>
+						<div class="span10">
+							<label >备注:</label>
+							<form:textarea path="comment" htmlEscape="false" rows="3" maxlength="500" class="input-xxlarge" />
+<%--							<textarea id="comment"  rows="3" maxlength="500" class="input-xxlarge" ></textarea>--%>
+						</div>
+						<div class="span1">
+						</div>
+					</div>
+				   <div class="row-fluid">
+					   <div class="span12">
+					   </div>
+				   </div>
+				   <div class="row-fluid">
+						<div class="span3">
+						</div>
+						<div class="span8">
+							<input id="btnSubmit" class="btn btn-primary" type="button"  value="提交" />
+						</div>
+						<div class="span1">
+						</div>
+					</div>
+			  </div>
+
 			</c:if>
 		</div>
 	</form:form>
@@ -234,7 +267,26 @@
 				</div><!-- /.modal -->
 			</div>
 
+
 		</form>
+	<table title="批注列表" class="table table-striped table-bordered table-condensed">
+		<thead>
+		<tr>
+			<th>批注时间</th>
+			<th>批注人</th>
+			<th>批注信息</th>
+		</tr>
+		</thead>
+		<tbody>
+		<c:forEach items="${comments}" var="item">
+			<tr>
+				<td><fmt:formatDate value="${item.time}" type="both"/></td>
+				<td> ${item.userId}</td>
+				<td> ${item.message}</td>
+			</tr>
+		</c:forEach>
+		</tbody>
+	</table>
 
 </body>
 </html>

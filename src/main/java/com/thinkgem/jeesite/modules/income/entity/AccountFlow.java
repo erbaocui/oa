@@ -22,8 +22,11 @@ public class AccountFlow extends DataEntity<AccountFlow> {
 	private BigDecimal value;		// value
 	private Integer type;		// 1:入账；2:出账
 	private String incomeId;		// income_id
-	private String account;
-	
+	private Account account;
+	protected Date beginDate;	// 创建日期
+	protected Date endDate;	// 创建日期
+
+
 	public AccountFlow() {
 		super();
 	}
@@ -58,11 +61,27 @@ public class AccountFlow extends DataEntity<AccountFlow> {
 		this.incomeId = incomeId;
 	}
 
-	public String getAccount() {
+	public Account getAccount() {
 		return account;
 	}
 
-	public void setAccount(String account) {
+	public void setAccount(Account account) {
 		this.account = account;
+	}
+
+	public Date getBeginDate() {
+		return beginDate;
+	}
+
+	public void setBeginDate(Date beginDate) {
+		this.beginDate = beginDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 }

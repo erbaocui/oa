@@ -8,11 +8,14 @@
 		a.type AS "type",
 		a.create_date AS "createDate",
 		a.create_by AS "createBy.id",
-		a.income_id AS "incomeId",
-		a.remarks AS "remarks"
+		a.account AS "account.account",
+		b.name AS "account.name",
+		a.income_id AS "incomeId"
+
 	</sql>
 	
 	<sql id="accountFlowJoins">
+		left join  bm_account b on a.account=b.account
 	</sql>
     
 	<select id="get" resultType="AccountFlow">
@@ -29,7 +32,14 @@
 		FROM bm_account_flow a
 		<include refid="accountFlowJoins"/>
 		<where>
-			
+			<if test="beginDate != null and beginDate  !='' " >
+				create_date >= #{beginDate}
+			</if>
+			<if test="endDate != null and endDate !='' " >
+				<![CDATA[
+				and create_date <= #{endDate}
+				]]>
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -96,7 +106,7 @@
 			#{item.createDate},
 			#{item.createBy.id},
 			#{item.incomeId},
-			#{item.account}
+			#{item.account.account}
 
 			)
 		</foreach>

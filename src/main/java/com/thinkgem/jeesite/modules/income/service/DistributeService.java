@@ -74,7 +74,9 @@ public class DistributeService extends CrudService<DistributeDao, Distribute> {
 			accountFlow.preInsert();
 			accountFlow.setValue(d.getValue());
 			accountFlow.setType(1);
-			accountFlow.setAccount(d.getAccount());
+			Account a=new Account();
+			a.setAccount(d.getAccount());
+			accountFlow.setAccount(a);
 			accountFlow.setIncomeId(d.getIncomeId());
 			accountFlows.add(accountFlow);
 

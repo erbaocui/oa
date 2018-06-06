@@ -22,7 +22,7 @@ public class Apply extends DataEntity<Apply> {
 	private String name;		// 请款名称
 	private BigDecimal applyValue;		// 请款金额
 	private String firstParty;		// 甲方名称
-	private BigDecimal enterValue;		// 到账金额
+	private BigDecimal incomeValue;		// 到账金额
 	private Integer status;		// 1申请开票;2已开票；3全部入账
 
 	private Contract contract;
@@ -72,12 +72,12 @@ public class Apply extends DataEntity<Apply> {
 		this.applyValue = applyValue;
 	}
 
-	public BigDecimal getEnterValue() {
-		return enterValue;
+	public BigDecimal getIncomeValue() {
+		return incomeValue;
 	}
 
-	public void setEnterValue(BigDecimal enterValue) {
-		this.enterValue = enterValue;
+	public void setIncomeValue(BigDecimal incomeValue) {
+		this.incomeValue = incomeValue;
 	}
 
 	public Integer getStatus() {

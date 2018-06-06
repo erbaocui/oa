@@ -28,7 +28,9 @@
        a.del_flag,
        a.useable AS useable,
        a.primary_person AS "primaryPerson.id",
+	   pp.login_name AS "primaryPerson.loginName",
        a.deputy_person AS "deputyPerson.id",
+	   dp.login_name AS "deputyPerson.loginName",
        p.name AS "parent.name",
 	  <!--
        ar.name AS "area.name",
@@ -43,7 +45,7 @@
 	   <!--
 	   LEFT JOIN sys_area ar ON ar.id = a.area_id
 	  -->
-   LEFT JOIN sys_office  pp ON pp.id = a.primary_person
+   LEFT JOIN  sys_user  pp ON pp.id = a.primary_person
    LEFT JOIN sys_user dp ON dp.id = a.deputy_person
 </sql>
 

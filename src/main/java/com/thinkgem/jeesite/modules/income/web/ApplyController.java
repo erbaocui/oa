@@ -69,6 +69,14 @@ public class ApplyController extends BaseController {
 		return "modules/income/applyPayForm";
 	}
 
+	@RequiresPermissions("income:applyPay:view")
+	@RequestMapping(value = "income")
+	public String income(Apply apply, Model model) {
+		apply=get(apply.getId());
+		model.addAttribute("apply", apply);
+		return "modules/income/applyIncomeForm";
+	}
+
 
 	@RequiresPermissions("income:applyPay:edit")
 	@RequestMapping(value = "save")
@@ -76,9 +84,10 @@ public class ApplyController extends BaseController {
 		if (!beanValidator(model, applyPay)){
 			return form(applyPay, model);
 		}
+		applyPay.setStatus(1);
 		applyService.save(applyPay);
 		addMessage(redirectAttributes, "保存成功");
-		return "redirect:"+Global.getAdminPath()+"/income/applyPay/?repage";
+		return "redirect:"+Global.getAdminPath()+"/income/applyPay/list?repage";
 	}
 
 	@RequiresPermissions("income:applyPay:edit")
@@ -86,7 +95,7 @@ public class ApplyController extends BaseController {
 	public String delete(Apply applyPay, RedirectAttributes redirectAttributes) {
 		applyService.delete(applyPay);
 		addMessage(redirectAttributes, "删除成功");
-		return "redirect:"+Global.getAdminPath()+"/income/applyPay/?repage";
+		return "redirect:"+Global.getAdminPath()+"/income/applyPay/list?repage";
 	}
 
 	@RequiresPermissions("income:applyPay:view")
@@ -141,7 +150,7 @@ public class ApplyController extends BaseController {
 		//redirectAttributes.addAttribute("apply", apply);
 		//addMessage(redirectAttributes, "删除合同成功");
 		//return "redirect:"+Global.getAdminPath()+"/income/applyPay/?repage";
-		return "modules/income/applyPayForm";
+		return "modules/income/applyIncomeForm";
 	}
 
 

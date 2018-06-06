@@ -7,12 +7,12 @@
 			<result property="applyValue" column="applyValue" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
 			<result property="firstParty"  column="firstParty" jdbcType="VARCHAR" javaType="java.lang.String" />
 			<result property="remarks"  column="remarks" jdbcType="VARCHAR" javaType="java.lang.String" />
-			<result property="enterValue"  column="enterValue" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+			<result property="incomeValue"  column="incomeValue" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
 			<result property="status"  column="status" jdbcType="INTEGER" javaType="java.lang.Integer" />
 			<result property="createBy.id"   column="createBy.id" jdbcType="VARCHAR" javaType="java.lang.String" />
-			<result property="createTime"   column="createTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+			<result property="createDate"   column="createDate" jdbcType="TIMESTAMP" javaType="java.util.Date" />
 			<result property="updateBy.id"   column="updateBy.id" jdbcType="VARCHAR" javaType="java.lang.String" />
-			<result property="updateTime"   column="updateTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+			<result property="updateDate"   column="updateDate" jdbcType="TIMESTAMP" javaType="java.util.Date" />
 		    <collection property="incomeList" ofType="Income" select="com.thinkgem.jeesite.modules.income.dao.IncomeDao.findAllList" column="id">
 	       </collection>
 	</resultMap>
@@ -24,12 +24,12 @@
 		a.apply_value AS "applyValue",
 		a.first_party AS "firstParty",
 		a.remarks AS "remarks",
-		a.enter_value AS "enterValue",
+		a.income_value AS "incomeValue",
 		a.status AS "status",
 		a.create_by AS "createBy.id",
-		a.create_time AS "createTime",
+		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
-		a.update_time AS "updateTime"
+		a.update_date AS "updateDate"
 	</sql>
 	
 	<sql id="applyJoins">
@@ -114,24 +114,24 @@
 			apply_value,
 			first_party,
 			remarks,
-			enter_value,
+			income_value,
 			status,
 			create_by,
-			create_time,
+			create_date,
 			update_by,
-			update_time
+			update_date
 		) VALUES (
 			#{id},
 			#{name},
 			#{applyValue},
 			#{firstParty},
 			#{remarks},
-			#{enterValue},
+			#{incomeValue},
 			#{status},
 			#{createBy.id},
-			#{createTime},
+			#{createDate},
 			#{updateBy.id},
-			#{updateTime}
+			#{updateDate}
 		)
 	</insert>
 	
@@ -141,11 +141,11 @@
 			apply_value = #{applyValue},
 			first_party = #{firstParty},
 			remarks = #{remarks},
-			enter_value = #{enterValue},
+			income_value = #{incomeValue},
 			status = #{status},
-			create_time = #{createTime},
+			create_date = #{createDate},
 			update_by = #{updateBy.id},
-			update_time = #{updateTime}
+			update_date = #{updateDate}
 		WHERE id = #{id}
 	</update>
 	

@@ -14,7 +14,7 @@
 		function claim(taskId) {
 			$.get('${ctx}/act/task/claim' ,{taskId: taskId}, function(data) {
 				if (data == 'true'){
-		        	top.$.jBox.tip('签收完成');
+		        	//top.$.jBox.tip('签收完成');
 		            location = '${ctx}/act/task/todo/';
 				}else{
 		        	top.$.jBox.tip('签收失败');
@@ -25,9 +25,10 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/act/task/todo/">待办任务</a></li>
+		<li class="active"><a href="${ctx}/act/task/mytodo/">待办任务</a></li>
 		<li><a href="${ctx}/act/task/historic/">已办任务</a></li>
-		<li><a href="${ctx}/act/task/process/">新建任务</a></li>
+
+
 	</ul>
 	<form:form id="searchForm" modelAttribute="act" action="${ctx}/act/task/todo/" method="get" class="breadcrumb form-search">
 		<div>
@@ -91,14 +92,10 @@
 							<a href="${ctx}${procExecUrl}/exec/${task.taskDefinitionKey}?procInsId=${task.processInstanceId}&act.taskId=${task.id}">办理</a> --%>
 							<a href="${ctx}/act/task/form?taskId=${task.id}&taskName=${fns:urlEncode(task.name)}&taskDefKey=${task.taskDefinitionKey}&procInsId=${task.processInstanceId}&procDefId=${task.processDefinitionId}&status=${status}">任务办理</a>
 						</c:if>
-						<shiro:hasPermission name="act:process:edit">
-							<c:if test="${empty task.executionId}">
-								<a href="${ctx}/act/task/deleteTask?taskId=${task.id}&reason=" onclick="return promptx('删除任务','删除原因',this.href);">删除任务</a>
-							</c:if>
-						</shiro:hasPermission>
-						<a target="_blank" href="${pageContext.request.contextPath}/act/diagram-viewer?processDefinitionId=${task.processDefinitionId}&processInstanceId=${task.processInstanceId}">跟踪</a><%-- 
-						<a target="_blank" href="${ctx}/act/task/trace/photo/${task.processDefinitionId}/${task.executionId}">跟踪2</a> 
-						<a target="_blank" href="${ctx}/act/task/trace/info/${task.processInstanceId}">跟踪信息</a> --%>
+
+<%--						<a href="${ctx}/act/task/form?taskId=${task.id}&taskName=${fns:urlEncode(task.name)}&taskDefKey=${task.taskDefinitionKey}&procInsId=${task.processInstanceId}&procDefId=${task.processDefinitionId}&status=${status}">任务办理</a>--%>
+						<a target="_blank" href="${pageContext.request.contextPath}/act/diagram-viewer?processDefinitionId=${task.processDefinitionId}&processInstanceId=${task.processInstanceId}">跟踪</a>
+
 					</td>
 				</tr>
 			</c:forEach>

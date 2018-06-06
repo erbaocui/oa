@@ -31,7 +31,8 @@
 		a.create_by AS "createBy.id",
 		u.name AS "createBy.name",
 		a.create_date AS "createDate",
-		a.proc_ins_id AS "procInsId"
+		a.proc_ins_id AS "procInsId",
+		c.office_id as "contract.office.id"
 	</sql>
 	
 	<sql id="incomeJoins">

@@ -37,6 +37,12 @@
 					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
 			</if>
+			<if test="office != null">
+			   <if test="office.id != null and office.id != ''">
+				AND a.office_id =${office.id}
+
+			   </if>
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
-	<title>收款分配</title>
+	<title>运营管理审核</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -37,7 +37,8 @@
                 });*/
 		});
 		function test() {
-            $("#inputForm").attr("action", "${ctx}/income/distOffice/form");
+
+            $("#inputForm").attr("action", "${ctx}/income/distProc/distRule");
             $("#inputForm").submit();
         }
 
@@ -49,18 +50,28 @@
             $("#inputForm").attr("action", "${ctx}/income/distOffice/saveAccount");
             $("#inputForm").submit();
         }
+
+        function review(state){
+            $("#inputForm").attr("action", "${ctx}/income/distProc/officeAuditSubmit");
+            $("#state").val(state);
+            $("#inputForm").submit();
+        }
+
 	</script>
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/income/distOffice/">分配</a></li>
+		<li class="active"><a href="${ctx}/income/distOffice/">进款分配规则选择</a></li>
 
 	</ul><br/>
 	<c:set var="saveFlag" value="true"></c:set>
-	<form:form id="inputForm" modelAttribute="distOffice" action="${ctx}/income/distOffice/form" method="post" class="form-horizontal">
+
+	<form:form id="inputForm" modelAttribute="distOfficeProc" action="${ctx}/income/distOffice/form" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
 		<form:hidden path="incomeId" value="${incomeId}"/>
-		<sys:message content="${message}"/>
+	    <form:hidden path="taskId"  value="${taskId}"/>
+	    <form:hidden path="state"  value="${state}"/>
+	<sys:message content="${message}"/>
 		<div id="content" >
 			<table id="contentTable" class="table table-striped table-bordered table-condensed">
 				<thead><tr><th>分配部门</th><th>部门金额</th><th>规则选择</th><th>规则内费用</th><th>费用项</th><th>明细</th></tr></thead>
@@ -71,7 +82,7 @@
 						<td rowspan="${distOffice.rowspan}">${distOffice.value}</td>
 						<td rowspan="${distOffice.rowspan}">
 
-							<select name="groups" onchange="test()">
+							<select name="groups" onchange="test()" disabled="disabled">
 								<c:forEach items="${distOffice.ruleGroups}" var="ruleGroup">
 
 									<c:choose>
@@ -112,13 +123,70 @@
 			</table>
 		</div>
 
+	  <c:if test="${saveFlag==true}">
 		<div class="form-actions">
-			<c:if test="${saveFlag==true}">
+			<%--<c:if test="${saveFlag==true}">
 				<input id="btnSubmit" class="btn btn-primary" type="button" value="保 存" onclick="save()"/>&nbsp;
 				<input id="btnSubmit" class="btn btn-primary" type="button" value="保存账户" onclick="saveAccount()"/>&nbsp;
-			</c:if>
+			</c:if>--%>
+
+			<%--<form:form id="reviewForm" modelAttribute="review"   action="${ctx}/income/distProc/officeDistSubmit" method="post" class="form-horizontal">--%>
+
+				<div class="container-fluid">
+
+							<div class="row-fluid">
+								<div class="span1">
+								</div>
+								<div class="span10">
+									<label >审核意见:</label>
+									<form:textarea path="comment" htmlEscape="false" rows="3" maxlength="500" class="input-xxlarge" />
+								<div class="span1">
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span12">
+								</div>
+							</div>
+							<div class="row-fluid">
+								<div class="span3">
+								</div>
+								<div class="span2">
+									<input id="btnSubmit" class="btn btn-primary" type="button"  onclick="review(1)" value="通过" />
+								</div>
+								<%--<div class="span2">
+									<input id="btnReject" class="btn btn-primary" type="button"  onclick="review(2)" value="驳回" />
+								</div>--%>
+								<div class="span5">
+								</div>
+							</div>
+						</div>
+
+			<%--</form:form>--%>
 
 		</div>
-	</form:form>
+		</div>
+	   </c:if>
+
+				</form:form>
+				<table title="批注列表" class="table table-striped table-bordered table-condensed">
+					<thead>
+					<tr>
+						<th>批注时间</th>
+						<th>批注人</th>
+						<th>批注信息</th>
+					</tr>
+					</thead>
+					<tbody>
+					<c:forEach items="${comments}" var="item">
+						<tr>
+							<td><fmt:formatDate value="${item.time}" type="both"/></td>
+							<td> ${item.userId}</td>
+							<td> ${item.message}</td>
+						</tr>
+					</c:forEach>
+					</tbody>
+				</table>
+
+
 </body>
 </html>

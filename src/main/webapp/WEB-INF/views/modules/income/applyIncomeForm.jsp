@@ -5,6 +5,7 @@
 	<title>收款管理</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
+        var contractId=null;
 		$(document).ready(function() {
 			//$("#name").focus();
 			$("#inputForm").validate({
@@ -32,8 +33,9 @@
                  //$("#incomeForm").submit();
                  $.post("${ctx}/income/applyPay/addIncome",{applyId:$("#id").val(),incomeValue:$("#incomeValue").val()},function(result){
 					 if(result=="success"){
-                         window.location="${ctx}/income/applyPay/form?id="+$("#id").val();
                          $.jBox.tip("收款保存成功");
+                         window.location="${ctx}/income/applyPay/income?id="+$("#id").val();
+
 					 }
                  });
               }else{
@@ -48,11 +50,26 @@
 
 		});
 
+        function startProcess(id) {
+
+            $.post("${ctx}/income/distProc/start?",{id:id},function(data){
+                var code=data.result;
+                if(code=='success'){
+                    $.jBox.tip("流程启动成功");
+                    page();
+
+                }else{
+                    $.jBox.tip("流程启动失败", 'error');
+                }
+            });
+
+        }
+
 	</script>
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/income/applyPay/">请款列表</a></li>
+		<li><a href="${ctx}/income/applyPay/list">请款列表</a></li>
 		<li class="active"><a href="${ctx}/income/applyPay/form?id=${apply.id}">收款</a></li>
 	</ul><br/>
 	<form:form id="inputForm" modelAttribute="apply" action="${ctx}/income/applyPay/save" method="post" class="form-horizontal">
@@ -67,19 +84,19 @@
 		<div class="control-group">
 			<label class="control-label">请款金额：</label>
 			<div class="controls">
-				<form:input path="applyValue" htmlEscape="false" class="input-xlarge "/>
+				<form:input path="applyValue" htmlEscape="false" class="input-xlarge " disabled="true"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">甲方名称：</label>
 			<div class="controls">
-				<form:input path="firstParty" htmlEscape="false" maxlength="255" class="input-xlarge "/>
+				<form:input path="firstParty" htmlEscape="false" maxlength="255" class="input-xlarge " disabled="true"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">备注：</label>
 			<div class="controls">
-				<form:textarea path="remarks" htmlEscape="false" rows="4" maxlength="255" class="input-xxlarge "/>
+				<form:textarea path="remarks" htmlEscape="false" rows="4" maxlength="255" class="input-xxlarge " disabled="true"/>
 			</div>
 		</div>
 
@@ -89,7 +106,8 @@
 			<tr>
 				<th>时间</th>
 				<th>收款金额</th>
-				<th>操作人</th>
+				<th>状态</th>
+				<th>收款流程操作人</th>
 				<th>操作</th>
 			</tr>
 			</thead>
@@ -99,10 +117,16 @@
 				<tr>
 					<td><fmt:formatDate value="${income.createDate}" type="both"/></td>
 					<td>${income.value}</td>
+					<td>${fns:getDictLabel(income.status, 'income_status', '无')}</td>
 					<td>${income.createBy.name}</td>
 
 					<td>
-						<a href="${ctx}/income/applyPay/contDelete?id=${applyPay.id}&contractId=${contract.id}" onclick="return confirmx('确认要删除该合同吗？', this.href)">删除</a>
+						<c:if test="${income.status==1}">
+						<a href="#" onclick="startProcess('${income.id}')">启动流程</a>
+						<a href="${ctx}/income/applyPay/delIncome?applyId=${apply.id}&incomeId=${income.id}" onclick="return confirmx('确认要删除该收款吗？', this.href)">删除</a>
+					<%--	<a href="#" onclick="return confirmx('确认要删除该收款吗？', this.href)">删除</a>--%>
+						</c:if>
+
 					</td>
 				</tr>
 				<c:set value="${sum + income.value}" var="sum" />
@@ -117,12 +141,16 @@
 
 
 
-
+		<c:if test="${sum<apply.applyValue}">
 		<div class="form-actions">
 <%--			<shiro:hasPermission name="income:applyPay:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>--%>
-			<input id="btnOpenIncome" class="btn btn-primary" type="button" value="添加收款" />
+
+				<input id="btnOpenIncome" class="btn btn-primary" type="button" value="添加收款" />
+	            <input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
+
 		</div>
+		</c:if>
 
 	</form:form>
 	<form id="incomeForm"  action="${ctx}/income/applyPay/addIncome" method="get" class="form-horizontal">

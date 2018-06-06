@@ -32,7 +32,14 @@
 		FROM bm_dist_office a
 		<include refid="distOfficeJoins"/>
 		<where>
-			
+			<if test ="incomeId!= null">
+				a.income_id=#{incomeId}
+			</if>
+			<if test ="office!= null">
+				<if test ="office.id!= null">
+					a.office_id=#{office.id}
+				</if>
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
