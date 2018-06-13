@@ -64,7 +64,7 @@
 	</select>-->
 
 	<select id="findList" resultType="RuleItem" >
-		select
+		select DISTINCT
 		a.id as "id",
 		a.name as "name",
 		a.percent as "percent",
@@ -76,8 +76,11 @@
 		left join bm_account c on c.office_id=b.office_id and a.account_seq=c.seq
 
 		<where>
-			<if test ="_parameter!= null">
+			<if test ="ruleId!= null">
 				a.rule_id=#{ruleId}
+			</if>
+			<if test ="officeId!= null">
+				and b.office_id=#{officeId}
 			</if>
 		</where>
 

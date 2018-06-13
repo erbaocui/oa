@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.contract.dao.ContApplyDao">
+    
+	<sql id="contApplyColumns">
+		a.id AS "id",
+		a.remark AS "remark",
+		a.url AS "url",
+		a.path as "path",
+		a.file AS "file",
+		a.create_by AS "createBy.id",
+	    u1.name AS "createBy.name",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.contract_id AS "contractId"
+	</sql>
+	
+	<sql id="contApplyJoins">
+		left join  sys_user u1 on u1.id=a.create_by
+	</sql>
+    
+	<select id="get" resultType="ContApply">
+		SELECT 
+			<include refid="contApplyColumns"/>
+		FROM bm_cont_apply a
+		<include refid="contApplyJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ContApply">
+		SELECT 
+			<include refid="contApplyColumns"/>
+		FROM bm_cont_apply a
+		<include refid="contApplyJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ContApply">
+		SELECT 
+			<include refid="contApplyColumns"/>
+		FROM bm_cont_apply a
+		<include refid="contApplyJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_cont_apply(
+			id,
+			remark,
+			url,
+			path,
+			file,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			contract_id
+		) VALUES (
+			#{id},
+			#{remark},
+			#{url},
+			#{path},
+			#{file},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{contractId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_cont_apply SET 	
+			remarks = #{remarks},
+			url = #{url},
+			path = #{path},
+			file= #{file},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			contract_id = #{contractId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bm_cont_apply
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

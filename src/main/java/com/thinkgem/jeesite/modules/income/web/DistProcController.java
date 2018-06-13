@@ -252,16 +252,13 @@ public class DistProcController extends BaseController {
 		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
 		Map<String, Object> variables=new HashMap<String,Object>();
 		int state=review.getState();
-		/*if( state==1){
+		if( state==1){
 			variables.put("msg", "pass");
 			variables.put("role","finance");
 		}else if(state==2){
 			variables.put("msg", "reject");
 			variables.put("role","contractAuditor");
-		}*/
-		variables.put("msg", "reject");
-		variables.put("role","contractAuditor");
-
+		}
 		User user=UserUtils.getUser();
 		Authentication.setAuthenticatedUserId(  user.getName()+ "【"+UserUtils.getUser().getLoginName()+"】");// 设置用户id
 		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);

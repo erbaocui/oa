@@ -51,6 +51,10 @@
 	<ul class="nav nav-tabs">
 		<li><a href="${ctx}/cont/base/list">合同列表</a></li>
 		<li class="active"><a href="${ctx}/cont/base/form?id=${contract.id}">合同<shiro:hasPermission name="cont:base:edit">${not empty contract.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="cont:base:edit">查看</shiro:lacksPermission></a></li>
+		<c:if test="${not empty contract.id}">
+			<li><a href="${ctx}/cont/base/applyPay?id=${contract.id}">请款附件</a></li>
+			<li><a href="${ctx}/cont/base/attach?id=${contract.id}">合同附件</a></li>
+		</c:if>
 	</ul><br/>
 	<form:form id="inputForm" modelAttribute="contract" action="${ctx}/cont/base/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
@@ -318,9 +322,59 @@
 
 	</div>
 
+
 		<div class="form-actions">
 			<shiro:hasPermission name="cont:base:edit"><input id="btnSubmit" class="btn btn-primary" type="button" value="保 存" onclick="save();"/>&nbsp;</shiro:hasPermission>
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
+		</div>
+    <br>
+	<div class="control-group">
+		<div class="row-fluid">
+			<div class="span1">
+			</div>
+			<div class="span10">
+				<table title="请款附件列表" class="table table-striped table-bordered table-condensed">
+					<thead>
+					<tr>
+						<th>附件种类</th>
+						<th>上传时间</th>
+						<th>操作人</th>
+						<th>备注</th>
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody>
+
+					<tr>
+						<td> 初审</td>
+						<td><fmt:formatDate value="${contApply.createDate}" type="both"/></td>
+						<td> ${contApply.id}</td>
+						<td> ${contApply.remarks}</td>
+						<td>
+							<a href="#" onclick="downloadFile('${contApply.id}')">下载</a>
+							<a href="#" onclick="preview('${contApply.id}')">预览</a>
+							<a href="${ctx}/cont/base/applyPayDelete?id=${contApply.id}&contractId=${contApply.contractId}" onclick="return confirmx('确认要删除该请款传附件吗？', this.href)">删除</a>
+
+						</td>
+					</tr>
+
+					<tr>
+						<td>完整版本</td>
+						<td><fmt:formatDate value="${contApply.createDate}" type="both"/></td>
+						<td> ${contApply.id}</td>
+						<td> ${contApply.remarks}</td>
+						<td>
+							<a href="#" onclick="downloadFile('${contApply.id}')">下载</a>
+							<a href="#" onclick="preview('${contApply.id}')">预览</a>
+							<a href="${ctx}/cont/base/applyPayDelete?id=${contApply.id}&contractId=${contApply.contractId}" onclick="return confirmx('确认要删除该请款传附件吗？', this.href)">删除</a>
+
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<div class="span1">
+				</div>
+			</div>
 		</div>
 	</form:form>
 </body>

@@ -965,4 +965,13 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 		}
 		return fileName.substring(0, fileName.lastIndexOf("."));
 	}
+	/**
+	 * 获取文件前缀
+	 * @param fileName 文件名
+	 * @return 例如：d:\files\test.jpg  返回：d:\files\test
+	 */
+	public static String getFilePrefix(String fileName){
+		int splitIndex = fileName.lastIndexOf(".");
+		return fileName.substring(0, splitIndex);
+	}
 }

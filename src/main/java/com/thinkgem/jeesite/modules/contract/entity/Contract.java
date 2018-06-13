@@ -24,8 +24,6 @@ public class Contract extends DataEntity<Contract> {
 	private String code;		// code
 	private Project project;		// project_id
 	private String name;		// name
-	private Date createTime;		// create_time
-	private String creatorId;		// creator_id
 	private User manager;		// manager_id
 	private BigDecimal value;		// value
 	private BigDecimal income;		// income
@@ -88,23 +86,7 @@ public class Contract extends DataEntity<Contract> {
 		this.name = name;
 	}
 	
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	public Date getCreateTime() {
-		return createTime;
-	}
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-	
-	@Length(min=0, max=32, message="creator_id长度必须介于 0 和 32 之间")
-	public String getCreatorId() {
-		return creatorId;
-	}
-
-	public void setCreatorId(String creatorId) {
-		this.creatorId = creatorId;
-	}
 
 	public User getManager() {
 		return manager;

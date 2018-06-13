@@ -33,7 +33,7 @@
 		<form:hidden path="email" htmlEscape="false" maxlength="255" class="input-xlarge"/>
 		<sys:ckfinder input="email" type="files" uploadPath="/mytask" selectMultiple="false"/> --%>
 		<sys:message content="${message}"/>
-		<div class="control-group">
+		<%--<div class="control-group">
 			<label class="control-label">头像:</label>
 			<div class="controls">
 				<form:hidden id="nameImage" path="photo" htmlEscape="false" maxlength="255" class="input-xlarge"/>
@@ -45,7 +45,7 @@
 			<div class="controls">
 				<label class="lbl">${user.company.name}</label>
 			</div>
-		</div>
+		</div>--%>
 		<div class="control-group">
 			<label class="control-label">归属部门:</label>
 			<div class="controls">

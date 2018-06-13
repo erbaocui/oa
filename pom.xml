@@ -27,6 +27,8 @@
 		<sitemesh.version>2.4.2</sitemesh.version>
 		<activiti.version>5.21.0</activiti.version>
 		<pagehelper.version>4.1.4</pagehelper.version>
+		<jodconverter.version>3.0</jodconverter.version>
+		<jod.version>3.2.1</jod.version>
 
 		<!-- tools version setting -->
 		<slf4j.version>1.7.7</slf4j.version>
@@ -637,6 +639,40 @@
 				</exclusion>
 			</exclusions>
 		</dependency> -->
+
+		<!--jodconverter依赖-->
+		<dependency>
+			<groupId>jodconverter</groupId>
+			<artifactId>core</artifactId>
+			<version>${jodconverter.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>jod</groupId>
+			<artifactId>juh</artifactId>
+			<version>${jod.version}</version>
+
+		</dependency>
+		<dependency>
+			<groupId>jod</groupId>
+			<artifactId>jurt</artifactId>
+			<version>${jod.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jod</groupId>
+			<artifactId>ridl</artifactId>
+			<version>${jod.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>jod</groupId>
+			<artifactId>unoil</artifactId>
+			<version>${jod.version}</version>
+		</dependency>
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>1.4.1</version>
+        </dependency>
 
 	</dependencies>
 
