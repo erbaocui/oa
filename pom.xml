@@ -673,6 +673,14 @@
             <artifactId>commons-net</artifactId>
             <version>1.4.1</version>
         </dependency>
+		<!-- CAS -->
+		<!--<dependency>
+			<groupId>org.jasig.cas.client</groupId>
+			<artifactId>cas-client-core</artifactId>
+			<version>3.2.1</version>
+		</dependency>-->
+
+
 
 	</dependencies>
 

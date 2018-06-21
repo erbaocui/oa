@@ -83,9 +83,11 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 			if (Global.NO.equals(user.getLoginFlag())){
 				throw new AuthenticationException("msg:该已帐号禁止登录.");
 			}
-			byte[] salt = Encodes.decodeHex(user.getPassword().substring(0,16));
+			/*byte[] salt = Encodes.decodeHex(user.getPassword().substring(0,16));
 			return new SimpleAuthenticationInfo(new Principal(user, token.isMobileLogin()), 
-					user.getPassword().substring(16), ByteSource.Util.bytes(salt), getName());
+					user.getPassword().substring(16), ByteSource.Util.bytes(salt), getName());*/
+			return new SimpleAuthenticationInfo(new Principal(user, token.isMobileLogin()),
+					user.getPassword(), getName());
 		} else {
 			return null;
 		}
@@ -209,9 +211,9 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 	 */
 	@PostConstruct
 	public void initCredentialsMatcher() {
-		HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(SystemService.HASH_ALGORITHM);
-		matcher.setHashIterations(SystemService.HASH_INTERATIONS);
-		setCredentialsMatcher(matcher);
+		/*HashedCredentialsMatcher matcher = new HashedCredentialsMatcher(SystemService.HASH_ALGORITHM);
+		matcher.setHashIterations(SystemService.HASH_INTERATIONS);*/
+		setCredentialsMatcher(new CustomCredentialsMatcher());
 	}
 	
 //	/**

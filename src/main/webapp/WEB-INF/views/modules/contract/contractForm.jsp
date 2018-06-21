@@ -150,25 +150,25 @@
 			<div class="row-fluid">
 				<div class="span1">
 				</div>
-				<div class="span2">
+				<%--<div class="span2">
 					<label >开始时间:</label>
 					<input name="beginTime" type="text" readonly="readonly" maxlength="20" class="form-control input-small Wdate "
 						   value="<fmt:formatDate value="${contract.beginTime}" pattern="yyyy-MM-dd"/>"
 						   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
-				</div>
-				<div class="span2">
+				</div>--%>
+	<%--			<div class="span2">
 					<label >结束时间:</label>
 					<input name="endTime" type="text" readonly="readonly" maxlength="20" class="form-control input-small Wdate "
 						   value="<fmt:formatDate value="${contract.endTime}" pattern="yyyy-MM-dd"/>"
-						   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/></div>
+						   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/></div>--%>
 				<div class="span2">
 					<label >合同金额:</label>
 					<form:input path="value" htmlEscape="false" class="form-control input-small"/>
 				</div>
-				<div class="span2">
+				<%--<div class="span2">
 					<label >已付金额:</label>
 					<form:input path="income" htmlEscape="false" class="orm-control input-small"/>
-				</div>
+				</div>--%>
 				<div class="span1">
 				</div>
 
@@ -212,24 +212,24 @@
 						   value="<fmt:formatDate value="${contract.sealTime}" pattern="yyyy-MM-dd"/>"
 						   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 				</div>
-				<div class="span2">
+				<%--<div class="span2">
 					<label >备案时间:</label>
 					<input name="recordTime" type="text" readonly="readonly" maxlength="20" class="input-small Wdate "
 						   value="<fmt:formatDate value="${contract.recordTime}" pattern="yyyy-MM-dd"/>"
 						   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
-				</div>
+				</div>--%>
 				<div class="span2">
 					<label >返回时间:</label>
 					<input name="returnTime" type="text" readonly="readonly" maxlength="20" class="input-small Wdate "
 						   value="<fmt:formatDate value="${contract.returnTime}" pattern="yyyy-MM-dd"/>"
 						   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 				</div>
-				<div class="span2">
+				<%--<div class="span2">
 					<label >财务时间:</label>
 					<input name="returnFinancialTime" type="text" readonly="readonly" maxlength="20" class="input-small Wdate "
 						   value="<fmt:formatDate value="${contract.returnFinancialTime}" pattern="yyyy-MM-dd"/>"
 						   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
-				</div>
+				</div>--%>
 				<div class="span1">
 				</div>
 
@@ -239,11 +239,11 @@
 			<div class="row-fluid">
 				<div class="span1">
 				</div>
-				<div class="span2">
+				<%--<div class="span2">
 					<label >单&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价:</label>
 					<form:input path="price" htmlEscape="false" maxlength="200" class="input-small"/>
 
-				</div>
+				</div>--%>
 				<div class="span2">
 					<label >面&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;积:</label>
 					<form:input path="area" htmlEscape="false" maxlength="200" class="input-small"/>
@@ -252,10 +252,10 @@
 					<label >投&nbsp;&nbsp;资&nbsp;&nbsp;额:</label>
 					<form:input path="investment" htmlEscape="false" maxlength="200" class="input-small"/>
 				</div>
-				<div class="span2">
+				<%--<div class="span2">
 					<label >进&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;度:</label>
 					<form:input path="progress" htmlEscape="false" maxlength="200" class="input-small"/>
-				</div>
+				</div>--%>
 				<div class="span1">
 				</div>
 
