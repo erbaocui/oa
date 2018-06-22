@@ -76,7 +76,7 @@ public class DistOfficeController extends BaseController {
 
 	/*@RequiresPermissions("income:distributeOffice:view")*/
 	@RequestMapping(value = "form")
-	public String form(DistOffice distOffice,String[] groups, Model model)  throws Exception{
+	public String form(DistOffice distOffice,String[] groups, String editable, Model model)  throws Exception{
 		List<DistOfficeVo> distOffices=new ArrayList<DistOfficeVo>();
 		List<DistOffice> distOfficeList= distOfficeService.findList(distOffice);
 		String incomeId="";
@@ -221,6 +221,7 @@ public class DistOfficeController extends BaseController {
 			}
 
 		}
+		model.addAttribute("editable", editable);
 		model.addAttribute("incomeId", incomeId);
 		model.addAttribute("distOffices", distOffices);
 		return "modules/income/distOfficeForm";

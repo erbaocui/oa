@@ -70,8 +70,12 @@
 						<td rowspan="${distOffice.rowspan}">${distOffice.officeName}</td>
 						<td rowspan="${distOffice.rowspan}">${distOffice.value}</td>
 						<td rowspan="${distOffice.rowspan}">
-
-							<select name="groups" onchange="test()">
+							<c:if test="${editable=='true'}">
+								<select name="groups" onchange="test()" >
+							</c:if>
+								<c:if test="${editable !='true'}">
+								<select name="groups" onchange="test()" disabled="disabled" >
+									</c:if>
 								<c:forEach items="${distOffice.ruleGroups}" var="ruleGroup">
 
 									<c:choose>
@@ -111,14 +115,15 @@
 			</c:forEach>
 			</table>
 		</div>
+		<c:if test="${editable=='true'}">
+			<div class="form-actions">
+				<c:if test="${saveFlag==true}">
+					<input id="btnSubmit" class="btn btn-primary" type="button" value="保 存" onclick="save()"/>&nbsp;
+					<input id="btnSubmit" class="btn btn-primary" type="button" value="保存账户" onclick="saveAccount()"/>&nbsp;
+				</c:if>
 
-		<div class="form-actions">
-			<c:if test="${saveFlag==true}">
-				<input id="btnSubmit" class="btn btn-primary" type="button" value="保 存" onclick="save()"/>&nbsp;
-				<input id="btnSubmit" class="btn btn-primary" type="button" value="保存账户" onclick="saveAccount()"/>&nbsp;
-			</c:if>
-
-		</div>
+			</div>
+		</c:if>
 	</form:form>
 </body>
 </html>

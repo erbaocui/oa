@@ -1,17 +1,106 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.thinkgem.jeesite.modules.project.dao.ProjectDao">
-
-	<!-- 根据OfficeId获取用户（树查询用户时用） -->
-	<select id="findProjectByOfficeId" resultType="Project" useCache="false">
-		SELECT
-		a.id,a.code,a.name
-		FROM bm_project a
-		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
-		AND a.office_id = #{office.id}
-		ORDER BY a.name
-	</select>
     
-
+	<sql id="projectColumns">
+		a.id AS "id",
+		a.code AS "code",
+		a.name AS "name",
+		a.office_id AS "office.id",
+		a.manager AS "manager",
+		a.custom AS "custom",
+		o4.name AS "office.name"
+	</sql>
+	
+	<sql id="projectJoins">
+		LEFT JOIN sys_office o4 ON o4.id = a.office_id
+	</sql>
+    
+	<select id="get" resultType="Project">
+		SELECT 
+			<include refid="projectColumns"/>
+		FROM bm_project a
+		<include refid="projectJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Project">
+		SELECT 
+			<include refid="projectColumns"/>
+		FROM bm_project a
+		<include refid="projectJoins"/>
+		<where>
+			
+			<if test="code != null and code != ''">
+				AND a.code = #{code}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="office != null and office.id != null and office.id != ''">
+				AND a.office_id = #{office.id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Project">
+		SELECT 
+			<include refid="projectColumns"/>
+		FROM bm_project a
+		<include refid="projectJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_project(
+			id,
+			code,
+			name,
+			office_id,
+			manager,
+			custom
+		) VALUES (
+			#{id},
+			#{code},
+			#{name},
+			#{office.id},
+			#{manager},
+			#{custom}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_project SET 	
+			code = #{code},
+			name = #{name},
+			office_id = #{office.id},
+			manager = #{manager},
+			custom = #{custom}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bm_project
+		WHERE id = #{id}
+	</update>
 	
 </mapper>

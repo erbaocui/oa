@@ -6,6 +6,8 @@ package com.thinkgem.jeesite.modules.income.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.contract.entity.Contract;
+import com.thinkgem.jeesite.modules.contract.service.ContService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
@@ -21,6 +24,8 @@ import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.income.entity.Income;
 import com.thinkgem.jeesite.modules.income.service.IncomeService;
+
+import java.util.List;
 
 /**
  * 收款Controller
@@ -33,6 +38,8 @@ public class IncomeController extends BaseController {
 
 	@Autowired
 	private IncomeService incomeService;
+	@Autowired
+	private ContService contService;
 	
 	@ModelAttribute
 	public Income get(@RequestParam(required=false) String id) {
@@ -49,9 +56,22 @@ public class IncomeController extends BaseController {
 	/*@RequiresPermissions("income:income:view")*/
 	@RequestMapping(value = {"list", ""})
 	public String list(Income income, HttpServletRequest request, HttpServletResponse response, Model model) {
-		Page<Income> page = incomeService.findPage(new Page<Income>(request, response), income); 
+		Page<Income> page = incomeService.findPage(new Page<Income>(request, response), income);
 		model.addAttribute("page", page);
 		return "modules/income/incomeList";
+	}
+
+
+	@RequestMapping(value = {"contractIncome", ""})
+	public String contractIncome(String contractId, HttpServletRequest request, HttpServletResponse response, Model model) {
+		Income income=new Income();
+		Contract contract=new Contract();
+		contract=contService.get(contractId);
+		income.setContract(contract);
+		List<Income> list = incomeService.findList(income);
+		model.addAttribute("incomes",list);
+		model.addAttribute("contract",contract);
+		return "modules/income/contractIncome";
 	}
 
 	/*@RequiresPermissions("income:income:view")*/

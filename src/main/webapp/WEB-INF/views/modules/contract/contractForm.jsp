@@ -45,6 +45,14 @@
 			}
 
         }
+        function selectPrj() {
+
+            top.$.jBox.open("iframe:${ctx}/project/project/selectList", "项目选址", 800, 500, { buttons: { '关闭': true},
+				loaded : function(h) {   //隐藏滚动条
+                $(".jbox-content", top.document).css( "overflow-y", "hidden");
+                }
+            });
+        }
 	</script>
 </head>
 <body>
@@ -54,6 +62,7 @@
 		<c:if test="${not empty contract.id}">
 			<li><a href="${ctx}/cont/base/applyPay?id=${contract.id}">请款附件</a></li>
 			<li><a href="${ctx}/cont/base/attach?id=${contract.id}">合同附件</a></li>
+			<li><a href="${ctx}/income/income/contractIncome?contractId=${contract.id}">合同支付</a></li>
 		</c:if>
 	</ul><br/>
 	<form:form id="inputForm" modelAttribute="contract" action="${ctx}/cont/base/save" method="post" class="form-horizontal">
@@ -93,15 +102,20 @@
 			<div class="row-fluid">
 				<div class="span1">
 				</div>
-				<div class="span6">
+				<div class="span10">
 					<label >项目名称:</label>
-					<sys:treeselect id="project" name="project.id" value="${contract.project.id}" labelName="office.name" labelValue="${contract.project.name}" title="项目名称" url="/sys/office/treeData?type=4" cssClass="input-xxlarge" allowClear="true" notAllowSelectParent="true" />
+					<div class="input-append">
+
+						<input id="Name" name="bb" readonly="readonly" type="text" value=""  class="input-xxlarge"/>
+						<a href="javascript:" class="btn" onclick="selectPrj();">&nbsp;<i class="icon-search"></i>&nbsp;</a>&nbsp;&nbsp;
+
+					</div>
 					<span class="help-inline"><font color="red">*</font> </span>
 				</div>
-				<div class="span4">
+				<%--<div class="span4">
 					<label >项目经理:</label>
-					<sys:treeselect id="manager" name="manager.id" value="${contract.manager.id}" labelName="manager.name" labelValue="${contract.manager.name}" title="项目经理" url="/sys/office/treeData?type=3" cssClass="input-mini" allowClear="true" notAllowSelectParent="true"/>
-				</div>
+					<form:input path="manager" htmlEscape="false" class="form-control input-small"/>
+				</div>--%>
 				<div class="span1">
 				</div>
 			</div>
@@ -125,21 +139,38 @@
 						<form:options items="${fns:getDictList('contract_class')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 					</form:select>
 				</div>
-				<div class="span2">
+			<%--	<div class="span2">
 					<label >是否分包:</label>
 					<form:select path="isSub" class="form-control input-small">
 						<form:option value="" label="请选择"/>
 						<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 					</form:select>
-				</div>
-				<div class="span2">
+				</div>--%>
+				<%--<div class="span2">
 					<label >合同状态:</label>
 					<form:select path="status" class="form-control input-small">
 
 						<form:options items="${fns:getDictList('contract_status')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 					</form:select>
+				</div>--%>
+
+				<div class="span1">
 				</div>
 
+			</div>
+		</div>
+
+		<div class="control-group">
+			<div class="row-fluid">
+				<div class="span1">
+				</div>
+				<div class="span10">
+					<label >甲方名称:</label>
+
+					<form:input path="name" htmlEscape="false" maxlength="50" class="required"/>
+					<span class="help-inline"><font color="red">*</font> </span>
+
+				</div>
 				<div class="span1">
 				</div>
 
@@ -179,11 +210,11 @@
 			<div class="row-fluid">
 				<div class="span1">
 				</div>
-				<div class="span2">
+				<%--<div class="span2">
 					<label >签约部门:</label>
 					<sys:treeselect id="office" name="office.id" value="${contract.office.id}" labelName="office.name" labelValue="${contract.office.name}"
 									title="部门" url="/sys/office/treeData?type=2" cssClass="input-mini" allowClear="true" notAllowSelectParent="true"/>
-				</div>
+				</div>--%>
 				<div class="span2">
 					<label >签约时间:</label>
 					<input name="signedTime" type="text" readonly="readonly" maxlength="20" class="iform-control input-small Wdate"
