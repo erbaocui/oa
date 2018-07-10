@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.contract.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.thinkgem.jeesite.common.persistence.DataEntity;
 import com.thinkgem.jeesite.modules.project.entity.Project;
+import com.thinkgem.jeesite.modules.sys.entity.Area;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import org.hibernate.validator.constraints.Length;
@@ -19,48 +20,59 @@ import java.util.Date;
  * @version 2018-04-19
  */
 public class Contract extends DataEntity<Contract> {
-	
+
 	private static final long serialVersionUID = 1L;
-	private String code;		// code
-	private Project project;		// project_id
-	private String name;		// name
-	private User manager;		// manager_id
-	private BigDecimal value;		// value
-	private BigDecimal income;		// income
-	private Integer type;		// type
-	private Integer status;		// status
-	private Date signedTime;		// signed_time
-	private Date beginTime;		// begin_time
-	private Date endTime;		// end_time
-	private String contact;		// contact
-	private String contactPhone;		// contact_phone
-	private String remark;		// remark
-	private Integer isSub;		// is_sub
-	private String blueprintNum;		// blueprint_num
-	private String payment;		// payment
-	private Date sealTime;		// seal_time
-	private Date recordTime;		// record_time
-	private Date returnTime;		// return_time
-	private Date returnFinancialTime;		// return_financial_time
-	private String subItem;		// sub_item
-	private String timeLimit;		// time_limit
-	private BigDecimal price;		// price
-	private BigDecimal area;		// area
-	private BigDecimal investment;		// investment
-	private BigDecimal progress;		// progress
-	private Office office;		// office_id
+	private String code;        // code
+	private Project project;        // project_id
+	private String name;        // name
+	private User manager;        // manager_id
+	private BigDecimal value;        // value
+	private BigDecimal income;        // income
+	private Integer type;        // type
+	private Integer status;        // status
+	private Date signedTime;        // signed_time
+	private Date beginTime;        // begin_time
+	private Date endTime;        // end_time
+	private String contact;        // contact
+	private String contactPhone;        // contact_phone
+	private String remark;        // remark
+	private Integer isSub;        // is_sub
+	private String blueprintNum;        // blueprint_num
+	private String payment;        // payment
+	private Date sealTime;        // seal_time
+	private Date recordTime;        // record_time
+	private Date returnTime;        // return_time
+	private Date returnFinancialTime;        // return_financial_time
+	private String subItem;        // sub_item
+	private String timeLimit;        // time_limit
+	private BigDecimal price;        // price
+	private BigDecimal areaValue;        // area
+	private BigDecimal investment;        // investment
+	private BigDecimal progress;        // progress
 	private String procInsId;
-	private Integer  procStatus;
+	private Integer procStatus;
+	private Office office;        // office_id
+	/*private Area area;*/
+	private String clazz;
+	private String firstParty;  //甲方名称
+	private String programmeCost; //方案费用
+	private String specificItem; //特殊条款
+	private String legalAdvise; //法律意见
+
+	private Area province;
+	private Area city;
+	//private String creator;
+
 
 	public Contract() {
 		super();
 	}
 
-	public Contract(String id){
+	public Contract(String id) {
 		super(id);
 	}
 
-	@Length(min=0, max=200, message="code长度必须介于 0 和 200 之间")
+	@Length(min = 0, max = 200, message = "code长度必须介于 0 和 200 之间")
 	public String getCode() {
 		return code;
 	}
@@ -77,7 +89,7 @@ public class Contract extends DataEntity<Contract> {
 		this.project = project;
 	}
 
-	@Length(min=0, max=200, message="name长度必须介于 0 和 200 之间")
+	@Length(min = 0, max = 200, message = "name长度必须介于 0 和 200 之间")
 	public String getName() {
 		return name;
 	}
@@ -85,7 +97,6 @@ public class Contract extends DataEntity<Contract> {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 
 
 	public User getManager() {
@@ -97,9 +108,6 @@ public class Contract extends DataEntity<Contract> {
 	}
 
 
-	
-
-	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public Date getSignedTime() {
 		return signedTime;
@@ -108,7 +116,7 @@ public class Contract extends DataEntity<Contract> {
 	public void setSignedTime(Date signedTime) {
 		this.signedTime = signedTime;
 	}
-	
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public Date getBeginTime() {
 		return beginTime;
@@ -117,7 +125,7 @@ public class Contract extends DataEntity<Contract> {
 	public void setBeginTime(Date beginTime) {
 		this.beginTime = beginTime;
 	}
-	
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public Date getEndTime() {
 		return endTime;
@@ -126,8 +134,8 @@ public class Contract extends DataEntity<Contract> {
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
-	
-	@Length(min=0, max=32, message="contact长度必须介于 0 和 32 之间")
+
+	@Length(min = 0, max = 32, message = "contact长度必须介于 0 和 32 之间")
 	public String getContact() {
 		return contact;
 	}
@@ -135,8 +143,8 @@ public class Contract extends DataEntity<Contract> {
 	public void setContact(String contact) {
 		this.contact = contact;
 	}
-	
-	@Length(min=0, max=32, message="contact_phone长度必须介于 0 和 32 之间")
+
+	@Length(min = 0, max = 32, message = "contact_phone长度必须介于 0 和 32 之间")
 	public String getContactPhone() {
 		return contactPhone;
 	}
@@ -144,8 +152,8 @@ public class Contract extends DataEntity<Contract> {
 	public void setContactPhone(String contactPhone) {
 		this.contactPhone = contactPhone;
 	}
-	
-	@Length(min=0, max=200, message="remark长度必须介于 0 和 200 之间")
+
+	@Length(min = 0, max = 200, message = "remark长度必须介于 0 和 200 之间")
 	public String getRemark() {
 		return remark;
 	}
@@ -153,9 +161,9 @@ public class Contract extends DataEntity<Contract> {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
-	
 
-	@Length(min=0, max=200, message="blueprint_num长度必须介于 0 和 200 之间")
+
+	@Length(min = 0, max = 200, message = "blueprint_num长度必须介于 0 和 200 之间")
 	public String getBlueprintNum() {
 		return blueprintNum;
 	}
@@ -163,8 +171,8 @@ public class Contract extends DataEntity<Contract> {
 	public void setBlueprintNum(String blueprintNum) {
 		this.blueprintNum = blueprintNum;
 	}
-	
-	@Length(min=0, max=200, message="payment长度必须介于 0 和 200 之间")
+
+	@Length(min = 0, max = 200, message = "payment长度必须介于 0 和 200 之间")
 	public String getPayment() {
 		return payment;
 	}
@@ -172,7 +180,7 @@ public class Contract extends DataEntity<Contract> {
 	public void setPayment(String payment) {
 		this.payment = payment;
 	}
-	
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public Date getSealTime() {
 		return sealTime;
@@ -181,7 +189,7 @@ public class Contract extends DataEntity<Contract> {
 	public void setSealTime(Date sealTime) {
 		this.sealTime = sealTime;
 	}
-	
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public Date getRecordTime() {
 		return recordTime;
@@ -190,7 +198,7 @@ public class Contract extends DataEntity<Contract> {
 	public void setRecordTime(Date recordTime) {
 		this.recordTime = recordTime;
 	}
-	
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public Date getReturnTime() {
 		return returnTime;
@@ -199,7 +207,7 @@ public class Contract extends DataEntity<Contract> {
 	public void setReturnTime(Date returnTime) {
 		this.returnTime = returnTime;
 	}
-	
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	public Date getReturnFinancialTime() {
 		return returnFinancialTime;
@@ -208,8 +216,8 @@ public class Contract extends DataEntity<Contract> {
 	public void setReturnFinancialTime(Date returnFinancialTime) {
 		this.returnFinancialTime = returnFinancialTime;
 	}
-	
-	@Length(min=0, max=200, message="sub_item长度必须介于 0 和 200 之间")
+
+	@Length(min = 0, max = 200, message = "sub_item长度必须介于 0 和 200 之间")
 	public String getSubItem() {
 		return subItem;
 	}
@@ -217,8 +225,8 @@ public class Contract extends DataEntity<Contract> {
 	public void setSubItem(String subItem) {
 		this.subItem = subItem;
 	}
-	
-	@Length(min=0, max=200, message="time_limit长度必须介于 0 和 200 之间")
+
+	@Length(min = 0, max = 200, message = "time_limit长度必须介于 0 和 200 之间")
 	public String getTimeLimit() {
 		return timeLimit;
 	}
@@ -235,13 +243,6 @@ public class Contract extends DataEntity<Contract> {
 		this.price = price;
 	}
 
-	public BigDecimal getArea() {
-		return area;
-	}
-
-	public void setArea(BigDecimal area) {
-		this.area = area;
-	}
 
 	public BigDecimal getInvestment() {
 		return investment;
@@ -307,5 +308,94 @@ public class Contract extends DataEntity<Contract> {
 		this.isSub = isSub;
 	}
 
+	public BigDecimal getAreaValue() {
+		return areaValue;
+	}
+
+	public void setAreaValue(BigDecimal areaValue) {
+		this.areaValue = areaValue;
+	}
+
+	public String getProcInsId() {
+		return procInsId;
+	}
+
+	public void setProcInsId(String procInsId) {
+		this.procInsId = procInsId;
+	}
+
+	public Integer getProcStatus() {
+		return procStatus;
+	}
+
+	public void setProcStatus(Integer procStatus) {
+		this.procStatus = procStatus;
+	}
+/*
+
+	public Area getArea() {
+		return area;
+	}
+
+	public void setArea(Area area) {
+		this.area = area;
+	}
+*/
+
+	public String getClazz() {
+		return clazz;
+	}
+
+	public void setClazz(String clazz) {
+		this.clazz = clazz;
+	}
+
+	public String getFirstParty() {
+		return firstParty;
+	}
+
+	public void setFirstParty(String firstParty) {
+		this.firstParty = firstParty;
+	}
+
+	public String getProgrammeCost() {
+		return programmeCost;
+	}
+
+	public void setProgrammeCost(String programmeCost) {
+		this.programmeCost = programmeCost;
+	}
+
+	public String getSpecificItem() {
+		return specificItem;
+	}
+
+	public void setSpecificItem(String specificItem) {
+		this.specificItem = specificItem;
+	}
+
+	public String getLegalAdvise() {
+		return legalAdvise;
+	}
+
+	public void setLegalAdvise(String legalAdvise) {
+		this.legalAdvise = legalAdvise;
+	}
+
+	public Area getProvince() {
+		return province;
+	}
+
+	public void setProvince(Area province) {
+		this.province = province;
+	}
+
+	public Area getCity() {
+		return city;
+	}
+
+	public void setCity(Area city) {
+		this.city = city;
+	}
 
 }

@@ -13,7 +13,8 @@
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
-		a.contract_id AS "contractId"
+		a.contract_id AS "contractId",
+		a.type AS "type"
 	</sql>
 	
 	<sql id="contAttachJoins">
@@ -75,7 +76,8 @@
 			create_date,
 			update_by,
 			update_date,
-			contract_id
+			contract_id,
+			type
 		) VALUES (
 			#{id},
 			#{remark},
@@ -86,7 +88,8 @@
 			#{createDate},
 			#{updateBy.id},
 			#{updateDate},
-			#{contractId}
+			#{contractId},
+			#{type}
 		)
 	</insert>
 	
@@ -98,7 +101,8 @@
 			file= #{file},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
-			contract_id = #{contractId}
+			contract_id = #{contractId},
+			type=#{type}
 		WHERE id = #{id}
 	</update>
 	

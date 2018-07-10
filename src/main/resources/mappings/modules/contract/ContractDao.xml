@@ -9,7 +9,9 @@
 		p.name AS "project.name",
 		a.name AS "name",
 		a.create_date AS "createDate",
-		a.create_by AS "creator.id",
+		a.create_by AS "createBy.id",
+		c.name AS "createBy.name",
+		c.login_name AS "createBy.loginName",
 		a.manager_id AS "manager.id",
 		m.name AS "manager.name",
 		a.value AS "value",
@@ -32,17 +34,33 @@
 		a.sub_item AS "subItem",
 		a.time_limit AS "timeLimit",
 		a.price AS "price",
-		a.area AS "area",
+		a.area_value AS "areaValue",
 		a.investment AS "investment",
 		a.progress AS "progress",
 		a.office_id AS "office.id",
-		o.name AS "office.name"
+		o.name AS "office.name",
+        a.class as "clazz",
+        a.proc_ins_id AS "procInsId",
+        a.first_party as "firstParty",
+        a.programme_cost as "programmeCost",
+        a.specific_item as "specificItem",
+	    a.legal_advise as "legalAdvise",
+	    a.province_id as "province.id",
+	    pp.name as "province.name",
+	    a.city_id as "city.id",
+	    cc.name as "city.name"
+
 	</sql>
 	
 	<sql id="contractJoins">
 	    left join bm_project p on p.id=a.project_id
 		LEFT JOIN sys_user m ON m.id = a.manager_id
 		LEFT JOIN sys_office o ON o.id = a.office_id
+		LEFT JOIN sys_area aa ON aa.id = a.area_id
+		LEFT JOIN sys_user c ON c.id = a.create_by
+		LEFT JOIN sys_area pp ON pp.id = a.province_id
+		LEFT JOIN sys_area cc ON cc.id = a.city_id
+
 	</sql>
     
 	<select id="get" resultType="Contract">
@@ -68,7 +86,7 @@
 		FROM bm_contract a
 		<include refid="contractJoins"/>
 		<where>
-			
+			a.del_flag = #{DEL_FLAG_NORMAL}
 			<if test="name != null and name != ''">
 				AND a.name LIKE 
 					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
@@ -87,6 +105,28 @@
 					#{item}
 				</foreach>
 			</if>
+			<if test="province!= null">
+				<if test="province.id != null and province.id!= ''">
+					and	a.province_id = #{province.id}
+				</if>
+			</if>
+			<if test="city!= null">
+				<if test="city.id != null and city.id!= ''">
+					and	a.city_id = #{city.id}
+				</if>
+			</if>
+			<if test="year != null and year != ''">
+				and	DATE_FORMAT(a.signed_time,"%Y") = #{year}
+			</if>
+			<if test="clazz != null and clazz != ''">
+				and	 class=#{clazz}
+			</if>
+			<if test="min != null and min != ''">
+				and	value>=#{min}
+			</if>
+			<if test="max != null and max != ''">
+				and	#{max}>=value
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -103,7 +143,7 @@
 		FROM bm_contract a
 		<include refid="contractJoins"/>
 		<where>
-
+			a.del_flag = #{DEL_FLAG_NORMAL}
 		</where>		
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -143,17 +183,24 @@
 			sub_item,
 			time_limit,
 			price,
-			area,
+			area_value,
 			investment,
 			progress,
-			office_id
+			office_id,
+			class,
+			first_party,
+			programme_cost,
+			specific_item,
+			legal_advise,
+			province_id,
+			city_id
 		) VALUES (
 			#{id},
 			#{code},
 			#{project.id},
 			#{name},
 			#{createDate},
-			#{creator.id},
+			#{createBy.id},
 			#{manager.id},
 			#{value},
 			#{income},
@@ -175,10 +222,17 @@
 			#{subItem},
 			#{timeLimit},
 			#{price},
-			#{area},
+			#{areaValue},
 			#{investment},
 			#{progress},
-			#{office.id}
+			#{office.id},
+			#{clazz},
+			#{firstParty},
+			#{programmeCost},
+			#{specificItem},
+			#{legalAdvise},
+			#{province.id},
+			#{city.id}
 		)
 	</insert>
 	
@@ -188,7 +242,7 @@
 			project_id = #{project.id},
 			name = #{name},
 			create_date = #{createDate},
-			create_by = #{creator.id},
+			create_by = #{createBy.id},
 			manager_id = #{manager.id},
 			value = #{value},
 			income = #{income},
@@ -210,17 +264,25 @@
 			sub_item = #{subItem},
 			time_limit = #{timeLimit},
 			price = #{price},
-			area = #{area},
+			area_value = #{areaValue},
 			investment = #{investment},
 			progress = #{progress},
 			office_id = #{office.id},
 			proc_ins_id=#{procInsId},
-			proc_status=#{procStatus}
+			proc_status=#{procStatus},
+			class=#{clazz},
+			first_party=#{firstParty},
+			programme_cost=#{programmeCost},
+			specific_item=#{specificItem},
+			legal_advise=#{legalAdvise},
+			province_id=#{province.id},
+			city_id=#{city.id}
 		WHERE id = #{id}
 	</update>
 	
 	<update id="delete">
-		DELETE FROM bm_contract
+		UPDATE bm_contract SET
+		 del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
 	

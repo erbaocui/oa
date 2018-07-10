@@ -70,36 +70,44 @@
 <body>
 <ul class="nav nav-tabs">
 	<li><a href="${ctx}/cont/base/list">合同列表</a></li>
-	<li ><a href="${ctx}/cont/base/form?id=${contract.id}">合同<shiro:hasPermission name="cont:base:edit">${not empty contract.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="cont:base:edit">查看</shiro:lacksPermission></a></li>
+	<c:if test="${empty contract.id}">
+		<li> <a href="${ctx}/cont/base/form?id=${contract.id}">合同添加</a></li>
+	</c:if>
+
 	<c:if test="${not empty contract.id}">
-		<li><a href="${ctx}/cont/base/applyPay?id=${contract.id}">请款附件</a></li>
-		<li><a href="${ctx}/cont/base/attach?id=${contract.id}">合同附件</a></li>
-		<li class="active"><a href="${ctx}/income/income/contractIncome?contractId=${contract.id}">合同支付</a></li>
+		<c:if test="${readonly}">
+			<li> <a href="${ctx}/cont/base/form?id=${contract.id}&readonly=${readonly}">合同查看</a></li>
+		</c:if>
+		<c:if test="${not readonly}">
+			<li > <a href="${ctx}/cont/base/form?id=${contract.id}&readonly=${readonly}">合同修改</a></li>
+		</c:if>
+		<li ><a href="${ctx}/cont/applyPay/list?contractId=${contract.id}&readonly=${readonly}">请款附件</a></li>
+		<li><a href="${ctx}/cont/attach/list?contractId=${contract.id}&readonly=${readonly}">合同附件</a></li>
+		<li class="active"><a href="${ctx}/income/income/contractIncome?contractId=${contract.id}&readonly=${readonly}">合同支付</a></li>
+		<li><a href="${ctx}/cont/contItem/list?contractId=${contract.id}&readonly=${readonly}">付费约定</a></li>
 	</c:if>
 </ul><br/>
+<sys:message content="${message}"/>
 
-		<sys:message content="${message}"/>
 
-		<%--<div class="control-group">
-			<label class="control-label">请款金额：</label>
-			<div class="controls">
-				<form:input path="applyValue" htmlEscape="false" class="input-xlarge " disabled="true"/>
+
+
+<div class="container-fluid">
+
+		<div class="row-fluid">
+			<div class="span1">
 			</div>
+			<div class="span10">
+				<label >合同名称:</label>
+				${contract.name}
+			</div>
+			<div class="span1">
+			</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span1">
 		</div>
-		<div class="control-group">
-			<label class="control-label">甲方名称：</label>
-			<div class="controls">
-				<form:input path="firstParty" htmlEscape="false" maxlength="255" class="input-xlarge " disabled="true"/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">备注：</label>
-			<div class="controls">
-				<form:textarea path="remarks" htmlEscape="false" rows="4" maxlength="255" class="input-xxlarge " disabled="true"/>
-			</div>
-		</div>--%>
-
-
+		<div class="span10">
 		<table id="contentTable" class="table table-striped table-bordered table-condensed">
 			<thead>
 			<tr>
@@ -134,5 +142,11 @@
 			   </tr>
 			</tbody>
 		</table>
+		</div>
+		<div class="span1">
+		</div>
+	</div>
+</div>
+
 </body>
 </html>

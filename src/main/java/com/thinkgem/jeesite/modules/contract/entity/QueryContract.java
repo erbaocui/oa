@@ -8,6 +8,8 @@ import java.util.List;
 public class QueryContract extends Contract {
 
    private String year;
+   private Integer min;
+   private Integer max;
 
    private  String[] noInArray;
 
@@ -28,5 +30,21 @@ public class QueryContract extends Contract {
 
     public void setNoInArray(String[] noInArray) {
         this.noInArray = noInArray;
+    }
+
+    public Integer getMin() {
+        return min;
+    }
+
+    public void setMin(Integer min) {
+        this.min = min;
+    }
+
+    public Integer getMax() {
+        return max;
+    }
+
+    public void setMax(Integer max) {
+        this.max = max;
     }
 }

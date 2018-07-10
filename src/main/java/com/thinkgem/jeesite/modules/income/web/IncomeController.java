@@ -63,7 +63,7 @@ public class IncomeController extends BaseController {
 
 
 	@RequestMapping(value = {"contractIncome", ""})
-	public String contractIncome(String contractId, HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String contractIncome(String contractId, Boolean readonly,HttpServletRequest request, HttpServletResponse response, Model model) {
 		Income income=new Income();
 		Contract contract=new Contract();
 		contract=contService.get(contractId);
@@ -71,6 +71,7 @@ public class IncomeController extends BaseController {
 		List<Income> list = incomeService.findList(income);
 		model.addAttribute("incomes",list);
 		model.addAttribute("contract",contract);
+		model.addAttribute("readonly",readonly);
 		return "modules/income/contractIncome";
 	}
 

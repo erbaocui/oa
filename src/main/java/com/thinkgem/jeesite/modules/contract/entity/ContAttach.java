@@ -19,6 +19,7 @@ public class ContAttach extends DataEntity<ContAttach> {
 	private String path;
 	private String contractId;		// contract_id
 	private String remark;
+	private String type;
 
 	public ContAttach() {
 		super();
@@ -68,5 +69,13 @@ public class ContAttach extends DataEntity<ContAttach> {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

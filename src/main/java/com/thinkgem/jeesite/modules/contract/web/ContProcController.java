@@ -1,0 +1,464 @@
+/**
+ * Copyright &copy; 2012-2016 <a href="https://github.com/thinkgem/jeesite">JeeSite</a> All rights reserved.
+ */
+package com.thinkgem.jeesite.modules.contract.web;
+
+import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.utils.DateUtils;
+import com.thinkgem.jeesite.common.utils.FTPUtil;
+import com.thinkgem.jeesite.common.utils.FileUtils;
+import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.common.web.BaseController;
+import com.thinkgem.jeesite.modules.act.constant.ActConstant;
+import com.thinkgem.jeesite.modules.act.entity.BaseReview;
+import com.thinkgem.jeesite.modules.act.service.ActTaskService;
+import com.thinkgem.jeesite.modules.contract.constant.ContConstant;
+import com.thinkgem.jeesite.modules.contract.entity.ContAttach;
+import com.thinkgem.jeesite.modules.contract.entity.Contract;
+import com.thinkgem.jeesite.modules.contract.proc.ContractReview;
+import com.thinkgem.jeesite.modules.contract.service.ContAttachService;
+import com.thinkgem.jeesite.modules.contract.service.ContService;
+import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+import org.activiti.engine.impl.identity.Authentication;
+import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.Task;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.File;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 合同管理Controller
+ * @author cuijp
+ * @version 2018-04-19
+ */
+@Controller
+@RequestMapping(value = "${adminPath}/cont/proc")
+public class ContProcController extends BaseController {
+
+	@Autowired
+	private ContService contractService;
+
+	@Autowired
+	private ActTaskService actTaskService;
+
+	@Autowired
+	private ContAttachService contAttachService;
+
+
+
+	@ModelAttribute
+	public Contract get(@RequestParam(required=false) String id) {
+		Contract entity = null;
+		if (StringUtils.isNotBlank(id)){
+			entity = contractService.get(id);
+		}
+		if (entity == null){
+			entity = new Contract();
+		}
+		return entity;
+	}
+
+	/**
+	 * 发起合同审批
+	 *
+	 * @param id //合同id
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/audit/start")
+	@ResponseBody
+	public Map auditStart(String id) throws Exception {
+		Contract contract=get(id);
+		Map<String,Object> result=new HashMap<String, Object>();
+		try {
+			Map<String,Object> variables = null;
+			variables = new HashMap<String, Object>();
+			variables.put("businessId", id);
+			variables.put("role","contract");
+			String processInstanceId=actTaskService.startProcess(ActConstant.CONTRACT_REVIEW_PROCESS_KEY, ContConstant.CONTRACT_TABLE_NAME,id,contract.getName()+"合同",variables);
+			actTaskService.completeFirstTask(processInstanceId);
+			contract =contractService.get(id);
+			contract.setStatus(2);
+			//改合同状态
+			contractService.save(contract);
+			result.put("result","success");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.put("result","error");
+
+		} finally {
+			return result;
+		}
+
+
+	}
+
+	@RequestMapping(value = {"/audit/manager"})
+	public String auditManagerView(String id,String taskId, Model model) throws Exception{
+	    Contract contract=contractService.get(id);
+		List<Comment> comments=actTaskService.getTaskHistoryCommentList(taskId);
+		ContractReview review=new ContractReview();
+		review.setSpecificItem(contract.getSpecificItem());
+		ContAttach contAttach=new ContAttach();
+		contAttach.setContractId(contract.getId());
+		List<ContAttach> list = contAttachService.findList(contAttach);
+		model.addAttribute("contAttachs", list);
+		model.addAttribute("taskId", taskId);
+		model.addAttribute("contract",contract);
+		model.addAttribute("comments",comments);
+		model.addAttribute("review",review);
+		model.addAttribute("readonly",true );
+		//model.addAttribute("fileClass","2" );
+		return "modules/contract/auditManager";
+	}
+
+	@RequestMapping(value = {"/audit/managerSave"},method= RequestMethod.POST)
+	public String auditManagerSave(ContractReview review,RedirectAttributes redirectAttributes) throws Exception{
+		Task task=actTaskService.getTask( review.getTaskId());
+		//Map<String, Object> variables=task.getTaskLocalVariables();
+
+		String taskId=task.getId();
+		String processId=task.getProcessInstanceId();
+		actTaskService.getTaskVariable(taskId,"businessId");
+		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
+		Map<String, Object> variables=new HashMap<String,Object>();
+		String contractId=(String)actTaskService.getTaskVariable(taskId,"businessId");
+		Contract contract=contractService.get(contractId);
+		contract.setSpecificItem(review.getSpecificItem());
+		contractService.save(contract);
+		int state=review.getState();
+		if( state==1){
+			if(review.getComment()==null||review.getComment().equals("")){
+				review.setComment("通过");
+			}
+			variables.put("msg", "pass");
+			variables.put("role","risk");
+
+		}else if(state==2){
+			variables.put("msg", "reject");
+
+
+ 		}
+		variables.put("value",contract.getValue());
+		variables.put("specificItem",review.getSpecificItem());
+		User user=UserUtils.getUser();
+		Authentication.setAuthenticatedUserId(  "【合同管理员】" +user.getName());// 设置用户id
+		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
+		if( state==1){
+			if((review.getSpecificItem().equals("0"))&&(contract.getValue().doubleValue()<3000000)){
+				actTaskService.completeTaskByDefKey(processId,"usertask11",variables);
+			}
+		}
+		addMessage(redirectAttributes, "操作成功");
+		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
+
+	}
+
+
+	@RequestMapping(value = {"/audit/risk"})
+	public String auditRiskView(String id,String taskId, Model model) throws Exception{
+		Contract contract=contractService.get(id);
+		List<Comment> comments=actTaskService.getTaskHistoryCommentList( taskId);
+		ContAttach contAttach=new ContAttach();
+		contAttach.setContractId(contract.getId());
+		List<ContAttach> list = contAttachService.findList(contAttach);
+		model.addAttribute("contAttachs", list);
+		model.addAttribute("taskId", taskId);
+		model.addAttribute("contract",contract);
+		model.addAttribute("comments",comments);
+		model.addAttribute("review", new BaseReview());
+		model.addAttribute("readonly",true);
+		//model.addAttribute("fileClass","2" );
+		return "modules/contract/auditRisk";
+	}
+
+	@RequestMapping(value = {"/audit/riskSave"},method= RequestMethod.POST)
+	public String auditRiskSave(BaseReview review,RedirectAttributes redirectAttributes)throws Exception{
+		Task task=actTaskService.getTask( review.getTaskId());
+		String taskId=task.getId();
+		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
+		Map<String, Object> variables=new HashMap<String,Object>();
+		int state=review.getState();
+		if( state==1){
+			if(review.getComment()==null||review.getComment().equals("")){
+				review.setComment("通过");
+			}
+			variables.put("msg", "pass");
+			variables.put("role","business");
+		}else if(state==2){
+			variables.put("msg", "reject");
+			actTaskService.completeOtherTask(taskId,variables);
+		}
+		User user=UserUtils.getUser();
+		Authentication.setAuthenticatedUserId( "【风险】"+ user.getName());// 设置用户id
+		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
+		addMessage(redirectAttributes, "操作成功");
+		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
+
+	}
+
+	@RequestMapping(value = {"/audit/law"})
+	public String auditLawView(String id,String taskId, Model model) throws Exception{
+		Contract contract=contractService.get(id);
+		List<Comment> comments=actTaskService.getTaskHistoryCommentList( taskId);
+		ContAttach contAttach=new ContAttach();
+		contAttach.setContractId(contract.getId());
+		List<ContAttach> list = contAttachService.findList(contAttach);
+		model.addAttribute("contAttachs", list);
+		model.addAttribute("taskId", taskId);
+		model.addAttribute("contract",contract);
+		model.addAttribute("comments",comments);
+		model.addAttribute("review", new ContractReview());
+		model.addAttribute("readonly",true);
+		model.addAttribute("fileClass","2" );
+		return "modules/contract/auditLaw";
+	}
+
+
+	@RequestMapping(value = {"/audit/lawSave"},method= RequestMethod.POST)
+	public String auditLawSave(ContractReview review,RedirectAttributes redirectAttributes) throws Exception{
+		Task task=actTaskService.getTask( review.getTaskId());
+
+		String taskId=task.getId();
+		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
+		Map<String, Object> variables=new HashMap<String,Object>();
+		int state=review.getState();
+		if( state==1){
+			if(review.getComment()==null||review.getComment().equals("")){
+				review.setComment("通过");
+			}
+			variables.put("msg", "pass");
+			variables.put("role","business");
+		}else if(state==2){
+			variables.put("msg", "reject");
+			actTaskService.completeOtherTask(taskId,variables);
+		}
+		User user=UserUtils.getUser();
+		Authentication.setAuthenticatedUserId("【法律】"+user.getName());// 设置用户id
+		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
+		addMessage(redirectAttributes, "操作成功");
+		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
+
+	}
+
+	@RequestMapping(value = {"/audit/busi"})
+	public String  auditBusiView(String id,String taskId, Model model) throws Exception{
+		Contract contract=contractService.get(id);
+		List<Comment> comments=actTaskService.getTaskHistoryCommentList( taskId);
+		ContAttach contAttach=new ContAttach();
+		contAttach.setContractId(contract.getId());
+		List<ContAttach> list = contAttachService.findList(contAttach);
+		model.addAttribute("contAttachs", list);
+		model.addAttribute("taskId", taskId);
+		model.addAttribute("contract",contract);
+		model.addAttribute("comments",comments);
+		model.addAttribute("review", new BaseReview());
+		model.addAttribute("readonly",true);
+		//model.addAttribute("fileClass","2" );
+		return "modules/contract/auditBusiness";
+	}
+
+
+	@RequestMapping(value = {"/audit/busiSave"},method= RequestMethod.POST)
+	public String auditBusiSave(BaseReview review,RedirectAttributes redirectAttributes) {
+		Task task=actTaskService.getTask( review.getTaskId());
+		String taskId=task.getId();
+		String contractId=(String)actTaskService.getTaskVariable(taskId,	"businessId");
+		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
+		Map<String, Object> variables=new HashMap<String,Object>();
+		int state=review.getState();
+		if( state==1){
+			if(review.getComment()==null||review.getComment().equals("")){
+				review.setComment("通过");
+			}
+			variables.put("msg", "pass");
+		}else if(state==2){
+			variables.put("msg", "reject");
+		}
+		User user=UserUtils.getUser();
+		Authentication.setAuthenticatedUserId("【运营】"+user.getName());// 设置用户id
+		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
+		if( state==1){
+			Contract contract=contractService.get(contractId);
+			contract.setStatus(3);
+			contractService.save(contract);
+
+		}
+		addMessage(redirectAttributes, "操作成功");
+		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
+	}
+
+
+	@RequestMapping(value = {"/audit/improve"})
+	public String auditImproveView(String id,String taskId, Model model) throws Exception{
+		Contract contract=contractService.get(id);
+		List<Comment> comments=actTaskService.getTaskHistoryCommentList( taskId);
+		ContAttach contAttach=new ContAttach();
+		contAttach.setContractId(contract.getId());
+		List<ContAttach> list = contAttachService.findList(contAttach);
+		model.addAttribute("contAttachs", list);
+		model.addAttribute("taskId", taskId);
+		model.addAttribute("contract",contract);
+		model.addAttribute("comments",comments);
+		model.addAttribute("review", new BaseReview());
+		model.addAttribute("readonly",false );
+		model.addAttribute("fileClass","1" );
+		return "modules/contract/auditImprove";
+	}
+
+
+
+
+
+	@RequestMapping(value = {"/audit/improveSave"},method= RequestMethod.POST)
+	public String  auditImproveSave(BaseReview review,RedirectAttributes redirectAttributes) {
+		Task task=actTaskService.getTask( review.getTaskId());
+		String taskId=task.getId();
+		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
+		Map<String, Object> variables=new HashMap<String,Object>();
+		variables.put("msg", "pass");
+		if(review.getComment()==null||review.getComment().equals("")){
+			review.setComment("通过");
+		}
+		User user=UserUtils.getUser();
+		Authentication.setAuthenticatedUserId("【创建者】"+user.getName());// 设置用户id
+		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
+		addMessage(redirectAttributes, "操作成功");
+		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
+	}
+
+
+	/**
+	 * 合同附件上传
+	 * @param file
+	 * @return
+	 */
+	@RequestMapping(value = "/audit/upload", method=RequestMethod.POST)
+	public String attachUpload(String contractId, String fileRemark,String fileClassUpload,String taskIdUpload, MultipartFile file, RedirectAttributes redirectAttributes)throws Exception {
+		try {
+			Contract contract = get(contractId);
+			Date date = contract.getCreateDate();
+			String year = DateUtils.formatDate(date, "yyyy");
+			String fileType = file.getOriginalFilename().split("[.]")[1];
+
+			String ftpPath = "/" + ContConstant.CONTRACT_FILE_PATH + "/" + year + "/";
+			String path = Global.getUserfilesBaseDir();
+			String fileName = ContConstant.CONTRACT_FILE_PREFIX + DateUtils.getDate("yyyyMMddHHmmssSSS") + "." + fileType;
+			File f = new File(path, fileName);
+			if (f.isFile()) {
+				FileUtils.deleteFile(path + "/" + fileName);
+			}
+
+			FileUtils.writeByteArrayToFile(f, file.getBytes());
+			FTPUtil ftpUtil = new FTPUtil();
+			ftpUtil.uploadFile(ftpPath, fileName, path + "/" + fileName);
+
+
+			ContAttach contAttach = new ContAttach();
+			contAttach.setContractId(contract.getId());
+			contAttach.setUrl(ftpPath+fileName);
+			contAttach.setPath(ftpPath);
+
+			contAttach.setType(fileClassUpload);
+			contAttach.preInsert();
+			contAttach.setIsNewRecord(true);
+			contAttach.setRemark(fileRemark);
+			contAttach.setFile(fileName);
+			contAttachService.save(contAttach);
+			addMessage(redirectAttributes, "文件上传成功");
+		}catch (Exception e){
+			e.printStackTrace();
+			addMessage(redirectAttributes, "文件上传失败");
+		}
+	/*	Contract contract=contractService.get(contractId);
+		List<Comment> comments=actTaskService.getTaskHistoryCommentList( taskIdUpload);
+		ContAttach contAttach=new ContAttach();
+		contAttach.setContractId(contract.getId());
+		List<ContAttach> list = contAttachService.findList(contAttach);
+		model.addAttribute("contAttachs", list);
+		model.addAttribute("taskId",  taskIdUpload);
+		model.addAttribute("contract",contract);
+		model.addAttribute("comments",comments);
+		model.addAttribute("review", new BaseReview());
+		model.addAttribute("readonly",false );
+		model.addAttribute("type",type );
+		if(type.equals("1")) {
+			return "modules/contract/auditImprove";
+		}else{
+			return "modules/contract/auditLaw";
+		}*/
+		if(fileClassUpload.equals("1")) {
+			return "redirect:" + Global.getAdminPath() + "/cont/proc/audit/improve?taskId=" + taskIdUpload + "&id=" + contractId;
+		}else{
+			return "redirect:" + Global.getAdminPath() + "/cont/proc/audit/law?taskId=" + taskIdUpload + "&id=" +contractId;
+		}
+
+	}
+
+	@RequestMapping(value = "/audit/delete")
+	public String delete(String id,String taskId,String fileClass, RedirectAttributes redirectAttributes)throws Exception {
+		ContAttach contAttach=contAttachService.get(id);
+		try {
+
+			String path = Global.getUserfilesBaseDir();
+			FTPUtil ftpUtil = new FTPUtil();
+			ftpUtil.deleteFile(contAttach.getPath(),contAttach.getFile());
+			contAttachService.delete(contAttach);
+			addMessage( redirectAttributes, "附件删除成功");
+		}catch (Exception e){
+			e.printStackTrace();
+			addMessage( redirectAttributes, "附件删除失败");
+		}
+		if(fileClass.equals("1")) {
+			return "redirect:" + Global.getAdminPath() + "/cont/proc/audit/improve?taskId=" + taskId + "&id=" + contAttach.getContractId();
+		}else{
+			return "redirect:" + Global.getAdminPath() + "/cont/proc/audit/law?taskId=" + taskId + "&id=" + contAttach.getContractId();
+		}
+	}
+
+
+	/**
+	 * 合同信息保存
+	 *
+	 * @return
+	 */
+
+
+	@RequestMapping(value = "/audit/save")
+	public String save(Contract contract,String taskIdContract,RedirectAttributes redirectAttributes)throws Exception {
+
+		contractService.save(contract);
+
+	/*	//Contract contract=contractService.get(id);
+		List<Comment> comments=actTaskService.getTaskHistoryCommentList(  taskIdContract);
+		ContAttach contAttach=new ContAttach();
+		contAttach.setContractId(contract.getId());
+		List<ContAttach> list = contAttachService.findList(contAttach);
+		model.addAttribute("contAttachs", list);
+		model.addAttribute("taskId",  taskIdContract);
+		model.addAttribute("contract",contract);
+		model.addAttribute("comments",comments);
+		model.addAttribute("review", new BaseReview());
+		model.addAttribute("readonly",false );
+		model.addAttribute("fileType","1" );
+		addMessage(model, "合同保存成功");*/
+		addMessage(redirectAttributes, "合同保存成功");
+		//return "modules/contract/auditImprove";
+		return "redirect:"+Global.getAdminPath()+"/cont/proc/audit/improve?taskId="+taskIdContract+"&id="+contract.getId();
+	}
+
+
+
+}

@@ -280,3 +280,11 @@ function abbr(name, maxLength){
  }  
  return nameSub;  
 }
+
+
+function onlyNum(that) {
+    that.value = that.value.replace(/\D/g, "");
+}
+function onlyFloat(that) {
+    that.value = that.value.replace(/^d*(?:.d{0,2})?$/, "");
+}

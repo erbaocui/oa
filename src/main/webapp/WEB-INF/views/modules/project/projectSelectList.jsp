@@ -15,7 +15,8 @@
         	return false;
         }
         function check(id,name){
-
+            parent.mainFrame.window.document.getElementById("project.name").value=name;
+            parent.mainFrame.window.document.getElementById("project.id").value=id;
             parent.top.$.jBox.close();
            //window.parent.getEl
 		}
@@ -52,7 +53,7 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="project">
 			<tr>
-				<td><input type="radio" name="prjSel" onclick="check('${project.name}','${project.name}')" /></td>
+				<td><input type="radio" name="prjSel" onclick="check('${project.id}','${project.name}')" /></td>
 				<td><%--<a href="${ctx}/project/project/form?id=${project.id}"></a>--%>
 					${project.name}
 			    </td>

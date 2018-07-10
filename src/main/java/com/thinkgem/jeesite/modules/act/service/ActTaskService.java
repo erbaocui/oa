@@ -536,6 +536,16 @@ public class ActTaskService extends BaseService {
 		return comments;
 
 	}
+
+	public List<Comment> getProcessInstanceCommentList(String processInstanceId)throws Exception {
+		if (processInstanceId == null) {
+			return null;
+		}
+
+		List<Comment> comments = taskService.getProcessInstanceComments(processInstanceId);
+		return comments;
+
+	}
 	/**
 	 * 删除任务
 	 * @param taskId 任务ID
@@ -551,16 +561,51 @@ public class ActTaskService extends BaseService {
 	 * @param taskId 任务ID
 	 */
 	@Transactional(readOnly = false)
-	public void deleteBrotherTask(String  taskId)	throws Exception{
+	public void deleteOtherTask(String  taskId)throws Exception{
+
+
+			Task task= getTask(taskId);
+			List<Task>taskList=taskService.createTaskQuery().processInstanceId(task.getProcessInstanceId()).list();
+			for(Task t:taskList){
+                if(!taskId.equals(t.getId())) {
+                    taskService.deleteTask(t.getId(), "系统完成");
+                }
+            }
+
+	}
+
+
+	/**
+	 * 删除任务
+	 * @param taskId 任务ID
+	 */
+	@Transactional(readOnly = false)
+	public void completeOtherTask(String  taskId,Map<String, Object> vars)throws Exception{
+
+
 		Task task= getTask(taskId);
-		List<Task>taskList=taskService.createTaskQuery().processInstanceId(task.getProcessInstanceId()).taskDefinitionKey(task.getTaskDefinitionKey()).list();
+		List<Task>taskList=taskService.createTaskQuery().processInstanceId(task.getProcessInstanceId()).list();
 		for(Task t:taskList){
 			if(!taskId.equals(t.getId())) {
-				taskService.deleteTask(t.getId(), "系统完成");
+				taskService.complete(t.getId(), vars);
 			}
 		}
+
 	}
-	
+
+	@Transactional(readOnly = false)
+	public void completeTaskByDefKey(String  processInstanceId,String definitionKey  ,Map<String, Object> vars)throws Exception{
+
+
+
+		List<Task>taskList=taskService.createTaskQuery().processInstanceId(processInstanceId).taskDefinitionKey(definitionKey).list();
+		for(Task t:taskList){
+			taskService.complete(t.getId(), vars);
+		}
+
+	}
+
+
 	/**
 	 * 签收任务
 	 * @param taskId 任务 ID

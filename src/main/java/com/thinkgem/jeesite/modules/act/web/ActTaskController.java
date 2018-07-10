@@ -62,7 +62,7 @@ public class ActTaskController extends BaseController {
 	 * @param procDefKey 流程定义标识
 	 * @return
 	 */
-	@RequestMapping(value = {"mytodo", ""})
+	/*@RequestMapping(value = {"mytodo", ""})
 	public String mytodoList(Act act, HttpServletResponse response, Model model) throws Exception {
 		List<Act> list = actTaskService.mytodoList(act);
 		model.addAttribute("list", list);
@@ -71,7 +71,7 @@ public class ActTaskController extends BaseController {
 		}
 		return "modules/act/actTaskMyTodoList";
 	}
-
+*/
 	/**
 	 * 获取待办列表
 	 * @param procDefKey 流程定义标识

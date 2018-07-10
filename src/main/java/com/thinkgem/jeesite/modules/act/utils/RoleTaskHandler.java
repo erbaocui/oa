@@ -39,7 +39,13 @@ public class RoleTaskHandler implements ExecutionListener, TaskListener {
 		for(User user:userList){
 			userIdList.add( user.getLoginName());
 		}
-		delegateTask.addCandidateUsers(userIdList);
+		if(userList!=null&&userList.size()>0) {
+			if (userList.size() == 1) {
+				delegateTask.addCandidateUser(userIdList.get(0));
+			} else {
+				delegateTask.addCandidateUsers(userIdList);
+			}
+		}
 	}
 
 	@Override

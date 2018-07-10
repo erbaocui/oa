@@ -15,7 +15,7 @@ import com.thinkgem.jeesite.common.persistence.TreeEntity;
 public class Area extends TreeEntity<Area> {
 
 	private static final long serialVersionUID = 1L;
-//	private Area parent;	// 父级编号
+   // private Area parent;	// 父级编号
 //	private String parentIds; // 所有父级编号
 	private String code; 	// 区域编码
 //	private String name; 	// 区域名称
