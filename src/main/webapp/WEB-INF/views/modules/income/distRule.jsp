@@ -6,8 +6,8 @@
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			//$("#name").focus();
-			$("#inputForm").validate({
+		//$("#name").focus();
+			/*$("#inputForm").validate({
 				submitHandler: function(form){
 					loading('正在提交，请稍等...');
 					form.submit();
@@ -21,7 +21,7 @@
 						error.insertAfter(element);
 					}
 				}
-			});
+			});*/
 
 			// 请求
            /* $.post("<%--${ctx}--%>/income/distOffice/distInit",{incomeId:"1"},

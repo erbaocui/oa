@@ -9,6 +9,7 @@
 		<result property="contract.id" column="contract.id" jdbcType="VARCHAR" javaType="java.lang.String" />
 		<result property="contract.code"  column="contract.code" jdbcType="VARCHAR" javaType="java.lang.String" />
 		<result property="contract.name" column="contract.name" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="contract.office.id" column="contract.office.id" jdbcType="VARCHAR" javaType="java.lang.String" />
 		<result property="status" column="status" jdbcType="INTEGER" javaType="java.lang.Integer" />
 		<result property="value" column="value" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
 		<result property="createBy.id" column="createBy" jdbcType="VARCHAR" javaType="java.lang.String" />
@@ -86,7 +87,8 @@
 		value,
 		create_by,
 		create_date,
-		proc_ins_id
+		proc_ins_id,
+		contract_id
 		) VALUES (
 		#{id},
 		#{applyId},
@@ -94,7 +96,8 @@
 		#{value},
 		#{createBy.id},
 		#{createDate},
-		#{procInsId}
+		#{procInsId},
+		#{contract.id}
 		)
 	</insert>
 
@@ -103,7 +106,8 @@
 		apply_id = #{applyId},
 		status = #{status},
 		value = #{value},
-		proc_ins_id = #{procInsId}
+		proc_ins_id = #{procInsId},
+		contract_id = #{contract.id}
 		WHERE id = #{id}
 	</update>
 

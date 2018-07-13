@@ -80,8 +80,7 @@ public class DistProcController extends BaseController {
 	public Map start(String id) throws Exception {
 		Map<String,Object> result=new HashMap<String, Object>();
 		try {
-			Map<String,Object> variables = null;
-			variables = new HashMap<String, Object>();
+			Map<String,Object> variables = new HashMap<String, Object>();
 			variables.put("businessId", id);
 
 			String processInstanceId=actTaskService.startProcess(ActConstant.INCOME_DISTRIBUTE_PROCESS_KEY, IncomeConstant.INCOME_TABLE_NAME,id,ActConstant.INCOME_DISTRIBUTE_PROCESS_TITLE,variables);
@@ -89,7 +88,7 @@ public class DistProcController extends BaseController {
 			actTaskService.completeFirstTask(processInstanceId);
 			Income income =incomeService.get(id);
 			income.setStatus(2);
-			incomeService.save(income);// 修改请假单状态*/
+			incomeService.save(income);//
 			result.put("result","success");
 
 		} catch (Exception e) {
@@ -120,10 +119,10 @@ public class DistProcController extends BaseController {
 		String taskId=task.getId();
 		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
 		Map<String, Object> variables=new HashMap<String,Object>();
-		variables.put("role","contractAuditor");
+		variables.put("role","contract");
 
 		User user=UserUtils.getUser();
-		Authentication.setAuthenticatedUserId(  user.getName()+ "【"+UserUtils.getUser().getLoginName()+"】");// 设置用户id
+		Authentication.setAuthenticatedUserId( "【项目部门】" +user.getName());// 设置用户id
 		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
 		addMessage(redirectAttributes, "操作成功");
 		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
@@ -175,7 +174,7 @@ public class DistProcController extends BaseController {
 			}
 
 			User user=UserUtils.getUser();
-			Authentication.setAuthenticatedUserId(  user.getName()+ "【"+UserUtils.getUser().getLoginName()+"】");// 设置用户id
+			Authentication.setAuthenticatedUserId(  "【合同管理员】" +user.getName());// 设置用户id
 			actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
 			addMessage(redirectAttributes, "操作成功");
 			return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
@@ -217,7 +216,7 @@ public class DistProcController extends BaseController {
 		}
 		variables.put("role","business");
 		User user=UserUtils.getUser();
-		Authentication.setAuthenticatedUserId(  user.getName()+ "【"+UserUtils.getUser().getLoginName()+"】");// 设置用户id
+		Authentication.setAuthenticatedUserId("【部门确认】" +user.getName());// 设置用户id
 		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
 		/*if(state==2) {
 			actTaskService.jumpTask(processInstanceId,"usertask11",variables);
@@ -257,10 +256,10 @@ public class DistProcController extends BaseController {
 			variables.put("role","finance");
 		}else if(state==2){
 			variables.put("msg", "reject");
-			variables.put("role","contractAuditor");
+			variables.put("role","contract");
 		}
 		User user=UserUtils.getUser();
-		Authentication.setAuthenticatedUserId(  user.getName()+ "【"+UserUtils.getUser().getLoginName()+"】");// 设置用户id
+		Authentication.setAuthenticatedUserId( "【部门确认】" +user.getName());// 设置用户id
 		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
 		addMessage(redirectAttributes, "操作成功");
 		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;

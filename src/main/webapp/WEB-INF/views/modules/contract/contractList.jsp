@@ -179,11 +179,15 @@
 						${fns:getDictLabel(contract.status, 'contract_status', '无')}
 				</td>
 				<td>
-				<a href="${ctx}/cont/base/form?id=${contract.id}&readonly=true">查看</a>
+				<a href="${ctx}/cont/base/form?id=${contract.id}&readonly=true&single=multi">查看</a>
 					<shiro:hasPermission name="cont:creator:create" >
 						<c:if test="${contract.status == 1}">
 							<a href=" #;" onclick="startProcess('${contract.id}')">启动流程</a>
 						</c:if>
+						<c:if test="${(contract.status != 1)&&(contract.status != 2)}">
+							<a href="${ctx}/cont/applyPay/list?contractId=${contract.id}&readonly=false&single=single">请款管理</a></a>
+						</c:if>
+
 					</shiro:hasPermission>
 					<shiro:hasPermission name="cont:manager:edit" >
 						<c:if test="${contract.status != 1}">

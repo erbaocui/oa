@@ -81,7 +81,7 @@
 		<c:if test="${not readonly}">
 			<li > <a href="${ctx}/cont/base/form?id=${contract.id}&readonly=${readonly}">合同修改</a></li>
 		</c:if>
-		<li ><a href="${ctx}/cont/applyPay/list?contractId=${contract.id}&readonly=${readonly}">请款附件</a></li>
+		<li ><a href="${ctx}/cont/applyPay/list?contractId=${contract.id}&readonly=${readonly}">合同请款</a></li>
 		<li><a href="${ctx}/cont/attach/list?contractId=${contract.id}&readonly=${readonly}">合同附件</a></li>
 		<li class="active"><a href="${ctx}/income/income/contractIncome?contractId=${contract.id}&readonly=${readonly}">合同支付</a></li>
 		<li><a href="${ctx}/cont/contItem/list?contractId=${contract.id}&readonly=${readonly}">付费约定</a></li>

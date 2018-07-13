@@ -11,9 +11,11 @@ import com.thinkgem.jeesite.common.service.converter.PdfConverter;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.FTPUtil;
 import com.thinkgem.jeesite.common.utils.FileUtils;
+import com.thinkgem.jeesite.modules.act.service.ActTaskService;
 import com.thinkgem.jeesite.modules.contract.constant.ContConstant;
 import com.thinkgem.jeesite.modules.contract.entity.Contract;
 import com.thinkgem.jeesite.modules.contract.service.ContService;
+import org.activiti.engine.task.Comment;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -53,6 +55,8 @@ public class ApplyPayController extends BaseController {
 	private ContApplyService contApplyService;
 	@Autowired
 	private ContService contService;
+	@Autowired
+	private ActTaskService actTaskService;
 	
 	@ModelAttribute
 	public ContApply get(@RequestParam(required=false) String id) {
@@ -67,36 +71,96 @@ public class ApplyPayController extends BaseController {
 	}
 
 	@RequestMapping(value = {"list", ""})
-	public String applyPay(String contractId,String readonly, HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String applyPay(String contractId,String readonly,String single,HttpServletRequest request, HttpServletResponse response, Model model) {
 		ContApply contApply=new ContApply();
-		contApply.setContractId(contractId);
-		List<ContApply> list = contApplyService.findList(contApply);
 		Contract contract=contService.get( contractId);
+		contApply.setContract(contract);
+		List<ContApply> list = contApplyService.findList(contApply);
 		model.addAttribute("contApplys", list);
 		model.addAttribute("contract",contract);
 		model.addAttribute("readonly",readonly);
+		model.addAttribute("single",single);
 		return "modules/contract/contractApplyPay";
 	}
 
-	/*@RequiresPermissions("cont:base:view")
-	@RequestMapping(value = "form")
-	public String form(ContApply contApply, Model model) {
-		model.addAttribute("contApply", contApply);
-		return "modules/contract/contApplyForm";
-	}*/
 
-	/*@RequiresPermissions("cont:base:edit")
-	@RequestMapping(value = "save")
-	public String save(ContApply contApply, Model model, RedirectAttributes redirectAttributes) {
-		if (!beanValidator(model, contApply)){
-			return form(contApply, model);
+	@RequestMapping(value = "form")
+	public String form(ContApply contApply,String contractId,String readonly,String single, Model model) throws Exception{
+		if(StringUtils.isEmpty(contApply.getId())){
+			contApply=contApplyService.getLast(contractId);
+			if(contApply!=null){
+				contApply.setId(null);
+				contApply.setFileName(null);
+				contApply.setPath(null);
+				contApply.setRemark(null);
+				contApply.setReceiptDate(null);
+				contApply.setUrl(null);
+				contApply.setReceiptValue(null);
+			}else{
+				Contract contract=contService.get(contractId);
+				contApply=new ContApply();
+				contApply.setReceiptName(contract.getFirstParty());
+			}
 		}
-		contApplyService.save(contApply);
-		addMessage(redirectAttributes, "保存合同请款成功");
-		return "redirect:"+Global.getAdminPath()+"/contract/contApply/?repage";
+		if( contApply.getProcInsId()!=null){
+			if((contApply.getStatus()!=1)&&(contApply.getStatus()!=2)){
+				List<Comment> comments=actTaskService.getProcessInstanceCommentList(contApply.getProcInsId());
+				model.addAttribute("comments",comments);
+			}
+		}
+		model.addAttribute("contApply", contApply);
+		model.addAttribute("contractId", contractId);
+		model.addAttribute("readonly",readonly);
+		model.addAttribute("single",single);
+		return "modules/contract/contractApplyPayForm";
+	}
+
+
+	@RequestMapping(value = "save")
+	public String save(ContApply contApply,String contractId,Boolean readonly, MultipartFile file, Model model, RedirectAttributes redirectAttributes) {
+		try {
+			Contract contract = contService.get( contractId);
+			if(file.getSize()>0) {
+				Date date = contract.getCreateDate();
+				String year = DateUtils.formatDate(date, "yyyy");
+				String fileType = file.getOriginalFilename().split("[.]")[1];
+
+				String ftpPath = "/" + ContConstant.APPLY_PAY_FILE_PATH + "/" + year + "/";
+				String path = Global.getUserfilesBaseDir();
+				String fileName = ContConstant.APPLY_PAY_FILE_PREFIX + DateUtils.getDate("yyyyMMddHHmmssSSS") + "." + fileType;
+				File f = new File(path, fileName);
+				if (f.isFile()) {
+					FileUtils.deleteFile(path + "/" + fileName);
+				}
+
+				FileUtils.writeByteArrayToFile(f, file.getBytes());
+				FTPUtil ftpUtil = new FTPUtil();
+				ftpUtil.uploadFile(ftpPath, fileName, path + "/" + fileName);
+
+
+				//ContApply contApply = new ContApply();
+				//contApply.setContract(contract);
+				contApply.setUrl(ftpPath + "/" + fileName);
+				contApply.setPath(ftpPath);
+				contApply.setFileName(fileName);
+
+			}
+			if(StringUtils.isEmpty(contApply.getId())){
+				contApply.setStatus(1);
+			}
+			contApply.setContract(contract);
+			contApplyService.save(contApply);
+			addMessage(redirectAttributes, "保存合同请款成功");
+		}catch (Exception e){
+			e.printStackTrace();
+			addMessage(redirectAttributes, "保存合同请款失败");
+		}
+
+
+		return "redirect:"+Global.getAdminPath()+"/cont/applyPay/list?contractId="+contractId+"&readonly="+readonly;
 	}
 	
-	@RequiresPermissions("cont:base:edit")
+	/*@RequiresPermissions("cont:base:edit")
 	@RequestMapping(value = "delete")
 	public String delete(ContApply contApply, RedirectAttributes redirectAttributes) {
 		contApplyService.delete(contApply);
@@ -131,10 +195,10 @@ public class ApplyPayController extends BaseController {
 
 
 			ContApply contApply = new ContApply();
-			contApply.setContractId(contract.getId());
+			contApply.setContract(contract);
 			contApply.setUrl(ftpPath+"/"+fileName);
 			contApply.setPath(ftpPath);
-			contApply.setFile(fileName);
+			contApply.setFileName(fileName);
 			contApply.preInsert();
 			contApply.setIsNewRecord(true);
 			contApply.setRemark(remark);
@@ -146,7 +210,7 @@ public class ApplyPayController extends BaseController {
 		}
 
 
-		return "redirect:"+Global.getAdminPath()+"/cont/applyPay/list?contractId="+contractId+"&readonly="+readonly;
+		return "redirect:"+Global.getAdminPath()+"/cont/applyPay/form?contractId="+contractId+"&readonly="+readonly;
 	}
 
 	@RequestMapping(value="/download")
@@ -156,11 +220,11 @@ public class ApplyPayController extends BaseController {
 		ContApply contApply=contApplyService.get(id);
 		String path = Global.getUserfilesBaseDir();
 		FTPUtil ftpUtil = new FTPUtil();
-		ftpUtil.downloadFile(contApply.getPath(),contApply.getFile(),path);
-		File file = new File(path + "/" + contApply.getFile());
+		ftpUtil.downloadFile(contApply.getPath(),contApply.getFileName(),path);
+		File file = new File(path + "/" + contApply.getFileName());
 		HttpHeaders headers = new HttpHeaders();
 		//下载显示的文件名，解决中文名称乱码问题
-		String downloadFielName = new String(contApply.getFile().getBytes("UTF-8"),"iso-8859-1");
+		String downloadFielName = new String(contApply.getFileName().getBytes("UTF-8"),"iso-8859-1");
 		//通知浏览器以attachment（下载方式）打开图片
 		headers.setContentDispositionFormData("attachment", downloadFielName);
 		//application/octet-stream ： 二进制流数据（最常见的文件下载）。
@@ -174,21 +238,21 @@ public class ApplyPayController extends BaseController {
 		ContApply contApply=contApplyService.get(id);
 		String path = Global.getUserfilesBaseDir();
 		FTPUtil ftpUtil = new FTPUtil();
-		ftpUtil.downloadFile(contApply.getPath(),contApply.getFile(),path);
-		String pdfFileName = contApply.getFile().split("[.]")[0]+".pdf";
-		if((contApply.getFile().indexOf("doc")>-1)||(contApply.getFile().indexOf("docx")>-1)){
+		ftpUtil.downloadFile(contApply.getPath(),contApply.getFileName(),path);
+		String pdfFileName = contApply.getFileName().split("[.]")[0]+".pdf";
+		if((contApply.getFileName().indexOf("doc")>-1)||(contApply.getFileName().indexOf("docx")>-1)){
 			OfficeConverter officeConverter=new OfficeConverter();
 
-			officeConverter.convert2PDF(path + "/" + contApply.getFile(),path + "/"+pdfFileName);
+			officeConverter.convert2PDF(path + "/" + contApply.getFileName(),path + "/"+pdfFileName);
 		}
 		Thread.sleep(3000);
 		PdfConverter pdfConverter=new PdfConverter();
 
 
-		pdfConverter.File2Swf(path +pdfFileName,contApply.getFile().split("[.]")[0]);
+		pdfConverter.File2Swf(path +pdfFileName,contApply.getFileName().split("[.]")[0]);
 		System.out.println(path + "/"+pdfFileName);
-		System.out.println(contApply.getFile().split("[.]")[0]);
-		String swfFileName = contApply.getFile().split("[.]")[0]+".swf";
+		System.out.println(contApply.getFileName().split("[.]")[0]);
+		String swfFileName = contApply.getFileName().split("[.]")[0]+".swf";
 		swfFileName ="/upload/"+swfFileName;
 		model.addAttribute("file",  swfFileName);
 		return "modules/contract/preview";
@@ -200,15 +264,15 @@ public class ApplyPayController extends BaseController {
 			ContApply contApply=contApplyService.get(id);
 			String path = Global.getUserfilesBaseDir();
 			FTPUtil ftpUtil = new FTPUtil();
-			ftpUtil.deleteFile(contApply.getPath(),contApply.getFile());
+			ftpUtil.deleteFile(contApply.getPath(),contApply.getFileName());
 			contApplyService.delete(contApply);
 			addMessage( redirectAttributes, "请款附件删除成功");
 		}catch (Exception e){
 			e.printStackTrace();
 			addMessage( redirectAttributes, "请款附件删除失败");
 		}
-		ContApply contApply = new ContApply();
-		contApply.setContractId(contractId);
+		/*ContApply contApply = new ContApply();
+		contApply.setContractId(contractId);*/
 		return "redirect:"+Global.getAdminPath()+"/cont/applyPay/list?contractId="+contractId+"&readonly="+readonly;
 	}
 

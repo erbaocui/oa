@@ -6,18 +6,32 @@
 		a.id AS "id",
 		a.remark AS "remark",
 		a.url AS "url",
-		a.path as "path",
-		a.file AS "file",
 		a.create_by AS "createBy.id",
-	    u1.name AS "createBy.name",
+		u1.name AS "createBy.name",
+		u1.login_name AS "createBy.loginName",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
-		a.contract_id AS "contractId"
+		a.contract_id AS "contract.id",
+		a.path AS "path",
+		a.file_name AS "fileName",
+		a.first_party AS "firstParty",
+		a.status AS "status",
+		a.receipt_value AS "receiptValue",
+		a.receipt_name AS "receiptName",
+		a.receipt_address AS "receiptAddress",
+		a.receipt_phone AS "receiptPhone",
+		a.receipt_date AS "receiptDate",
+		a.receipt_bank AS "receiptBank",
+		a.receipt_account AS "receiptAccount",
+		a.tax_id AS "taxId",
+		a.receipt_content AS "receiptContent",
+		a.receipt_remark AS "receiptRemark",
+		a.proc_ins_id AS "procInsId"
 	</sql>
 	
 	<sql id="contApplyJoins">
-		left join  sys_user u1 on u1.id=a.create_by
+			left join  sys_user u1 on u1.id=a.create_by
 	</sql>
     
 	<select id="get" resultType="ContApply">
@@ -26,6 +40,15 @@
 		FROM bm_cont_apply a
 		<include refid="contApplyJoins"/>
 		WHERE a.id = #{id}
+	</select>
+	<select id="getLast" resultType="ContApply">
+		SELECT
+		<include refid="contApplyColumns"/>
+		FROM bm_cont_apply a
+		<include refid="contApplyJoins"/>
+		WHERE a.contract_id = #{contractId}
+		order by a.create_date desc
+		limit 1
 	</select>
 	
 	<select id="findList" resultType="ContApply">
@@ -69,36 +92,75 @@
 			id,
 			remark,
 			url,
-			path,
-			file,
 			create_by,
 			create_date,
 			update_by,
 			update_date,
-			contract_id
+			contract_id,
+			path,
+			file_name,
+			first_party,
+			status,
+			receipt_value,
+			receipt_name,
+			receipt_address,
+			receipt_phone,
+			receipt_date,
+			receipt_bank,
+			receipt_account,
+			tax_id,
+			receipt_content,
+			receipt_remark,
+			proc_ins_id
 		) VALUES (
 			#{id},
 			#{remark},
 			#{url},
-			#{path},
-			#{file},
 			#{createBy.id},
 			#{createDate},
 			#{updateBy.id},
 			#{updateDate},
-			#{contractId}
+			#{contract.id},
+			#{path},
+			#{fileName},
+			#{firstParty},
+			#{status},
+			#{receiptValue},
+			#{receiptName},
+			#{receiptAddress},
+			#{receiptPhone},
+			#{receiptDate},
+			#{receiptBank},
+			#{receiptAccount},
+			#{taxId},
+			#{receiptContent},
+			#{receiptRemark},
+			#{procInsId}
 		)
 	</insert>
 	
 	<update id="update">
 		UPDATE bm_cont_apply SET 	
-			remarks = #{remarks},
+			remark = #{remark},
 			url = #{url},
-			path = #{path},
-			file= #{file},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
-			contract_id = #{contractId}
+			contract_id = #{contract.id},
+			path = #{path},
+			file_name = #{fileName},
+			first_party = #{firstParty},
+			status = #{status},
+			receipt_value = #{receiptValue},
+			receipt_name = #{receiptName},
+			receipt_address = #{receiptAddress},
+			receipt_phone = #{receiptPhone},
+			receipt_date = #{receiptDate},
+			receipt_bank = #{receiptBank},
+			receipt_account = #{receiptAccount},
+			tax_id = #{taxId},
+			receipt_content = #{receiptContent},
+			receipt_remark = #{receiptRemark},
+			proc_ins_id = #{procInsId}
 		WHERE id = #{id}
 	</update>
 	

@@ -7,6 +7,8 @@ import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.contract.entity.ContApply;
 
+import java.util.List;
+
 /**
  * 合同请款DAO接口
  * @author cuijp
@@ -14,5 +16,5 @@ import com.thinkgem.jeesite.modules.contract.entity.ContApply;
  */
 @MyBatisDao
 public interface ContApplyDao extends CrudDao<ContApply> {
-	
+    public ContApply getLast(String contractId);
 }

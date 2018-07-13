@@ -13,7 +13,9 @@
 			<result property="createDate"   column="createDate" jdbcType="TIMESTAMP" javaType="java.util.Date" />
 			<result property="updateBy.id"   column="updateBy.id" jdbcType="VARCHAR" javaType="java.lang.String" />
 			<result property="updateDate"   column="updateDate" jdbcType="TIMESTAMP" javaType="java.util.Date" />
-		    <collection property="incomeList" ofType="Income" select="com.thinkgem.jeesite.modules.income.dao.IncomeDao.findAllList" column="id">
+		    <result property="contract.id"   column="contract.id" jdbcType="VARCHAR" javaType="java.lang.String" />
+		    <result property="contract.name"   column="contract.name" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<collection property="incomeList" ofType="Income" select="com.thinkgem.jeesite.modules.income.dao.IncomeDao.findAllList" column="id">
 	       </collection>
 	</resultMap>
 
@@ -29,10 +31,13 @@
 		a.create_by AS "createBy.id",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
-		a.update_date AS "updateDate"
+		a.update_date AS "updateDate",
+		a.contract_id as "contract.id",
+		c.name AS "contract.name"
 	</sql>
 	
 	<sql id="applyJoins">
+			LEFT JOIN bm_contract c ON c.id = a.contract_id
 
 	</sql>
     

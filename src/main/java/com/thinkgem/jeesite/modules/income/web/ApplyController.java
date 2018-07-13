@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.income.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.contract.entity.Contract;
 import com.thinkgem.jeesite.modules.income.entity.Income;
 import com.thinkgem.jeesite.modules.income.service.IncomeService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -124,12 +125,15 @@ public class ApplyController extends BaseController {
 	@RequestMapping(value = "addIncome")
 
 	public String addIncome(String applyId,Double incomeValue, Model model) {
-	    Income income=new Income();
+		Apply applyPay=applyService.get(applyId);
+    	Income income=new Income();
 		income.setApplyId(applyId);
 		income.setStatus(1);
 		income.setValue(new BigDecimal(incomeValue));
+		Contract contract=new Contract();
+		contract.setId(applyPay.getContract().getId());
+		income.setContract(contract);
 		incomeService.save(income);
-		Apply applyPay=applyService.get(applyId);
 		model.addAttribute("applyPay",applyPay);
 		addMessage(model, "添加收款成功");
 		//return "redirect:"+Global.getAdminPath()+"/income/applyPayForm/?repage";

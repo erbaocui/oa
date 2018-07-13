@@ -25,6 +25,10 @@ public class ContApplyService extends CrudService<ContApplyDao, ContApply> {
 	public ContApply get(String id) {
 		return super.get(id);
 	}
+
+	public ContApply getLast(String contractId) {
+		return  dao.getLast(contractId);
+	}
 	
 	public List<ContApply> findList(ContApply contApply) {
 		return super.findList(contApply);

@@ -72,6 +72,7 @@
             });
 
 		});
+
  function delDistOffice(id){
      top.$.jBox.confirm('是否要删除部门分配','系统提示',function(v,h,f){
          if(v=='ok'){
@@ -178,6 +179,7 @@
 		</table>
 	   </form:form>
 		<form:form id="reviewForm" modelAttribute="review"   action="${ctx}/income/distProc/officeDistSubmit" method="post" class="form-horizontal">
+			${taskId}
 			<form:hidden path="taskId"  value="${taskId}"/>
 
 		<div class="form-actions">

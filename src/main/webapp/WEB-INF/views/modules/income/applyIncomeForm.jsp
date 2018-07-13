@@ -55,8 +55,9 @@
             $.post("${ctx}/income/distProc/start?",{id:id},function(data){
                 var code=data.result;
                 if(code=='success'){
+
                     $.jBox.tip("流程启动成功");
-                    page();
+                    window.location="${ctx}/income/applyPay/income?id="+$("#id").val();
 
                 }else{
                     $.jBox.tip("流程启动失败", 'error');
@@ -122,7 +123,7 @@
 
 					<td>
 						<c:if test="${income.status==1}">
-						<a href="#" onclick="startProcess('${income.id}')">启动流程</a>
+						<a href="#" onclick="startProcess('${income.id}')">启动分配流程</a>
 						<a href="${ctx}/income/applyPay/delIncome?applyId=${apply.id}&incomeId=${income.id}" onclick="return confirmx('确认要删除该收款吗？', this.href)">删除</a>
 					<%--	<a href="#" onclick="return confirmx('确认要删除该收款吗？', this.href)">删除</a>--%>
 						</c:if>
@@ -132,7 +133,7 @@
 				<c:set value="${sum + income.value}" var="sum" />
 			</c:forEach>
 			   <tr>
-				   <td colspan="4">合计金额：${sum}</td>
+				   <td colspan="5">合计金额：${sum}</td>
                    <input type="hidden" id="incomeSum" value="${sum}" />
 			   </tr>
 			</tbody>
@@ -141,16 +142,17 @@
 
 
 
-		<c:if test="${sum<apply.applyValue}">
+
 		<div class="form-actions">
 <%--			<shiro:hasPermission name="income:applyPay:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>--%>
-
+		     <c:if test="${sum<apply.applyValue}">
 				<input id="btnOpenIncome" class="btn btn-primary" type="button" value="添加收款" />
-	            <input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
+		     </c:if>
+	         <input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 
 		</div>
-		</c:if>
+
 
 	</form:form>
 	<form id="incomeForm"  action="${ctx}/income/applyPay/addIncome" method="get" class="form-horizontal">
@@ -167,9 +169,15 @@
 						</h4>
 					</div>
 					<div class="modal-body">
-						<div class="form-group">
-							<label >收款金额：</label>
-							<input type="text"  class="input-small digits required" id="incomeValue" />
+						<div class="row-fluid">
+							<div class="span2">
+							</div>
+							<div class="span9">
+								<label >收款金额：</label>
+								<input type="text"  class="input-small digits required" id="incomeValue" />
+							</div>
+							<div class="span1">
+							</div>
 						</div>
 					</div>
 					<div class="modal-footer">

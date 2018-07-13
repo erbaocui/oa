@@ -99,8 +99,11 @@
     	cu2.name AS "company.deputyPerson.name",
     	ou.id AS "office.primaryPerson.id",
     	ou.name AS "office.primaryPerson.name",
+		ou.login_name AS "office.primaryPerson.loginName",
     	ou2.id AS "office.deputyPerson.id",
-    	ou2.name AS "office.deputyPerson.name"<!-- ,
+    	ou2.name AS "office.deputyPerson.name",
+		ou2.login_name AS "office.deputyPerson.loginName"
+		<!-- ,
         r.id AS "roleList.id",
         r.office_id AS "roleList.office.id",
         r.name AS "roleList.name",

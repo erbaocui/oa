@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.contract.constant;
 public class ContConstant {
 
     public static final String CONTRACT_TABLE_NAME= "bm_contract";
+    public static final String CONT_APPYLY_TABLE_NAME="bm_cont_apply";
     public static final String APPLY_PAY_FILE_PATH= "applypay";
     public static final String APPLY_PAY_FILE_PREFIX= "applypay";
     public static final String CONTRACT_FILE_PATH= "contrat";

@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
-	<title>请款管理</title>
+	<title>收款管理</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -18,8 +18,8 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/income/applyPay/list">请款列表</a></li>
-		<shiro:hasPermission name="income:applyPay:edit"><li><a href="${ctx}/income/applyPay/form">请款添加</a></li></shiro:hasPermission>
+		<li class="active"><a href="${ctx}/income/applyPay/list">收款列表</a></li>
+<%--		<shiro:hasPermission name="income:applyPay:edit"><li><a href="${ctx}/income/applyPay/form">请款添加</a></li></shiro:hasPermission>--%>
 	</ul>
 	<form:form id="searchForm" modelAttribute="apply" action="${ctx}/income/applyPay/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
@@ -61,16 +61,13 @@
 				<td>
 					${apply.remarks}
 				</td>
-				<shiro:hasPermission name="income:applyPay:edit"><td>
+				<shiro:hasPermission name="income:applyPay:edit">
+					<td>
 					<c:if test="${apply.status ==2}">
 						<a href="${ctx}/income/applyPay/income?id=${apply.id}">收款</a>
 					</c:if>
-					<c:if test="${apply.status ==1}">
-						<a href="${ctx}/income/applyPay/income?id=${apply.id}">发起流程</a>
-						<a href="${ctx}/income/applyPay/delete?id=${apply.id}" onclick="return confirmx('确认要删除该成功吗？', this.href)">删除</a>
-					</c:if>
-
-				</td></shiro:hasPermission>
+				  </td>
+				</shiro:hasPermission>
 			</tr>
 		</c:forEach>
 		</tbody>

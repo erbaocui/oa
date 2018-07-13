@@ -193,8 +193,8 @@ public class AttachController extends BaseController {
 			e.printStackTrace();
 			addMessage( redirectAttributes, "合同附件删除失败");
 		}
-		ContApply contApply = new ContApply();
-		contApply.setContractId(contractId);
+		/*ContApply contApply = new ContApply();
+		contApply.setContractId(contractId);*/
 		return "redirect:"+Global.getAdminPath()+"/cont/attach/list?contractId="+contractId+"&readonly="+readonly;
 	}
 
