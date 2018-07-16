@@ -4,6 +4,7 @@
 package com.thinkgem.jeesite.modules.income.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,5 +44,7 @@ public class DistOfficeService extends CrudService<DistOfficeDao, DistOffice> {
 	public void delete(DistOffice distributeOffice) {
 		super.delete(distributeOffice);
 	}
+
+	public  String findGroupId(Map paramMap){return dao.findGroupId( paramMap);}
 	
 }

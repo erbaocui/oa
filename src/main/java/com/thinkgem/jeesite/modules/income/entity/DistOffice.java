@@ -23,6 +23,7 @@ public class DistOffice extends DataEntity<DistOffice> {
 	private Office office;		// office_id
 	private BigDecimal value;		// value
 	private String ruleId;		// rule_id
+	private String groupId;
 	private List<Rule> ruleList;
 	
 	public DistOffice() {
@@ -66,5 +67,12 @@ public class DistOffice extends DataEntity<DistOffice> {
 	public void setRuleId(String ruleId) {
 		this.ruleId = ruleId;
 	}
-	
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
 }

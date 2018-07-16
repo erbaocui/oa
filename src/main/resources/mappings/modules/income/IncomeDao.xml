@@ -55,7 +55,9 @@
 		FROM bm_income a
 		<include refid="incomeJoins"/>
 		<where>
-			
+			<if test ="applyId != null and applyId !='' ">
+				a.apply_id=#{applyId}
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

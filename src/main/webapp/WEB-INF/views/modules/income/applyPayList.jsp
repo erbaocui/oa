@@ -64,7 +64,7 @@
 				<shiro:hasPermission name="income:applyPay:edit">
 					<td>
 					<c:if test="${apply.status ==2}">
-						<a href="${ctx}/income/applyPay/income?id=${apply.id}">收款</a>
+						<a href="${ctx}/income/income/applyPay?id=${apply.id}">收款</a>
 					</c:if>
 				  </td>
 				</shiro:hasPermission>

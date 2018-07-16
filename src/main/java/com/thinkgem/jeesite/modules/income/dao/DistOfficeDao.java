@@ -7,6 +7,8 @@ import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.income.entity.DistOffice;
 
+import java.util.Map;
+
 /**
  * 部门分配DAO接口
  * @author cuijp
@@ -14,5 +16,6 @@ import com.thinkgem.jeesite.modules.income.entity.DistOffice;
  */
 @MyBatisDao
 public interface DistOfficeDao extends CrudDao<DistOffice> {
+    public String findGroupId(Map paramMap);
 	
 }

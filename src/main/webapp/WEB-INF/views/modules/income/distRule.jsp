@@ -43,6 +43,9 @@
         }
 
         function save() {
+
+
+
             $("#inputForm").attr("action", "${ctx}/income/distOffice/saveDist");
             $("#inputForm").submit();
         }
@@ -52,6 +55,15 @@
         }
 
         function review(state){
+            var obj=document.getElementsByName("groups");
+            if(state==1){
+				for(var i=0;i<obj.length;i++){
+					if(obj[i].value==null||obj[i].value==-1||obj[i].value==''||obj[i].value=="-1"){
+                        $.jBox.tip("选择规则！", 'error');
+					    return
+					}
+				}
+            }
             $("#inputForm").attr("action", "${ctx}/income/distProc/distRuleSubmit");
             $("#state").val(state);
             $("#inputForm").submit();
@@ -123,7 +135,7 @@
 			</table>
 		</div>
 
-	  <c:if test="${saveFlag==true}">
+<%--	  <c:if test="${saveFlag==true}">--%>
 		<div class="form-actions">
 			<%--<c:if test="${saveFlag==true}">
 				<input id="btnSubmit" class="btn btn-primary" type="button" value="保 存" onclick="save()"/>&nbsp;
@@ -165,7 +177,7 @@
 
 		</div>
 		</div>
-	   </c:if>
+<%--	   </c:if>--%>
 
 				</form:form>
 				<table title="批注列表" class="table table-striped table-bordered table-condensed">

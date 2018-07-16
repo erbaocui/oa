@@ -6,8 +6,11 @@ package com.thinkgem.jeesite.modules.income.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.contract.entity.ContApply;
 import com.thinkgem.jeesite.modules.contract.entity.Contract;
+import com.thinkgem.jeesite.modules.contract.service.ContApplyService;
 import com.thinkgem.jeesite.modules.contract.service.ContService;
+import com.thinkgem.jeesite.modules.income.entity.Apply;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +28,7 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.income.entity.Income;
 import com.thinkgem.jeesite.modules.income.service.IncomeService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -40,6 +44,8 @@ public class IncomeController extends BaseController {
 	private IncomeService incomeService;
 	@Autowired
 	private ContService contService;
+	@Autowired
+	private ContApplyService contApplyService;
 	
 	@ModelAttribute
 	public Income get(@RequestParam(required=false) String id) {
@@ -94,12 +100,57 @@ public class IncomeController extends BaseController {
 		return "redirect:"+Global.getAdminPath()+"/income/income/?repage";
 	}
 	
-/*	@RequiresPermissions("income:income:edit")*/
+/*	@RequiresPermissions("income:income:edit")*//*
 	@RequestMapping(value = "delete")
 	public String delete(Income income, RedirectAttributes redirectAttributes) {
 		incomeService.delete(income);
 		addMessage(redirectAttributes, "删除收款成功");
 		return "redirect:"+Global.getAdminPath()+"/income/income/?repage";
+	}*/
+
+	/*@RequiresPermissions("income:applyPay:view")*/
+	@RequestMapping(value = "applyPay")
+	public String income(String  id, Model model) {
+		ContApply contApply=contApplyService.get(id);
+		Income income=new Income();
+		income.setApplyId(id);
+		List<Income> incomes=incomeService.findList(income);
+		model.addAttribute("contApply", contApply);
+		model.addAttribute("incomes",incomes);
+		return "modules/income/contractApplyIncomeForm";
 	}
+
+	@ResponseBody
+	@RequiresPermissions("income:applyPay:edit")
+	@RequestMapping(value = "add")
+
+	public String add(String applyId,Double incomeValue, Model model) {
+		ContApply contApply=contApplyService.get(applyId);
+		Income income=new Income();
+		income.setApplyId(applyId);
+		income.setStatus(1);
+		income.setValue(new BigDecimal(incomeValue));
+		Contract contract=new Contract();
+		contract.setId(contApply.getContract().getId());
+		income.setContract(contract);
+		incomeService.save(income);
+		addMessage(model, "添加收款成功");
+		//return "redirect:"+Global.getAdminPath()+"/income/applyPayForm/?repage";
+		//return "modules/income/applyPayForm";
+		return  "success";
+	}
+
+
+/*	@RequiresPermissions("income:applyPay:edit")*/
+  @ResponseBody
+	@RequestMapping(value = "delete")
+
+	public String  delete(String id, Model model) {
+		Income income=new Income();
+		income.setId(id);
+		incomeService.delete(income);
+	    return  "success";
+	}
+
 
 }

@@ -37,6 +37,7 @@ public class ContApply extends DataEntity<ContApply> {
 	private String receiptContent;		// receipt_content
 	private String receiptRemark;
 	private String procInsId;
+	private BigDecimal income;		// receipt_value
 
 	
 	public ContApply() {
@@ -201,5 +202,13 @@ public class ContApply extends DataEntity<ContApply> {
 
 	public void setProcInsId(String procInsId) {
 		this.procInsId = procInsId;
+	}
+
+	public BigDecimal getIncome() {
+		return income;
+	}
+
+	public void setIncome(BigDecimal income) {
+		this.income = income;
 	}
 }

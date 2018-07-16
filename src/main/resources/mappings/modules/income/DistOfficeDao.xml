@@ -10,7 +10,8 @@
 		a.create_by AS "createBy.id",
 		u.name as "createBy.name",
 		a.create_date AS "createDate",
-		o3.name AS "office.name"
+		o3.name AS "office.name",
+		a.group_id AS  "groupId"
 	</sql>
 	
 	<sql id="distOfficeJoins">
@@ -37,7 +38,7 @@
 			</if>
 			<if test ="office!= null">
 				<if test ="office.id!= null">
-					a.office_id=#{office.id}
+				and	a.office_id=#{office.id}
 				</if>
 			</if>
 		</where>
@@ -76,14 +77,17 @@
 			office_id,
 			value,
 			create_by,
-			create_date
+			create_date,
+			group_id
 		) VALUES (
 			#{id},
 			#{incomeId},
 			#{office.id},
 			#{value},
 			#{createBy.id},
-			#{createDate}
+			#{createDate},
+			#{groupId}
+
 
 		)
 	</insert>
@@ -93,9 +97,20 @@
 			income_id = #{incomeId},
 			office_id = #{office.id},
 			value = #{value},
-			rule_id = #{ruleId}
+			group_id = #{groupId}
 		WHERE id = #{id}
 	</update>
+	<select id="findGroupId" resultType="String" parameterType="Map">
+		select distinct a.group_id from bm_dist_office a
+        where 1=1
+		<if test ="incomeId!= null and officeId != ''">
+			 and a.income_id=#{incomeId}
+		</if>
+		<if test ="officeId != null and officeId != ''">
+				and a.office_id=#{officeId}
+		</if>
+	</select>
+
 	
 	<update id="delete">
 		DELETE FROM bm_dist_office

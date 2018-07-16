@@ -134,12 +134,12 @@
 				<form:input path="contract.value" htmlEscape="false" maxlength="255" class="input-xlarge "  readonly="true"/>
 			</div>
 		</div>
-		<div class="control-group">
+		<%--<div class="control-group">
 			<label class="control-label">已收金额：</label>
 			<div class="controls">
 				<form:input path="contract.income" htmlEscape="false" maxlength="255" class="input-xlarge "  readonly="true"/>
 			</div>
-		</div>
+		</div>--%>
 
 		<table id="contentTable" class="table table-striped table-bordered table-condensed">
 			<thead>
@@ -178,8 +178,8 @@
 			</tbody>
 		</table>
 	   </form:form>
+	${taskId}
 		<form:form id="reviewForm" modelAttribute="review"   action="${ctx}/income/distProc/officeDistSubmit" method="post" class="form-horizontal">
-			${taskId}
 			<form:hidden path="taskId"  value="${taskId}"/>
 
 		<div class="form-actions">

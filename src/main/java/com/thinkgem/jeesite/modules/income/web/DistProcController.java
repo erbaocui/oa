@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.income.web;
 
+import com.thinkgem.jeesite.common.utils.MacUtils;
 import com.thinkgem.jeesite.common.utils.NumberOperateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
@@ -10,7 +11,9 @@ import com.thinkgem.jeesite.modules.act.constant.ActConstant;
 import com.thinkgem.jeesite.modules.act.entity.BaseReview;
 import com.thinkgem.jeesite.modules.act.service.ActTaskService;
 import com.thinkgem.jeesite.modules.contract.constant.ContConstant;
+import com.thinkgem.jeesite.modules.contract.entity.ContApply;
 import com.thinkgem.jeesite.modules.contract.entity.Contract;
+import com.thinkgem.jeesite.modules.contract.service.ContApplyService;
 import com.thinkgem.jeesite.modules.contract.service.ContService;
 import com.thinkgem.jeesite.modules.income.constant.IncomeConstant;
 import com.thinkgem.jeesite.modules.income.entity.*;
@@ -58,6 +61,8 @@ public class DistProcController extends BaseController {
 	private RuleGroupService ruleGroupService;
 	@Autowired
 	private DistributeService distributeService;
+	@Autowired
+	private ContApplyService contApplyService;
 
 
 	@Autowired
@@ -133,8 +138,10 @@ public class DistProcController extends BaseController {
 	@RequestMapping(value = "distRule")
 	public String distRule(DistOfficeProc distOfficeProc, String[] groups, Model model)  throws Exception{
 		List<DistOfficeVo> distOffices=new ArrayList<DistOfficeVo>();
-
-		String incomeId=rule(distOfficeProc,groups,distOffices);
+		Task task=actTaskService.getTask(  distOfficeProc.getTaskId());
+		String incomeId =(String)actTaskService.getTaskVariable(task.getId(),"businessId");
+		distOfficeProc.setIncomeId(incomeId);
+		rule(distOfficeProc,groups,distOffices);
 		List<Comment> comments=actTaskService.getTaskHistoryCommentList(distOfficeProc.getTaskId());
 		model.addAttribute("taskId", distOfficeProc.getTaskId());
 		model.addAttribute("comments",comments);
@@ -176,7 +183,8 @@ public class DistProcController extends BaseController {
 			User user=UserUtils.getUser();
 			Authentication.setAuthenticatedUserId(  "【合同管理员】" +user.getName());// 设置用户id
 			actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
-			addMessage(redirectAttributes, "操作成功");
+
+		   addMessage(redirectAttributes, "操作成功");
 			return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
 
 	}
@@ -189,7 +197,10 @@ public class DistProcController extends BaseController {
 		Office office=new Office();
 		office.setId(UserUtils.getUser().getOffice().getId());
 		distOfficeProc.setOffice(office);
-		String incomeId=rule(distOfficeProc,groups,distOffices);
+		Task task=actTaskService.getTask(  distOfficeProc.getTaskId());
+		String incomeId =(String)actTaskService.getTaskVariable(task.getId(),"businessId");
+		distOfficeProc.setIncomeId(incomeId);
+		rule(distOfficeProc,groups,distOffices);
 		List<Comment> comments=actTaskService.getTaskHistoryCommentList(distOfficeProc.getTaskId());
 		model.addAttribute("taskId", distOfficeProc.getTaskId());
 		model.addAttribute("comments",comments);
@@ -214,7 +225,7 @@ public class DistProcController extends BaseController {
 			variables.put("msg", "reject");
 			//actTaskService.completeBrotherTask(taskId,variables);
 		}
-		variables.put("role","business");
+		variables.put("role","AllocationCheck");
 		User user=UserUtils.getUser();
 		Authentication.setAuthenticatedUserId("【部门确认】" +user.getName());// 设置用户id
 		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
@@ -287,12 +298,22 @@ public class DistProcController extends BaseController {
 		Task task=actTaskService.getTask(  distOfficeProc.getTaskId());
 		String taskId=task.getId();
 		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
-		String incomeId=(String)task.getProcessVariables().get("businessId");
+        String incomeId =(String)actTaskService.getTaskVariable(task.getId(),"businessId");
 		Map<String, Object> variables=new HashMap<String,Object>();
 		int state=review.getState();
 		if( state==1){
 			variables.put("msg", "pass");
 			distributeService.saveAcount(distOfficeProc.getIncomeId());
+			Income income=incomeService.get(incomeId);
+			income.setStatus(3);
+			incomeService.save(income);
+			ContApply contApply=contApplyService.get(income.getApplyId());
+			Double incomeSum=NumberOperateUtils.add(income.getValue().doubleValue(),contApply.getIncome().doubleValue());
+			contApply.setIncome(new BigDecimal(incomeSum));
+			if(incomeSum>=contApply.getReceiptValue().doubleValue()){
+				contApply.setStatus(4);
+			}
+			contApplyService.save(contApply);
 		}else if(state==2){
 			variables.put("msg", "reject");
 		}
@@ -333,7 +354,7 @@ public class DistProcController extends BaseController {
 				Map<String,String> paramMap=new HashMap<String, String>();
 				paramMap.put("incomeId",item.getIncomeId());
 				paramMap.put("officeId",item.getOffice().getId());
-				String groupId=distributeService.findGroupId(paramMap);
+			    String groupId=distOfficeService.findGroupId(paramMap);
 				if(groupId!=null&&!groupId.equals("")){
 					dov.setRuleGroupId(groupId);
 				}
@@ -468,6 +489,8 @@ public class DistProcController extends BaseController {
 			DistOffice item=distOfficeList.get(k);
 
 			if(groups[k]!=null) {
+				item.setGroupId(groups[k]);
+				distOfficeService.save(item);
 				Rule r=new Rule();
 				r.setGroupId(groups[k]);
 				r.setOfficeId(item.getOffice().getId());

@@ -16,7 +16,6 @@ import com.thinkgem.jeesite.modules.contract.constant.ContConstant;
 import com.thinkgem.jeesite.modules.contract.entity.Contract;
 import com.thinkgem.jeesite.modules.contract.service.ContService;
 import org.activiti.engine.task.Comment;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -81,6 +80,13 @@ public class ApplyPayController extends BaseController {
 		model.addAttribute("readonly",readonly);
 		model.addAttribute("single",single);
 		return "modules/contract/contractApplyPay";
+	}
+
+	@RequestMapping(value = {"incomeList", ""})
+	public String list(ContApply contApply, HttpServletRequest request, HttpServletResponse response, Model model) {
+		Page<ContApply> page = contApplyService.findPage(new Page<ContApply>(request, response), contApply);
+		model.addAttribute("page", page);
+		return "modules/contract/contractApplyPayList";
 	}
 
 

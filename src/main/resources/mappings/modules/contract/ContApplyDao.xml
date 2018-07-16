@@ -27,7 +27,8 @@
 		a.tax_id AS "taxId",
 		a.receipt_content AS "receiptContent",
 		a.receipt_remark AS "receiptRemark",
-		a.proc_ins_id AS "procInsId"
+		a.proc_ins_id AS "procInsId",
+		a.income AS "income"
 	</sql>
 	
 	<sql id="contApplyJoins">
@@ -111,7 +112,8 @@
 			tax_id,
 			receipt_content,
 			receipt_remark,
-			proc_ins_id
+			proc_ins_id,
+			income
 		) VALUES (
 			#{id},
 			#{remark},
@@ -135,7 +137,8 @@
 			#{taxId},
 			#{receiptContent},
 			#{receiptRemark},
-			#{procInsId}
+			#{procInsId},
+			#{income}
 		)
 	</insert>
 	
@@ -160,7 +163,8 @@
 			tax_id = #{taxId},
 			receipt_content = #{receiptContent},
 			receipt_remark = #{receiptRemark},
-			proc_ins_id = #{procInsId}
+			proc_ins_id = #{procInsId},
+			income = #{income}
 		WHERE id = #{id}
 	</update>
 	
