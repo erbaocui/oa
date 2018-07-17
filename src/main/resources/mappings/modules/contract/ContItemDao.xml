@@ -29,6 +29,9 @@
 		<include refid="contItemJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="contractId != null and contractId!= ''">
+				and	a.contract_id = #{contractId}
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -48,6 +51,10 @@
 		<include refid="contItemJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="contractId != null and contractId!= ''">
+				and	a.contract_id = #{contractId}
+			</if>
+
 		</where>		
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

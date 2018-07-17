@@ -82,12 +82,12 @@
 					<div class="row-fluid">
 						<div class="span1">
 						</div>
-						<div class="span5">
+						<div class="span7">
 							<label >${status.index+1}、</label>&nbsp;
-							<textarea   rows="3" maxlength="500" class="input-xxlarge" readonly="readonly">${contItem.content}</textarea>
+							<textarea   rows="6" maxlength="500" class="" style="width:800px;font-size:14px;" readonly="readonly">${contItem.content}</textarea>
 
 						</div>
-						<div class="span5" style="padding-top:20px;">
+						<div class="span3" style="padding-top:20px;">
 							<c:if test="${not readonly}">
 							<input  class="btn btn-primary" type="button" value="删除" onclick="del('${contItem.id}');"/>
 							</c:if>

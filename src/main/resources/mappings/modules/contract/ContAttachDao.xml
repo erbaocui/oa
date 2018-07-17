@@ -35,6 +35,9 @@
 		FROM bm_cont_attach a
 		<include refid="contAttachJoins"/>
 		<where>
+			<if test="contractId != null and contractId!= ''">
+				and	a.contract_id = #{contractId}
+			</if>
 			
 		</where>
 		<choose>

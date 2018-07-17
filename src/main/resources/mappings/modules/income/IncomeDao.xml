@@ -58,6 +58,12 @@
 			<if test ="applyId != null and applyId !='' ">
 				a.apply_id=#{applyId}
 			</if>
+
+			<if test="contract != null and contract!= ''">
+				<if test="contract.id != null and contract.id!= ''">
+					and a.contract_id = #{contract.id}
+				</if>
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

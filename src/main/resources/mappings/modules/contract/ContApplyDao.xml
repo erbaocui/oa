@@ -58,16 +58,15 @@
 		FROM bm_cont_apply a
 		<include refid="contApplyJoins"/>
 		<where>
-			
+
+				<if test="contract != null and contract!= ''">
+					<if test="contract.id != null and contract.id!= ''">
+							a.contract_id = #{contract.id}
+					</if>
+				</if>
 		</where>
-		<choose>
-			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
-				ORDER BY ${page.orderBy}
-			</when>
-			<otherwise>
-				ORDER BY a.update_date DESC
-			</otherwise>
-		</choose>
+	       ORDER BY a.update_date DESC
+
 	</select>
 	
 	<select id="findAllList" resultType="ContApply">
