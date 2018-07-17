@@ -72,9 +72,8 @@
 		<if test="id != null and id!= ''">
 		 and	a.id = #{id}
 		</if>
-		<if test="code != null and code!= ''">
-		 and    a.code = #{code}
-		</if>
+
+
 
 	</select>
 
@@ -126,6 +125,15 @@
 			</if>
 			<if test="max != null and max != ''">
 				and	#{max}>=value
+			</if>
+			<if test="max != null and max != ''">
+				and	#{max}>=value
+			</if>
+			<if test="office != null">
+				<if test="office.id != null and office.id != ''">
+					and    p.office_id = #{office.id}
+				</if>
+
 			</if>
 		</where>
 		<choose>

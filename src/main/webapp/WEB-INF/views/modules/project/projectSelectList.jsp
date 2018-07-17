@@ -23,7 +23,7 @@
 	</script>
 </head>
 <body style="overflow:hidden" scroll="no" >
-	<form:form id="searchForm" modelAttribute="project" action="${ctx}/project/project/" method="post" class="breadcrumb form-search">
+	<form:form id="searchForm" modelAttribute="project" action="${ctx}/project/project/selectList" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<ul class="ul-form">
