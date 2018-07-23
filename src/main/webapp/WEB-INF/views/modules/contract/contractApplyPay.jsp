@@ -130,7 +130,7 @@
 				<tr>
 					<td><fmt:formatDate value="${contApply.createDate}" type="both"/></td>
 					<td>${contApply.receiptValue}</td>
-					<td>${contApply.status}</td>
+					<td>${fns:getDictLabel(contApply.status, 'contract_applyPay_status', '无')}</td>
 					<td> ${contApply.createBy.name}</td>
 					<td> ${contApply.remark}</td>
 					<td>

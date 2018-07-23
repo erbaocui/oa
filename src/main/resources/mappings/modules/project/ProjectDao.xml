@@ -9,11 +9,12 @@
 		a.office_id AS "office.id",
 		a.manager AS "manager",
 		a.custom AS "custom",
-		o4.name AS "office.name"
+		o.name AS "office.name"
 	</sql>
 	
 	<sql id="projectJoins">
-		LEFT JOIN sys_office o4 ON o4.id = a.office_id
+		LEFT JOIN sys_office o ON o.id = a.office_id
+		LEFT JOIN  sys_user u ON u.id = a.create_by
 	</sql>
     
 	<select id="get" resultType="Project">
@@ -43,6 +44,7 @@
 			<if test="office != null and office.id != null and office.id != ''">
 				AND a.office_id = #{office.id}
 			</if>
+			${sqlMap.dsf}
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

@@ -14,9 +14,10 @@
 			$("#searchForm").submit();
         	return false;
         }
-        function check(id,name){
+        function check(id,name,firstParty){
             parent.mainFrame.window.document.getElementById("project.name").value=name;
             parent.mainFrame.window.document.getElementById("project.id").value=id;
+            parent.mainFrame.window.document.getElementById("firstParty").value=firstParty;
             parent.top.$.jBox.close();
            //window.parent.getEl
 		}
@@ -27,7 +28,7 @@
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<ul class="ul-form">
-			<li><label>项目代码：</label>
+			<li><label>工程编号：</label>
 				<form:input path="code" htmlEscape="false" maxlength="255" class="input-medium"/>
 			</li>
 			<li><label>项目名称：</label>
@@ -43,8 +44,7 @@
 			<tr>
 				<th>选择</th>
 				<th>名称</th>
-				<th>编码</th>
-				<th>归属部门</th>
+				<th>工程编号</th>
 				<th>甲方名称</th>
 				<th>项目经理</th>
 				<%--<shiro:hasPermission name="project:project:edit"><th>操作</th></shiro:hasPermission>--%>
@@ -53,14 +53,13 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="project">
 			<tr>
-				<td><input type="radio" name="prjSel" onclick="check('${project.id}','${project.name}')" /></td>
+				<td><input type="radio" name="prjSel" onclick="check('${project.id}','${project.name}','${project.custom}')" /></td>
 				<td><%--<a href="${ctx}/project/project/form?id=${project.id}"></a>--%>
 					${project.name}
 			    </td>
-				<td>${project.code}</td>
-				<td>${project.office.name}</td>
+				<td style="width:7%">${project.code}</td>
 				<td>${project.custom}</td>
-				<td>${project.manager}</td>
+				<td style="width:5%">${project.manager}</td>
 				<%--<shiro:hasPermission name="project:project:edit"><td>
     				<a href="${ctx}/project/project/form?id=${project.id}">修改</a>
 					<a href="${ctx}/project/project/delete?id=${project.id}" onclick="return confirmx('确认要删除该项目吗？', this.href)">删除</a>

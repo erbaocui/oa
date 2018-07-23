@@ -162,8 +162,11 @@ public class DistProcController extends BaseController {
 			Map<String, Object> variables=new HashMap<String,Object>();
 			int state=review.getState();
 			if( state==1){
+				if(review.getComment()==null||review.getComment().equals("")){
+					review.setComment("通过");
+				}
 				variables.put("msg", "pass");
-				String incomeId =(String)task.getProcessVariables().get("businessId");
+				String incomeId =(String)actTaskService.getTaskVariable(taskId,"businessId");
 				DistOffice distOffice=new DistOffice();
 				distOffice.setIncomeId(incomeId);
 				List<DistOffice> distOfficeList= distOfficeService.findList(distOffice);
@@ -221,6 +224,9 @@ public class DistProcController extends BaseController {
 		int state=review.getState();
 		if( state==1){
 			variables.put("msg", "pass");
+			if(review.getComment()==null||review.getComment().equals("")){
+				review.setComment("通过");
+			}
 		}else if(state==2){
 			variables.put("msg", "reject");
 			//actTaskService.completeBrotherTask(taskId,variables);
@@ -243,7 +249,9 @@ public class DistProcController extends BaseController {
 	@RequestMapping(value = "busAudit")
 	public String busAudit(DistOfficeProc distOfficeProc, String[] groups, Model model)  throws Exception{
 		List<DistOfficeVo> distOffices=new ArrayList<DistOfficeVo>();
-		String incomeId=rule(distOfficeProc,groups,distOffices);
+		String incomeId =(String)actTaskService.getTaskVariable(distOfficeProc.getTaskId(),"businessId");
+		distOfficeProc.setIncomeId(incomeId);
+		rule(distOfficeProc,groups,distOffices);
 		List<Comment> comments=actTaskService.getTaskHistoryCommentList(distOfficeProc.getTaskId());
 		model.addAttribute("taskId", distOfficeProc.getTaskId());
 		model.addAttribute("comments",comments);
@@ -265,6 +273,9 @@ public class DistProcController extends BaseController {
 		if( state==1){
 			variables.put("msg", "pass");
 			variables.put("role","finance");
+			if(review.getComment()==null||review.getComment().equals("")){
+				review.setComment("通过");
+			}
 		}else if(state==2){
 			variables.put("msg", "reject");
 			variables.put("role","contract");
@@ -281,7 +292,9 @@ public class DistProcController extends BaseController {
 	@RequestMapping(value = "finAudit")
 	public String finAudit(DistOfficeProc distOfficeProc, String[] groups, Model model)  throws Exception{
 		List<DistOfficeVo> distOffices=new ArrayList<DistOfficeVo>();
-		String incomeId=rule(distOfficeProc,groups,distOffices);
+		String incomeId =(String)actTaskService.getTaskVariable(distOfficeProc.getTaskId(),"businessId");
+		distOfficeProc.setIncomeId(incomeId);
+		rule(distOfficeProc,groups,distOffices);
 		List<Comment> comments=actTaskService.getTaskHistoryCommentList(distOfficeProc.getTaskId());
 		model.addAttribute("taskId", distOfficeProc.getTaskId());
 		model.addAttribute("comments",comments);
@@ -303,12 +316,23 @@ public class DistProcController extends BaseController {
 		int state=review.getState();
 		if( state==1){
 			variables.put("msg", "pass");
+			if(review.getComment()==null||review.getComment().equals("")){
+				review.setComment("通过");
+			}
 			distributeService.saveAcount(distOfficeProc.getIncomeId());
 			Income income=incomeService.get(incomeId);
 			income.setStatus(3);
 			incomeService.save(income);
 			ContApply contApply=contApplyService.get(income.getApplyId());
-			Double incomeSum=NumberOperateUtils.add(income.getValue().doubleValue(),contApply.getIncome().doubleValue());
+			Double incomeValue=0.0;
+			Double applyIncomeValue=0.0;
+			if(income.getValue()!=null){
+				incomeValue=income.getValue().doubleValue();
+			}
+			if(contApply.getIncome()!=null){
+				applyIncomeValue=contApply.getIncome().doubleValue();
+			}
+			Double incomeSum=NumberOperateUtils.add(incomeValue,applyIncomeValue);
 			contApply.setIncome(new BigDecimal(incomeSum));
 			if(incomeSum>=contApply.getReceiptValue().doubleValue()){
 				contApply.setStatus(4);

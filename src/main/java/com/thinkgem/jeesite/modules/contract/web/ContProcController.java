@@ -21,7 +21,9 @@ import com.thinkgem.jeesite.modules.contract.service.ContApplyService;
 import com.thinkgem.jeesite.modules.contract.service.ContAttachService;
 import com.thinkgem.jeesite.modules.contract.service.ContService;
 import com.thinkgem.jeesite.modules.contract.vo.FinanceVO;
+import com.thinkgem.jeesite.modules.sys.entity.Area;
 import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.service.AreaService;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.task.Comment;
@@ -60,6 +62,8 @@ public class ContProcController extends BaseController {
 
 	@Autowired
 	private ContApplyService contApplyService;
+	@Autowired
+	private AreaService areaService;
 
 
 
@@ -98,6 +102,16 @@ public class ContProcController extends BaseController {
 			contract.setStatus(2);
 			//改合同状态
 			contractService.save(contract);
+			//创建者信息
+			List<Task> tasList=actTaskService.processInstanceTaskList(processInstanceId);
+             if(tasList!=null&&tasList.size()>0){
+             	Task task=tasList.get(0);
+             	//任务拾取
+				 actTaskService.claim(task.getId(),contract.getCreateBy().getLoginName());
+				 User user=UserUtils.getUser();
+				 Authentication.setAuthenticatedUserId(  "【合同创建者】" +user.getName());// 设置用户id
+				 actTaskService.complete(task.getId(),processInstanceId,"合同创建",variables);
+			 }
 			result.put("result","success");
 
 		} catch (Exception e) {
@@ -127,6 +141,25 @@ public class ContProcController extends BaseController {
 		model.addAttribute("review",review);
 		model.addAttribute("readonly",true );
 		//model.addAttribute("fileClass","2" );
+
+		Area area=new Area();
+		Area parent=new Area();
+		parent.setId("1");
+		area.setParent(parent);
+		List<Area> provinceList =areaService.findList(area);
+		model.addAttribute("provinceList",  provinceList );
+
+		area=new Area();
+		parent=new Area();
+		if(contract!=null&&contract.getProvince()!=null&&(!StringUtils.isEmpty(contract.getProvince().getId()))){
+
+			parent.setId(contract.getProvince().getId());
+		}else{
+			parent.setId( provinceList.get(0).getId());
+		}
+		area.setParent(parent);
+		List<Area> cityList =areaService.findList(area);
+		model.addAttribute("cityList",  cityList );
 		return "modules/contract/auditManager";
 	}
 
@@ -186,6 +219,24 @@ public class ContProcController extends BaseController {
 		model.addAttribute("comments",comments);
 		model.addAttribute("review", new BaseReview());
 		model.addAttribute("readonly",true);
+		Area area=new Area();
+		Area parent=new Area();
+		parent.setId("1");
+		area.setParent(parent);
+		List<Area> provinceList =areaService.findList(area);
+		model.addAttribute("provinceList",  provinceList );
+
+		area=new Area();
+		parent=new Area();
+		if(contract!=null&&contract.getProvince()!=null&&(!StringUtils.isEmpty(contract.getProvince().getId()))){
+
+			parent.setId(contract.getProvince().getId());
+		}else{
+			parent.setId( provinceList.get(0).getId());
+		}
+		area.setParent(parent);
+		List<Area> cityList =areaService.findList(area);
+		model.addAttribute("cityList",  cityList );
 		//model.addAttribute("fileClass","2" );
 		return "modules/contract/auditRisk";
 	}
@@ -229,6 +280,24 @@ public class ContProcController extends BaseController {
 		model.addAttribute("review", new ContractReview());
 		model.addAttribute("readonly",true);
 		model.addAttribute("fileClass","2" );
+		Area area=new Area();
+		Area parent=new Area();
+		parent.setId("1");
+		area.setParent(parent);
+		List<Area> provinceList =areaService.findList(area);
+		model.addAttribute("provinceList",  provinceList );
+
+		area=new Area();
+		parent=new Area();
+		if(contract!=null&&contract.getProvince()!=null&&(!StringUtils.isEmpty(contract.getProvince().getId()))){
+
+			parent.setId(contract.getProvince().getId());
+		}else{
+			parent.setId( provinceList.get(0).getId());
+		}
+		area.setParent(parent);
+		List<Area> cityList =areaService.findList(area);
+		model.addAttribute("cityList",  cityList );
 		return "modules/contract/auditLaw";
 	}
 
@@ -273,6 +342,24 @@ public class ContProcController extends BaseController {
 		model.addAttribute("review", new BaseReview());
 		model.addAttribute("readonly",true);
 		//model.addAttribute("fileClass","2" );
+		Area area=new Area();
+		Area parent=new Area();
+		parent.setId("1");
+		area.setParent(parent);
+		List<Area> provinceList =areaService.findList(area);
+		model.addAttribute("provinceList",  provinceList );
+
+		area=new Area();
+		parent=new Area();
+		if(contract!=null&&contract.getProvince()!=null&&(!StringUtils.isEmpty(contract.getProvince().getId()))){
+
+			parent.setId(contract.getProvince().getId());
+		}else{
+			parent.setId( provinceList.get(0).getId());
+		}
+		area.setParent(parent);
+		List<Area> cityList =areaService.findList(area);
+		model.addAttribute("cityList",  cityList );
 		return "modules/contract/auditBusiness";
 	}
 
@@ -321,6 +408,24 @@ public class ContProcController extends BaseController {
 		model.addAttribute("review", new BaseReview());
 		model.addAttribute("readonly",false );
 		model.addAttribute("fileClass","1" );
+		Area area=new Area();
+		Area parent=new Area();
+		parent.setId("1");
+		area.setParent(parent);
+		List<Area> provinceList =areaService.findList(area);
+		model.addAttribute("provinceList",  provinceList );
+
+		area=new Area();
+		parent=new Area();
+		if(contract!=null&&contract.getProvince()!=null&&(!StringUtils.isEmpty(contract.getProvince().getId()))){
+
+			parent.setId(contract.getProvince().getId());
+		}else{
+			parent.setId( provinceList.get(0).getId());
+		}
+		area.setParent(parent);
+		List<Area> cityList =areaService.findList(area);
+		model.addAttribute("cityList",  cityList );
 		return "modules/contract/auditImprove";
 	}
 

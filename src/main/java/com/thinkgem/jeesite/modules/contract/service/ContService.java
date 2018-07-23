@@ -7,6 +7,7 @@ import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.modules.contract.dao.ContDao;
 import com.thinkgem.jeesite.modules.contract.entity.Contract;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,8 @@ public class ContService extends CrudService<ContDao, Contract> {
 	}
 	
 	public Page<Contract> findPage(Page<Contract> page, Contract contract) {
+		System.out.println(dataScopeFilter(UserUtils.getUser(), "o", "c"));
+		contract.getSqlMap().put("dsf",dataScopeFilter(UserUtils.getUser(), "o", "c"));
 		return super.findPage(page, contract);
 	}
 	

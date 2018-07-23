@@ -23,6 +23,41 @@
 				}
 			});
 		});
+        function selectDeputy() {
+            top.$.jBox.open("iframe:${ctx}/sys/office/userToDetputy?id=${office.id}", "分配副责任人",810,$(top.document).height()-240,{
+                buttons:{"保存":"ok", "清除已选":"clear", "关闭":true}, bottomText:"通过选择部门，然后为列出的人员分配。",submit:function(v, h, f){
+                    var pre_ids = h.find("iframe")[0].contentWindow.pre_ids;
+                    var ids = h.find("iframe")[0].contentWindow.ids;
+                    //nodes = selectedTree.getSelectedNodes();
+                    if (v=="ok"){
+                        // 删除''的元素
+                        if(ids[0]==''){
+                            ids.shift();
+                            pre_ids.shift();
+                        }
+                        if(pre_ids.sort().toString() == ids.sort().toString()){
+                            top.$.jBox.tip("未给角色【${office.name}】分配新成员！", 'info');
+                            return false;
+                        };
+                        // 执行保存
+                        loading('正在提交，请稍等...');
+                        var idsArr = "";
+                        for (var i = 0; i<ids.length; i++) {
+                            idsArr = (idsArr + ids[i]) + (((i + 1)== ids.length) ? '':',');
+                        }
+                        $('#idsArr').val(idsArr);
+                        console.log($('#idsArr').val());
+                        $('#deputyForm').submit();
+                        return true;
+                    } else if (v=="clear"){
+                        h.find("iframe")[0].contentWindow.clearAssign();
+                        return false;
+                    }
+                }, loaded:function(h){
+                    $(".jbox-content", top.document).css("overflow-y","hidden");
+                }
+            });
+        }
 	</script>
 </head>
 <body>
@@ -91,11 +126,29 @@
 					title="用户" url="/sys/office/treeData?type=3" allowClear="true" notAllowSelectParent="true"/>
 			</div>
 		</div>
-		<div class="control-group">
+		<%--<div class="control-group">
 			<label class="control-label">副负责人:</label>
 			<div class="controls">
 				 <sys:treeselect id="deputyPerson" name="deputyPerson.id" value="${office.deputyPerson.id}" labelName="office.deputyPerson.name" labelValue="${office.deputyPerson.name}"
 					title="用户" url="/sys/office/treeData?type=3" allowClear="true" notAllowSelectParent="true"/>
+			</div>
+		</div>--%>
+		<div class="control-group">
+			<label class="control-label">副负责人:</label>
+			<div class="controls">
+				<c:forEach var="item" items="${office.deputyPersons}"  varStatus="stat">
+
+					<c:choose>
+						<c:when test="${stat.last}">
+							${item.name}
+						</c:when>
+						<c:otherwise>
+							${item.name},
+						</c:otherwise>
+					</c:choose>
+				</c:forEach>
+				&nbsp;&nbsp;&nbsp;&nbsp;<input id="deputyBtn" class="btn btn-primary" type="button" value="编 辑" onclick="selectDeputy();"/>
+			<%--	<form:input path="deputyPersons" items="${deputyPersons}" itemLabel="name" itemValue="id" htmlEscape="false" class="required"/>--%>
 			</div>
 		</div>
 		<div class="control-group">
@@ -153,5 +206,10 @@
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 		</div>
 	</form:form>
+
+	<form id="deputyForm"  action="${ctx}/sys/office/deputySave" method="post" class="form-horizontal">
+	    <input type="hidden" id="idsArr" name="idsArr" value="" />
+		<input type="hidden" id="officeId" name="officeId" value="${office.id}" />
+	</form>
 </body>
 </html>

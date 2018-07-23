@@ -123,7 +123,7 @@
 
 			<li><label>合同名称：</label>&nbsp;<form:input path="name" value="${name}" htmlEscape="false" maxlength="50" class="input-small"/></li>
 			<li class="clearfix"></li>
-			<li><label>签订部门：</label><sys:treeselect id="office" name="office.id" value="${queryContract.office.id}" labelName="office.name" labelValue="${queryContract.office.name}"
+			<li><label>签订部门：</label><sys:treeselect id="office" name="office.id" value="${queryContract.office.id}" labelName="office.name" labelValue="${queryContract.office.name}" isAll="true"
 													title="部门" url="/sys/office/treeData?type=2" cssClass="input-small" allowClear="true" notAllowSelectParent="true"/>
 			</li>
 

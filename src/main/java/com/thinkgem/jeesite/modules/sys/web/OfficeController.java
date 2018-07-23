@@ -8,6 +8,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.common.utils.Collections3;
+import com.thinkgem.jeesite.modules.sys.entity.Role;
+import com.thinkgem.jeesite.modules.sys.service.SystemService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,6 +43,9 @@ public class OfficeController extends BaseController {
 
 	@Autowired
 	private OfficeService officeService;
+
+	@Autowired
+	private SystemService systemService;
 	
 	@ModelAttribute("office")
 	public Office get(@RequestParam(required=false) String id) {
@@ -58,15 +64,36 @@ public class OfficeController extends BaseController {
 	}
 
 	@RequiresPermissions("sys:office:view")
-	@RequestMapping(value = {"list"})
-	public String list(Office office, Model model) {
-        model.addAttribute("list", officeService.findList(office));
-		return "modules/sys/officeList";
+	@RequestMapping(value = {"userToDetputy"})
+	public String selectUserToDetputy(Office office, Model model) {
+		List<User> userList =  officeService.findDeputyPersonList(office.getId());
+		office=get( office.getId());
+		model.addAttribute("office", office);
+		model.addAttribute("userList", userList);
+		model.addAttribute("selectIds", Collections3.extractToString(userList, "id", ","));
+		model.addAttribute("officeList", officeService.findAll());
+		return "modules/sys/selectUserToDeputy";
+	}
+
+	@RequiresPermissions("sys:office:edit")
+	@RequestMapping(value = {"deputySave"})
+	public String deputySave(String  idsArr,String officeId, Model model, RedirectAttributes redirectAttributes) {
+		String[] userIdArray=null;
+		if(idsArr!=null) {
+			userIdArray=idsArr.split(",");
+			officeService.saveDeputy(userIdArray, officeId);
+		}
+
+		addMessage(redirectAttributes, "副负责人修改成功");
+		Office office=get(officeId);
+		model.addAttribute("office", office);
+		return "redirect:" + adminPath + "/sys/office/form?id="+officeId;
 	}
 	
 	@RequiresPermissions("sys:office:view")
 	@RequestMapping(value = "form")
 	public String form(Office office, Model model) {
+		office=get(office.getId());
 		User user = UserUtils.getUser();
 		if (office.getParent()==null || office.getParent().getId()==null){
 			office.setParent(user.getOffice());
@@ -88,8 +115,16 @@ public class OfficeController extends BaseController {
 			}
 			office.setCode(office.getParent().getCode() + StringUtils.leftPad(String.valueOf(size > 0 ? size+1 : 1), 3, "0"));
 		}
+
 		model.addAttribute("office", office);
 		return "modules/sys/officeForm";
+	}
+
+	@RequiresPermissions("sys:office:edit")
+	@RequestMapping(value = {"list"})
+	public String list(Office office, Model model) {
+		model.addAttribute("list", officeService.findList(office));
+		return "modules/sys/officeList";
 	}
 	
 	@RequiresPermissions("sys:office:edit")

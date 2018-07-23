@@ -61,7 +61,7 @@
         }
         function selectPrj() {
 
-            top.$.jBox.open("iframe:${ctx}/project/project/selectList", "项目选择", 800, 500, { buttons: { '关闭': true},
+            top.$.jBox.open("iframe:${ctx}/project/project/selectList", "项目选择", 1000, 500, { buttons: { '关闭': true},
 				loaded : function(h) {   //隐藏滚动条
                 $(".jbox-content", top.document).css( "overflow-y", "hidden");
                 }
@@ -337,7 +337,8 @@
 				</div>
 				<div class="span4">
 					<label >合同金额:</label>
-					<form:input path="value"  onkeyup="onlyNum(this)" htmlEscape="false" class="form-control input-small" readonly="${readonly}"/>
+					<form:input path="value"  onkeyup="onlyNum(this)" htmlEscape="false" class="form-control input-small" readonly="${readonly}"/>&nbsp;元
+
 				</div>
 				<div class="span1">
 				</div>
@@ -403,7 +404,7 @@
 				</div>
 				<div class="span3">
 					<label >投&nbsp;&nbsp;资&nbsp;&nbsp;额:</label>
-					<form:input path="investment" htmlEscape="false" maxlength="200" class="input-small" readonly="${readonly}"/>
+					<form:input path="investment" htmlEscape="false" maxlength="200" class="input-small" readonly="${readonly}" onkeyup="onlyNum(this)"/>&nbsp;万元
 				</div>
 
 				<div class="span4">

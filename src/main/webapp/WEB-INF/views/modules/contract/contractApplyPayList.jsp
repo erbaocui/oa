@@ -54,7 +54,7 @@
 						${contApply.income}
 				</td>
 				<td>
-						${contApply.status}
+						${fns:getDictLabel(contApply.status, 'contract_applyPay_status', '无')}
 				</td>
 				<td>
 						${contApply.remark}

@@ -151,10 +151,18 @@
 				</div>
 				<div class="span10">
 					<label>希望开票日期：</label>
-					<input name="receiptDate" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate required "
-						   value="<fmt:formatDate value="${contApply.receiptDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"
-						   onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});" disabled="${readonly}"/>
-					<span class="help-inline"><font color="red">*</font> </span>
+
+					<c:if test="${readonly}">
+						<input name="receiptDate" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate required "
+							   value="<fmt:formatDate value="${contApply.receiptDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"
+							   onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});" disabled="disabled"/>
+					</c:if>
+					<c:if test="${not readonly}">
+						<input name="signedTime" type="text" readonly="readonly" maxlength="20" class="iform-control input-small Wdate"
+							   value="<fmt:formatDate value="${contract.signedTime}" pattern="yyyy-MM-dd"/>"
+							   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" />
+					</c:if>
+
 				</div>
 				<div class="span1"></div>
 			</div>
@@ -195,9 +203,11 @@
 		</div>
 	</div>
 	</form:form>
-	<c:if test="${(contApply.status!=1) && (contApply.status!=2)&&(contApply.status!=null) }">
-		<br>
-		<%@ include file="/WEB-INF/views/modules/act/comment.jsp"%>
+	<c:if test="${not empty contApply.id}">
+		<c:if test="${(contApply.status!=1) && (contApply.status!=2)&&(contApply.status!=null) }">
+			<br>
+			<%@ include file="/WEB-INF/views/modules/act/comment.jsp"%>
+		</c:if>
 	</c:if>
 </body>
 </html>

@@ -260,6 +260,8 @@ public class UserUtils {
 	}
 
 	/**
+	 *
+	 *
 	 * 获取当前用户有权限访问的部门
 	 * @return
 	 */

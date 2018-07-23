@@ -164,7 +164,6 @@ public class ContController extends BaseController {
 		return "modules/contract/contractForm";
 	}
 
-	@RequiresPermissions("cont:creator:edit")
 	@RequestMapping(value = "save")
 	public String save(Contract contract,Model model, RedirectAttributes redirectAttributes) throws Exception {
 		if (!beanValidator(model, contract)){

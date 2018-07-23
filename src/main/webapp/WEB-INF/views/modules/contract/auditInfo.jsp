@@ -98,20 +98,19 @@
 			<div class="row-fluid">
 				<div class="span1">
 				</div>
-				<div class="span10">
-					<label>所属地区:</label>
-					<c:if test="${readonly}">
-						<sys:treeselect id="area" name="area.id" value="${contract.area.id}" labelName="area.name" labelValue="${contract.area.name}"
-										title="区域" url="/sys/area/treeData" cssClass="input-small" allowClear="true" notAllowSelectParent="true" disabled="disabled"/>
-						<span class="help-inline"><font color="red">*</font> </span>
-					</c:if>
-					<c:if test="${not readonly}">
-						<sys:treeselect id="area" name="area.id" value="${contract.area.id}" labelName="area.name" labelValue="${contract.area.name}"
-										title="区域" url="/sys/area/treeData" cssClass="input-small" allowClear="true" notAllowSelectParent="true" />
-						<span class="help-inline"><font color="red">*</font> </span>
-					</c:if>
+				<div class="span3">
+					<label>所&nbsp;&nbsp;属&nbsp;&nbsp;省:</label>
+					<form:select path="province.id" class="input-medium" onchange="findCity(this.options[this.options.selectedIndex].value);" disabled="${readonly}" >
+						<form:options items="${provinceList}" itemLabel="name" itemValue="id" htmlEscape="false"/>
+					</form:select>
 				</div>
-				<div class="span1">
+				<div class="span3">
+					<label>所属市/区:</label>
+					<form:select path="city.id" class="input-medium"  disabled="${readonly}">
+						<form:options items="${cityList}" itemLabel="name" itemValue="id" htmlEscape="false"/>
+					</form:select>
+				</div>
+				<div class="span5">
 				</div>
 
 			</div>
@@ -236,7 +235,7 @@
 				</div>
 				<div class="span4">
 					<label >合同金额:</label>
-					<form:input path="value"  onkeyup="onlyNum(this)" htmlEscape="false" class="form-control input-small" readonly="${readonly}"/>
+					<form:input path="value"  onkeyup="onlyNum(this)" htmlEscape="false" class="form-control input-small" readonly="${readonly}"/>&nbsp;元
 				</div>
 				<div class="span1">
 				</div>
@@ -302,7 +301,7 @@
 				</div>
 				<div class="span3">
 					<label >投&nbsp;&nbsp;资&nbsp;&nbsp;额:</label>
-					<form:input path="investment" htmlEscape="false" maxlength="200" class="input-small" readonly="${readonly}"/>
+					<form:input path="investment" htmlEscape="false" maxlength="200" class="input-small" readonly="${readonly}"  onkeyup="onlyNum(this)"/>&nbsp;万元
 				</div>
 
 				<div class="span4">

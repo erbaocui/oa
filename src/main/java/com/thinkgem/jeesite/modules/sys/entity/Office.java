@@ -36,6 +36,7 @@ public class Office extends TreeEntity<Office> {
 	private String useable;//是否可用
 	private User primaryPerson;//主负责人
 	private User deputyPerson;//副负责人
+	private List<User> deputyPersons;
 	private List<String> childDeptList;//快速添加子部门
 	
 	public Office(){
@@ -213,5 +214,13 @@ public class Office extends TreeEntity<Office> {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	public void setDeputyPersons(List<User> deputyPersons) {
+		this.deputyPersons = deputyPersons;
+	}
+
+	public List<User> getDeputyPersons() {
+		return deputyPersons;
 	}
 }

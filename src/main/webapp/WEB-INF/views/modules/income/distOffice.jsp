@@ -24,6 +24,8 @@
 			});
 
 			$("#btnDistributeOffice").click(function(){
+                //window.document.getElementById("office.id").value= "";
+                //window.document.getElementById("office.name").value= "";
                 $('#addModal').modal({backdrop: 'static', keyboard: true});
 			});
 
@@ -38,7 +40,7 @@
                         $.jBox.tip("请选择部门", 'error');
                         return;
                     }
-                    var officeId=$("#officeId").val()+"";
+                   var officeId=$("#officeId").val()+"";
                     var officeIds=$("#officeIds").val().split(",");
                     var flag=true;
                     $.each(officeIds,function(index,value){
@@ -59,7 +61,8 @@
 						function(result){
 							if(result=="success"){
 								$.jBox.tip("收款保存成功");
-								window.location="${ctx}/income/distProc/officeDist?id="+$("#id").val();
+								//window.reload();
+								window.location="${ctx}/income/distProc/officeDist?id="+$("#id").val()+"&taskId=${taskId}";
 							}else{
                                 $.jBox.tip("保存失败", 'error');
 							}
@@ -80,7 +83,7 @@
                  function(result){
                      if(result=="success"){
                          $.jBox.tip("操作成功");
-                         window.location="${ctx}/income/distProc/officeDist?id="+$("#id").val();
+                         window.location="${ctx}/income/distProc/officeDist?id="+$("#id").val()+"&taskId=${taskId}";
                      }else{
                          $.jBox.tip("操作失败", 'error');
                      }
@@ -178,7 +181,6 @@
 			</tbody>
 		</table>
 	   </form:form>
-	${taskId}
 		<form:form id="reviewForm" modelAttribute="review"   action="${ctx}/income/distProc/officeDistSubmit" method="post" class="form-horizontal">
 			<form:hidden path="taskId"  value="${taskId}"/>
 
@@ -238,7 +240,7 @@
 										</div>
 										<div class="span10">
 											<label >签约部门:</label>
-											<sys:treeselect id="office" name="office.id" value="" labelName="office.name" labelValue=""
+											<sys:treeselect id="office" name="office.id" value="" labelName="office.name" labelValue="" isAll="true"
 															title="部门" url="/sys/office/treeData?type=2" cssClass="input-mini" allowClear="true" notAllowSelectParent="true"/>
 										</div>
 										<div class="span2">
@@ -271,24 +273,7 @@
 
 
 		</form>
-	<table title="批注列表" class="table table-striped table-bordered table-condensed">
-		<thead>
-		<tr>
-			<th>批注时间</th>
-			<th>批注人</th>
-			<th>批注信息</th>
-		</tr>
-		</thead>
-		<tbody>
-		<c:forEach items="${comments}" var="item">
-			<tr>
-				<td><fmt:formatDate value="${item.time}" type="both"/></td>
-				<td> ${item.userId}</td>
-				<td> ${item.message}</td>
-			</tr>
-		</c:forEach>
-		</tbody>
-	</table>
-
+	<br>
+	<%@ include file="/WEB-INF/views/modules/act/comment.jsp"%>
 </body>
 </html>

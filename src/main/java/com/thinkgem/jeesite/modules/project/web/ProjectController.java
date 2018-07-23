@@ -59,7 +59,11 @@ public class ProjectController extends BaseController {
 	@RequestMapping(value = {"selectList", ""})
 	public String selectList(Project project, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page p=new Page<Project>(request, response);
-		p.setPageSize(5);
+		p.setPageSize(10);
+		p.setOrderBy("code desc");
+
+
+
 		Page page = projectService.findPage(p, project);
 		model.addAttribute("page", page);
 		return "modules/project/projectSelectList";

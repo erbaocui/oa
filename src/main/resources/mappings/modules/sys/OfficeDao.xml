@@ -1,11 +1,45 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.thinkgem.jeesite.modules.sys.dao.OfficeDao">
+	<!--<resultMap id="officeResult" type="Office">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="parent.id" column="parent.id" />
+		<result property="parentIds" column="parentIds" />
+		<result property="code" column="code" />
+		<result property="sort" column="sort" />
+		<result property="type" column="type" />
+		<result property="grade" column="grade" />
+		<result property="address" column="address" />
+		<result property="zipCode" column="zipCode" />
+		<result property="master" column="master" />
+		<result property="phone" column="phone" />
+		<result property="fax" column="fax" />
+		<result property="email" column="email" />
+		<result property="remarks" column="remarks" />
+		<result property="createBy.id" column="createBy.id" />
+		<result property="createDate" column="createDate" />
+		<result property="updateBy.id" column="updateBy.id" />
+		<result property="updateDate" column="updateDate" />
+		<result property="delFlag" column="delFlag" />
+		<result property="useable" column="useable" />
+		<result property="primaryPerson.id" column="primaryPerson.id" />
+		<result property="primaryPerson.loginName" column="primaryPerson.loginName" />
+		<result property="primaryPerson.loginName" column="primaryPerson.loginName" />
+		<result property="primaryPerson.name" column="primaryPerson.name" />
+		<result property="deputyPerson.loginName" column="deputyPerson.id" />
+		<result property="deputyPerson.name" column="deputyPerson.name" />
 
+		<collection property="deputyPersons" ofType="User">
+			<id property="id" column="deputyPersons.id" />
+			<id property="loginName" column="deputyPersons.loginName" />
+			<id property="name" column="deputyPersons.name" />
+		</collection>
+	</resultMap>-->
 	<sql id="officeColumns">
 		a.id,
 		a.parent_id AS "parent.id",
-		a.parent_ids,
+		a.parent_ids AS "parentIds",
 		<!--
        a.area_id AS "area.id",
        -->
@@ -57,7 +91,7 @@
    WHERE a.id = #{id}
 </select>
 
-<select id="findList" resultType="Office">
+<select id="findList"  resultType="Office">
    SELECT
        <include refid="officeColumns"/>
    FROM sys_office a
@@ -69,7 +103,7 @@
 		ORDER BY a.code
 	</select>
 			
-	<select id="findAllList" resultType="Office">
+	<select id="findAllList"  resultType="Office">
 		SELECT
 			<include refid="officeColumns"/>
 		FROM sys_office a
@@ -77,8 +111,39 @@
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
 		ORDER BY a.code
 	</select>
+
+	<select id="findDeputyPersonList"  resultType="User">
+		SELECT u.id,
+		        u.name,
+		        u.login_name AS "loginName"
+
+		FROM sys_office_head a
+		inner join sys_user u on u.id= a.user_id
+		WHERE 1=1
+		and  a.type=2
+		and  a.office_id=#{officeId}
+	</select>
+	<delete id="deleteDeputy" parameterType="java.util.Map">
+		delete  from
+         sys_office_head
+		WHERE office_id = #{officeId}
+	</delete>
+	<insert id="insertBatchDeputy" parameterType="java.util.Map">
+		INSERT INTO sys_office_head(
+		office_id,
+		type,
+		user_id
+        ) VALUES
+		<foreach collection="userIdArray" item="item" index="index" separator=",">
+			(
+			#{officeId},
+			#{type},
+			#{item}
+			)
+		</foreach>
+	</insert>
 	
-	<select id="findByParentIdsLike" resultType="Office">
+	<select id="findByParentIdsLike"  resultType="Office">
 		SELECT
 			<include refid="officeColumns"/>
 		FROM sys_office a
