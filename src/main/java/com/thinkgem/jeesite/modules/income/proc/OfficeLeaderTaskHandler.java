@@ -30,17 +30,22 @@ public class OfficeLeaderTaskHandler implements TaskListener {
 		WebApplicationContext wac = ContextLoader.getCurrentWebApplicationContext();
 		IncomeService incomeService=(IncomeService)wac.getBean("incomeService");
 		SystemService systemService=(SystemService)wac.getBean("systemService");
+		OfficeService officeService=(OfficeService )wac.getBean("officeService");
 		ContService contService=(ContService)wac.getBean("contService");
 		String incomeId =(String)delegateTask.getVariable("businessId");
 		Income income=incomeService.get(incomeId);
 		Contract contract=contService.get(income.getContract().getId());
 		User creator =systemService.getUser(contract.getCreateBy().getId());
-		Office office=creator.getOffice();
+		Office office=officeService.get(creator.getOffice().getId());
 		String loginName=office.getPrimaryPerson().getLoginName();
 		List<String> userList=new ArrayList<String>();
 		userList.add(loginName);
-		loginName=office.getDeputyPerson().getLoginName();
-		userList.add(loginName);
+		List<User> deputyList=office.getDeputyPersons();
+		if( deputyList!=null&&deputyList.size()>0){
+			for(User user:deputyList) {
+				userList.add(user.getLoginName());
+			}
+		}
 		delegateTask.addCandidateUsers(userList);
 	}
 
