@@ -42,6 +42,7 @@
 		<thead>
 			<tr>
 				<th>账户</th>
+				<th>合同</th>
 				<th>操作</th>
 				<th>时间</th>
 				<th>金额</th>
@@ -53,6 +54,9 @@
 			<tr>
 				<td>
 						${accountFlow.account.name}
+				</td>
+				<td>
+						${accountFlow.contract.name}
 				</td>
 				<td>
 						${fns:getDictLabel(accountFlow.type, 'income_account_act_type', '无')}

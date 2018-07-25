@@ -9,11 +9,12 @@
 		a.remarks AS "remarks",
 		a.value AS "value",
 		a.office_id AS "office.id",
-		o6.name AS "office.name"
+		o.name AS "office.name"
 	</sql>
 	
 	<sql id="accountJoins">
-		LEFT JOIN sys_office o6 ON o6.id = a.office_id
+		LEFT JOIN sys_office o ON o.id = a.office_id
+		LEFT JOIN sys_user u ON u.id = a.create_by
 	</sql>
     
 	<select id="get" resultType="Account">
@@ -43,6 +44,7 @@
 
 			   </if>
 			</if>
+			${sqlMap.dsf}
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

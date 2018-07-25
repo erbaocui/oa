@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.income.entity;
 
+import com.thinkgem.jeesite.modules.contract.entity.Contract;
 import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
@@ -25,6 +26,7 @@ public class AccountFlow extends DataEntity<AccountFlow> {
 	private Account account;
 	protected Date beginDate;	// 创建日期
 	protected Date endDate;	// 创建日期
+	private Contract contract;
 
 
 	public AccountFlow() {
@@ -83,5 +85,13 @@ public class AccountFlow extends DataEntity<AccountFlow> {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	public Contract getContract() {
+		return contract;
+	}
+
+	public void setContract(Contract contract) {
+		this.contract = contract;
 	}
 }

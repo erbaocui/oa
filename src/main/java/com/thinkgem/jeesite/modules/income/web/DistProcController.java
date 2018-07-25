@@ -575,7 +575,7 @@ public class DistProcController extends BaseController {
 									distribute.preInsert();
 									distribute.setRuleItemId(ri.getId());
 									distribute.setStatus(1);
-									distribute.setAccount(ri.getAccount());
+									distribute.setAccount(IncomeConstant.ACCOUNT_TAX);
 									distribute.setDes("税");
 									distribute.setIncomeId(item.getIncomeId());
 									tax = NumberOperateUtils.mul(itemValue, 0.067);
@@ -587,7 +587,7 @@ public class DistProcController extends BaseController {
 									distribute.preInsert();
 									distribute.setRuleItemId(ri.getId());
 									distribute.setStatus(1);
-									distribute.setAccount(ri.getAccount());
+									distribute.setAccount(ri.getAccount()+IncomeConstant.ACCOUNT_FILING_FEE_POSTFIX);
 									distribute.setDes("归档费");
 									distribute.setIncomeId(item.getIncomeId());
 									filingFee = NumberOperateUtils.sub(itemValue, tax);

@@ -5,6 +5,7 @@ package com.thinkgem.jeesite.modules.income.service;
 
 import java.util.List;
 
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,11 +27,13 @@ public class AccountFlowService extends CrudService<AccountFlowDao, AccountFlow>
 		return super.get(id);
 	}
 	
-	public List<AccountFlow> findList(AccountFlow accountFlow) {
-		return super.findList(accountFlow);
+	public List<AccountFlow> findList(AccountFlow accountFlow){
+		accountFlow.getSqlMap().put("dsf",dataScopeFilter(UserUtils.getUser(), "o", "u"));
+	    return super.findList(accountFlow);
 	}
 	
 	public Page<AccountFlow> findPage(Page<AccountFlow> page, AccountFlow accountFlow) {
+		accountFlow.getSqlMap().put("dsf",dataScopeFilter(UserUtils.getUser(), "o", "u"));
 		return super.findPage(page, accountFlow);
 	}
 	

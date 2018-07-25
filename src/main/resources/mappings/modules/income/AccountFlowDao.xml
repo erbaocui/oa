@@ -10,12 +10,17 @@
 		a.create_by AS "createBy.id",
 		a.account AS "account.account",
 		b.name AS "account.name",
-		a.income_id AS "incomeId"
+		a.income_id AS "incomeId",
+		c.name AS "contract.name"
 
 	</sql>
 	
 	<sql id="accountFlowJoins">
 		left join  bm_account b on a.account=b.account
+		left join  bm_income  i on i.id=a.income_id
+		left join  bm_contract c on c.id=i.contract_id
+		LEFT JOIN  sys_office o ON o.id = b.office_id
+		LEFT JOIN sys_user u ON u.id = a.create_by
 	</sql>
     
 	<select id="get" resultType="AccountFlow">
@@ -40,6 +45,7 @@
 				and create_date <= #{endDate}
 				]]>
 			</if>
+			${sqlMap.dsf}
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
