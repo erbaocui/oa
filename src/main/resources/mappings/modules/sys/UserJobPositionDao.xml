@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.JobPositionDao">
+    
+	<sql id="jobPositionColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.professional AS "professional",
+		a.responsible AS "responsible",
+		a.approval AS "approval",
+		a.audit AS "audit",
+		a.proof AS "proof",
+		a.design AS "design",
+		a.draw AS "draw",
+		a.remark AS "remark",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="jobPositionJoins">
+	</sql>
+    
+	<select id="get" resultType="JobPosition">
+		SELECT 
+			<include refid="jobPositionColumns"/>
+		FROM sys_user_job_position a
+		<include refid="jobPositionJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="JobPosition">
+		SELECT 
+			<include refid="jobPositionColumns"/>
+		FROM sys_user_job_position a
+		<include refid="jobPositionJoins"/>
+		<where>
+		    a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="professional != null and professional != ''">
+				AND a.professional = #{professional}
+			</if>
+			<if test="user != null and user.id != null and user.id != ''">
+				AND  a.user_id=#{user.id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="JobPosition">
+		SELECT 
+			<include refid="jobPositionColumns"/>
+		FROM sys_user_job_position a
+		<include refid="jobPositionJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_user_job_position(
+			id,
+			user_id,
+			professional,
+			responsible,
+			approval,
+			audit,
+			proof,
+			design,
+			draw,
+			remark,
+			create_date,
+			create_by,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{user.id},
+			#{professional},
+			#{responsible},
+			#{approval},
+			#{audit},
+			#{proof},
+			#{design},
+			#{draw},
+			#{remark},
+			#{createDate},
+			#{createBy.id},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_user_job_position SET 	
+			professional = #{professional},
+			responsible = #{responsible},
+			approval = #{approval},
+			audit = #{audit},
+			proof = #{proof},
+			design = #{design},
+			draw = #{draw},
+			remark = #{remark}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE sys_user_job_position SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

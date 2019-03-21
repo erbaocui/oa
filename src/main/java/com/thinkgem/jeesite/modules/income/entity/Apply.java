@@ -56,11 +56,11 @@ public class Apply extends DataEntity<Apply> {
 		this.firstParty = firstParty;
 	}
 
-	/*public List<Contract> getContractList() {
+	/*public List<UserContract> getContractList() {
 		return contractList;
 	}
 
-	public void setContractList(List<Contract> contractList) {
+	public void setContractList(List<UserContract> contractList) {
 		this.contractList = contractList;
 	}*/
 

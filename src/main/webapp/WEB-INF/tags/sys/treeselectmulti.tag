@@ -45,7 +45,8 @@
 					}else{
 						nodes = tree.getSelectedNodes();
 					}
-					for(var i=0; i<nodes.length; i++) {//<c:if test="${checked && notAllowSelectParent}">
+					for(var i=0; i<nodes.length; i++) {
+					    //<c:if test="${checked && notAllowSelectParent}">
 						if (nodes[i].isParent){
 							continue; // 如果为复选框选择，则过滤掉父节点
 						}//</c:if><c:if test="${notAllowSelectRoot}">

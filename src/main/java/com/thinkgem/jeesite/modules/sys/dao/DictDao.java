@@ -8,6 +8,7 @@ import java.util.List;
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.sys.entity.Dict;
+import com.thinkgem.jeesite.modules.sys.entity.Professional;
 
 /**
  * 字典DAO接口
@@ -18,5 +19,7 @@ import com.thinkgem.jeesite.modules.sys.entity.Dict;
 public interface DictDao extends CrudDao<Dict> {
 
 	public List<String> findTypeList(Dict dict);
-	
-}
+	public List<Professional> findProfessionalList(Professional professional);
+
+
+	}

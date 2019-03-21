@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.sys.entity.Professional;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -119,5 +120,26 @@ public class DictController extends BaseController {
 		dict.setType(type);
 		return dictService.findList(dict);
 	}
+
+
+	@RequiresPermissions("user")
+	@ResponseBody
+	@RequestMapping(value = "treeProfessionalData")
+	public List<Map<String, Object>> treeProfessionalData(@RequestParam(required=false) String extId, HttpServletResponse response) {
+		List<Map<String, Object>> mapList = Lists.newArrayList();
+		List<Professional> list = dictService.findProfessionalList(new Professional());
+		for (int i=0; i<list.size(); i++){
+			Professional e = list.get(i);
+			if (StringUtils.isBlank(extId) || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1)){
+				Map<String, Object> map = Maps.newHashMap();
+				map.put("id", e.getId());
+				map.put("pId", e.getParentId());
+				map.put("name", e.getName());
+				mapList.add(map);
+			}
+		}
+		return mapList;
+	}
+
 
 }

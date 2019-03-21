@@ -103,12 +103,12 @@ public class AttachController extends BaseController {
 			String fileName = ContConstant.CONTRACT_FILE_PREFIX + DateUtils.getDate("yyyyMMddHHmmssSSS") + "." + fileType;
 			File f = new File(path, fileName);
 			if (f.isFile()) {
-				FileUtils.deleteFile(path + "/" + fileName);
+				FileUtils.deleteFile(path  + fileName);
 			}
 
 			FileUtils.writeByteArrayToFile(f, file.getBytes());
 			FTPUtil ftpUtil = new FTPUtil();
-			ftpUtil.uploadFile(ftpPath, fileName, path + "/" + fileName);
+			ftpUtil.uploadFile(ftpPath, fileName, path + fileName);
 
 
 			ContAttach contAttach = new ContAttach();

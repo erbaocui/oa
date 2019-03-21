@@ -123,7 +123,7 @@ public class ContController extends BaseController {
 		if(!StringUtils.isEmpty(notContractIds.trim())){
 			queryContract.setNoInArray(notContractIds.trim().split(","));
 		}
-		Page<Contract> page=new Page<Contract>(request, response);
+		Page<UserContract> page=new Page<UserContract>(request, response);
 		page.setPageSize(10);
 		page = contService.findPage(page, queryContract);
 		model.addAttribute("page", page);

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.sys.dao.DetailDao">
+    
+	<sql id="detailColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.id_card_no AS "idCardNo",
+		a.gender AS "gender",
+		a.status AS "status",
+		a.used_name AS "usedName",
+		a.political AS "political",
+		a.party_date AS "partyDate",
+		a.marital AS "marital",
+		a.nation AS "nation",
+		a.native_place AS "nativePlace",
+		a.birthdate AS "birthdate",
+		a.company_date AS "companyDate",
+		a.work_date AS "workDate",
+		a.home_address AS "homeAddress",
+		a.mail_address AS "mailAddress",
+		a.cur_position AS "curPosition",
+		a.position_date AS "positionDate",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.del_flag AS "delFlag",
+		u2.name AS "user.name"
+	</sql>
+	
+	<sql id="detailJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="Detail">
+		SELECT 
+			<include refid="detailColumns"/>
+		FROM sys_user_detail a
+		<include refid="detailJoins"/>
+		WHERE a.id = #{userId}
+	</select>
+	<select id="getByUserId" resultType="Detail">
+		SELECT
+		<include refid="detailColumns"/>
+		FROM sys_user_detail a
+		<include refid="detailJoins"/>
+		WHERE a.user_id = #{userId}
+	</select>
+
+	
+	<select id="findList" resultType="Detail">
+		SELECT 
+			<include refid="detailColumns"/>
+		FROM sys_user_detail a
+		<include refid="detailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Detail">
+		SELECT 
+			<include refid="detailColumns"/>
+		FROM sys_user_detail a
+		<include refid="detailJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO sys_user_detail(
+			id,
+			user_id,
+			id_card_no,
+			gender,
+			status,
+			used_name,
+			political,
+			party_date,
+			marital,
+			nation,
+			native_place,
+			birthdate,
+			company_date,
+			work_date,
+			home_address,
+			mail_address,
+			cur_position,
+			position_date,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			del_flag
+		) VALUES (
+			#{id},
+			#{user.id},
+			#{idCardNo},
+			#{gender},
+			#{status},
+			#{usedName},
+			#{political},
+			#{partyDate},
+			#{marital},
+			#{nation},
+			#{nativePlace},
+			#{birthdate},
+			#{companyDate},
+			#{workDate},
+			#{homeAddress},
+			#{mailAddress},
+			#{curPosition},
+			#{positionDate},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE sys_user_detail SET 	
+			user_id = #{user.id},
+			id_card_no = #{idCardNo},
+			gender = #{gender},
+			status = #{status},
+			used_name = #{usedName},
+			political = #{political},
+			party_date = #{partyDate},
+			marital = #{marital},
+			nation = #{nation},
+			native_place = #{nativePlace},
+			birthdate = #{birthdate},
+			company_date = #{companyDate},
+			work_date = #{workDate},
+			home_address = #{homeAddress},
+			mail_address = #{mailAddress},
+			cur_position= #{curPosition},
+			position_date = #{positionDate},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE sys_user_detail SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

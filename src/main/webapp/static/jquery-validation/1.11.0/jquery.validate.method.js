@@ -143,4 +143,12 @@ function checkIdcard(idcard){
 			return Errors[1];
 			break;
 	}
-} 
+}
+//
+// //时间比较
+// jQuery.validator.addMethod("compareDate",function(value, element, param) {
+//     var startDate = jQuery(param).val();
+//     var date1 = new Date(Date.parse(startDate.replace("-", "/")));
+//     var date2 = new Date(Date.parse(value.replace("-", "/")));
+//     return date1 < date2;
+// });

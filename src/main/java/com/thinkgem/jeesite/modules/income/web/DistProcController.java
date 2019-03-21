@@ -108,86 +108,128 @@ public class DistProcController extends BaseController {
 	}
     //分配部门
 	@RequestMapping(value = {"officeDist"})
-	public String officeDist(String id,String taskId, Model model) throws Exception{
-		Income income=incomeService.get(id);
-		List<Comment> comments=actTaskService.getTaskHistoryCommentList(taskId);
-		model.addAttribute("taskId", taskId);
-		model.addAttribute("income", income);
-		model.addAttribute("comments",comments);
-		model.addAttribute("review", new BaseReview());
-		return "modules/income/distOffice";
-	}
-
-	@RequestMapping(value = {"officeDistSubmit"},method= RequestMethod.POST)
-	public String distOfficeSubmit(BaseReview review,RedirectAttributes redirectAttributes) {
-		Task task=actTaskService.getTask( review.getTaskId());
-		String taskId=task.getId();
-		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
-		Map<String, Object> variables=new HashMap<String,Object>();
-		variables.put("role","contract");
-
-		User user=UserUtils.getUser();
-		Authentication.setAuthenticatedUserId( "【项目部门】" +user.getName());// 设置用户id
-		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
-		addMessage(redirectAttributes, "操作成功");
-		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
-
-	}
-
-    //分配规则
-	@RequestMapping(value = "distRule")
-	public String distRule(DistOfficeProc distOfficeProc, String[] groups, Model model)  throws Exception{
+	public String officeDist(DistOfficeProc distOfficeProc, String[] groups, Model model) throws Exception{
 		List<DistOfficeVo> distOffices=new ArrayList<DistOfficeVo>();
 		Task task=actTaskService.getTask(  distOfficeProc.getTaskId());
 		String incomeId =(String)actTaskService.getTaskVariable(task.getId(),"businessId");
 		distOfficeProc.setIncomeId(incomeId);
 		rule(distOfficeProc,groups,distOffices);
+		Income income=incomeService.get(incomeId);
 		List<Comment> comments=actTaskService.getTaskHistoryCommentList(distOfficeProc.getTaskId());
 		model.addAttribute("taskId", distOfficeProc.getTaskId());
 		model.addAttribute("comments",comments);
 		model.addAttribute("review", new BaseReview());
 		model.addAttribute("incomeId", incomeId);
 		model.addAttribute("distOffices", distOffices);
-		return "modules/income/distRule";
+		model.addAttribute("income",income);
+		return "modules/income/distOffice";
 	}
 
+//	@RequestMapping(value = {"officeDistSubmit"},method= RequestMethod.POST)
+//	public String distOfficeSubmit(BaseReview review,RedirectAttributes redirectAttributes) {
+//		Task task=actTaskService.getTask( review.getTaskId());
+//		String taskId=task.getId();
+//		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
+//		Map<String, Object> variables=new HashMap<String,Object>();
+//		variables.put("role","contract");
+//
+//		User user=UserUtils.getUser();
+//		Authentication.setAuthenticatedUserId( "【项目部门】" +user.getName());// 设置用户id
+//		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
+//		addMessage(redirectAttributes, "操作成功");
+//		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
+//
+//	}
 
-	@RequestMapping(value = {"distRuleSubmit"},method= RequestMethod.POST)
-	public String distRuleSubmit(DistOfficeProc distOfficeProc,String[] groups, BaseReview review,RedirectAttributes redirectAttributes)  throws Exception{
+//    //分配规则
+//	@RequestMapping(value = "distRule")
+//	public String distRule(DistOfficeProc distOfficeProc, String[] groups, Model model)  throws Exception{
+//		List<DistOfficeVo> distOffices=new ArrayList<DistOfficeVo>();
+//		Task task=actTaskService.getTask(  distOfficeProc.getTaskId());
+//		String incomeId =(String)actTaskService.getTaskVariable(task.getId(),"businessId");
+//		distOfficeProc.setIncomeId(incomeId);
+//		rule(distOfficeProc,groups,distOffices);
+//		List<Comment> comments=actTaskService.getTaskHistoryCommentList(distOfficeProc.getTaskId());
+//		model.addAttribute("taskId", distOfficeProc.getTaskId());
+//		model.addAttribute("comments",comments);
+//		model.addAttribute("review", new BaseReview());
+//		model.addAttribute("incomeId", incomeId);
+//		model.addAttribute("distOffices", distOffices);
+//		return "modules/income/distRule";
+//	}
+
+//	@RequestMapping(value = {"distRuleSubmit"},method= RequestMethod.POST)
+//	public String distRuleSubmit(DistOfficeProc distOfficeProc,String[] groups, BaseReview review,RedirectAttributes redirectAttributes)  throws Exception{
+//
+//
+//		Task task=actTaskService.getTask(  distOfficeProc.getTaskId());
+//		String taskId=task.getId();
+//		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
+//		Map<String, Object> variables=new HashMap<String,Object>();
+//
+//		String incomeId =(String)actTaskService.getTaskVariable(taskId,"businessId");
+//		DistOffice distOffice=new DistOffice();
+//		distOffice.setIncomeId(incomeId);
+//		List<DistOffice> distOfficeList= distOfficeService.findList(distOffice);
+//		List<String> userLoginNameList=new ArrayList<String>();
+//		for( DistOffice item:distOfficeList){
+//			String officeId= item.getOffice().getId();
+//			Office office=(Office)officeService.get(officeId);
+//			String loginName=office.getPrimaryPerson().getLoginName();
+//			userLoginNameList.add(loginName);
+//		}
+//		//ruleSave( distOfficeProc,groups);
+//		if(review.getComment()==null||review.getComment().equals("")){
+//			review.setComment("管理员完成");
+//		}
+//		variables.put("msg", "pass");
+//
+//		variables.put("assigneeList",userLoginNameList);
+//
+//		User user=UserUtils.getUser();
+//		Authentication.setAuthenticatedUserId(  "【临时】" +user.getName());// 设置用户id
+//		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
+//		addMessage(redirectAttributes, "操作成功");
+//		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
+//
+//	}
+
+
+	@RequestMapping(value = {"officeDistSubmit"},method= RequestMethod.POST)
+	public String officeDistSubmit(DistOfficeProc distOfficeProc,String[] groups, BaseReview review,RedirectAttributes redirectAttributes)  throws Exception{
 
 
 		    Task task=actTaskService.getTask(  distOfficeProc.getTaskId());
 			String taskId=task.getId();
 			String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
 			Map<String, Object> variables=new HashMap<String,Object>();
-			int state=review.getState();
-			if( state==1){
-				if(review.getComment()==null||review.getComment().equals("")){
-					review.setComment("通过");
-				}
-				variables.put("msg", "pass");
-				String incomeId =(String)actTaskService.getTaskVariable(taskId,"businessId");
-				DistOffice distOffice=new DistOffice();
-				distOffice.setIncomeId(incomeId);
-				List<DistOffice> distOfficeList= distOfficeService.findList(distOffice);
-				List<String> userLoginNameList=new ArrayList<String>();
-				for( DistOffice item:distOfficeList){
+
+			String incomeId =(String)actTaskService.getTaskVariable(taskId,"businessId");
+			DistOffice distOffice=new DistOffice();
+			distOffice.setIncomeId(incomeId);
+			List<DistOffice> distOfficeList= distOfficeService.findList(distOffice);
+			List<String> userLoginNameList=new ArrayList<String>();
+			for( DistOffice item:distOfficeList){
 					String officeId= item.getOffice().getId();
 					Office office=(Office)officeService.get(officeId);
 					String loginName=office.getPrimaryPerson().getLoginName();
 					userLoginNameList.add(loginName);
-				}
-				variables.put("assigneeList",userLoginNameList);
-				ruleSave( distOfficeProc,groups);
-			}else if(state==2){
-				variables.put("msg", "reject");
 			}
+			ruleSave( distOfficeProc,groups);
+			if(review.getComment()==null||review.getComment().equals("")){
+			 review.setComment("部门分配完成");
+			}
+			//
+		    variables.put("role","contract");
+		    variables.put("msg", "pass");
+
+		    //
+			variables.put("assigneeList",userLoginNameList);
 
 			User user=UserUtils.getUser();
-			Authentication.setAuthenticatedUserId(  "【合同管理员】" +user.getName());// 设置用户id
+			Authentication.setAuthenticatedUserId(  "【项目部门】" +user.getName());// 设置用户id
 			actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
-
-		   addMessage(redirectAttributes, "操作成功");
+			addMessage(redirectAttributes, "操作成功");
 			return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
 
 	}
@@ -229,9 +271,12 @@ public class DistProcController extends BaseController {
 			}
 		}else if(state==2){
 			variables.put("msg", "reject");
-			//actTaskService.completeBrotherTask(taskId,variables);
+			if(review.getComment()==null||review.getComment().equals("")){
+				review.setComment("反对");
+			}
+
 		}
-		variables.put("role","AllocationCheck");
+        variables.put("role","contract");
 		User user=UserUtils.getUser();
 		Authentication.setAuthenticatedUserId("【部门确认】" +user.getName());// 设置用户id
 		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
@@ -243,6 +288,48 @@ public class DistProcController extends BaseController {
 
 	}
 
+	//合同管理员审核
+	@RequestMapping(value = "contAudit")
+	public String contAudit(DistOfficeProc distOfficeProc, String[] groups, Model model)  throws Exception{
+		List<DistOfficeVo> distOffices=new ArrayList<DistOfficeVo>();
+		String incomeId =(String)actTaskService.getTaskVariable(distOfficeProc.getTaskId(),"businessId");
+		distOfficeProc.setIncomeId(incomeId);
+		rule(distOfficeProc,groups,distOffices);
+		Income income=incomeService.get(incomeId);
+		List<Comment> comments=actTaskService.getTaskHistoryCommentList(distOfficeProc.getTaskId());
+		model.addAttribute("taskId", distOfficeProc.getTaskId());
+		model.addAttribute("comments",comments);
+		model.addAttribute("review", new BaseReview());
+		model.addAttribute("incomeId", incomeId);
+		model.addAttribute("income", income);
+		model.addAttribute("distOffices", distOffices);
+		return "modules/income/distContAudit";
+	}
+	@RequestMapping(value = {"contAuditSubmit"},method= RequestMethod.POST)
+	public String contAuditSubmit(DistOfficeProc distOfficeProc,String[] groups, BaseReview review,RedirectAttributes redirectAttributes)  throws Exception{
+	    Task task=actTaskService.getTask(  distOfficeProc.getTaskId());
+        String taskId=task.getId();
+        String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
+        Map<String, Object> variables=new HashMap<String,Object>();
+        int state=review.getState();
+        if( state==1){
+            variables.put("msg", "pass");
+            variables.put("role","AllocationCheck");
+            if(review.getComment()==null||review.getComment().equals("")){
+                review.setComment("通过");
+            }
+        }else if(state==2){
+            variables.put("msg", "reject");
+        }
+        User user=UserUtils.getUser();
+        Authentication.setAuthenticatedUserId( "【合同确认】" +user.getName());// 设置用户id
+        actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
+        addMessage(redirectAttributes, "操作成功");
+        return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
+
+    }
+
+
 
 
 	//运营审核
@@ -252,11 +339,13 @@ public class DistProcController extends BaseController {
 		String incomeId =(String)actTaskService.getTaskVariable(distOfficeProc.getTaskId(),"businessId");
 		distOfficeProc.setIncomeId(incomeId);
 		rule(distOfficeProc,groups,distOffices);
+		Income income=incomeService.get(incomeId);
 		List<Comment> comments=actTaskService.getTaskHistoryCommentList(distOfficeProc.getTaskId());
 		model.addAttribute("taskId", distOfficeProc.getTaskId());
 		model.addAttribute("comments",comments);
 		model.addAttribute("review", new BaseReview());
 		model.addAttribute("incomeId", incomeId);
+		model.addAttribute("income", income);
 		model.addAttribute("distOffices", distOffices);
 		return "modules/income/distBusAudit";
 	}
@@ -278,28 +367,29 @@ public class DistProcController extends BaseController {
 			}
 		}else if(state==2){
 			variables.put("msg", "reject");
-			variables.put("role","contract");
 		}
 		User user=UserUtils.getUser();
-		Authentication.setAuthenticatedUserId( "【部门确认】" +user.getName());// 设置用户id
+		Authentication.setAuthenticatedUserId( "【运营确认】" +user.getName());// 设置用户id
 		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
 		addMessage(redirectAttributes, "操作成功");
 		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
 
 	}
 
-	//运营审核
+	//财务确认
 	@RequestMapping(value = "finAudit")
 	public String finAudit(DistOfficeProc distOfficeProc, String[] groups, Model model)  throws Exception{
 		List<DistOfficeVo> distOffices=new ArrayList<DistOfficeVo>();
 		String incomeId =(String)actTaskService.getTaskVariable(distOfficeProc.getTaskId(),"businessId");
 		distOfficeProc.setIncomeId(incomeId);
 		rule(distOfficeProc,groups,distOffices);
+		Income income=incomeService.get(incomeId);
 		List<Comment> comments=actTaskService.getTaskHistoryCommentList(distOfficeProc.getTaskId());
 		model.addAttribute("taskId", distOfficeProc.getTaskId());
 		model.addAttribute("comments",comments);
 		model.addAttribute("review", new BaseReview());
 		model.addAttribute("incomeId", incomeId);
+		model.addAttribute("income", income);
 		model.addAttribute("distOffices", distOffices);
 		return "modules/income/distFinAudit";
 	}
@@ -313,8 +403,8 @@ public class DistProcController extends BaseController {
 		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
         String incomeId =(String)actTaskService.getTaskVariable(task.getId(),"businessId");
 		Map<String, Object> variables=new HashMap<String,Object>();
-		int state=review.getState();
-		if( state==1){
+		//int state=review.getState();
+
 			variables.put("msg", "pass");
 			if(review.getComment()==null||review.getComment().equals("")){
 				review.setComment("通过");
@@ -338,9 +428,7 @@ public class DistProcController extends BaseController {
 				contApply.setStatus(4);
 			}
 			contApplyService.save(contApply);
-		}else if(state==2){
-			variables.put("msg", "reject");
-		}
+
 		User user=UserUtils.getUser();
 		Authentication.setAuthenticatedUserId(  user.getName()+ "【"+UserUtils.getUser().getLoginName()+"】");// 设置用户id
 		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
@@ -367,6 +455,7 @@ public class DistProcController extends BaseController {
 			incomeId=item.getIncomeId();
 			DistOfficeVo dov=new DistOfficeVo();
 			dov.setId(item.getId());
+			dov.setOfficeId(item.getOffice().getId());
 			dov.setOfficeName(item.getOffice().getName());
 			dov.setValue(item.getValue().toString());
 			List<RuleGroup> list=ruleGroupService.findListByOfficeId(item.getOffice().getId());

@@ -11,13 +11,14 @@
 </head>
 <body>
 	<sys:message content="${message}"/>
+
 	<div id="content" class="row-fluid">
-		<div id="left" class="accordion-group">
-			<div class="accordion-heading">
-		    	<a class="accordion-toggle">组织机构<i class="icon-refresh pull-right" onclick="refreshTree();"></i></a>
-		    </div>
-			<div id="ztree" class="ztree"></div>
-		</div>
+		<%--<div id="left" class="accordion-group">--%>
+			<%--<div class="accordion-heading">--%>
+		    	<%--<a class="accordion-toggle">组织机构<i class="icon-refresh pull-right" onclick="refreshTree();"></i></a>--%>
+		    <%--</div>--%>
+			<%--<div id="ztree" class="ztree"></div>--%>
+		<%--</div>--%>
 		<div id="openClose" class="close">&nbsp;</div>
 		<div id="right">
 			<iframe id="officeContent" src="${ctx}/sys/user/list" width="100%" height="91%" frameborder="0"></iframe>

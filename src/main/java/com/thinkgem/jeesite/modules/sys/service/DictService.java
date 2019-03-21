@@ -5,6 +5,7 @@ package com.thinkgem.jeesite.modules.sys.service;
 
 import java.util.List;
 
+import com.thinkgem.jeesite.modules.sys.entity.Professional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +42,10 @@ public class DictService extends CrudService<DictDao, Dict> {
 	public void delete(Dict dict) {
 		super.delete(dict);
 		CacheUtils.remove(DictUtils.CACHE_DICT_MAP);
+	}
+
+	public List<Professional> findProfessionalList(Professional professional){
+	      return dao.findProfessionalList(professional);
 	}
 
 }

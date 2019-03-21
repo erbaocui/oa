@@ -10,6 +10,7 @@
 		<result property="contract.code"  column="contract.code" jdbcType="VARCHAR" javaType="java.lang.String" />
 		<result property="contract.name" column="contract.name" jdbcType="VARCHAR" javaType="java.lang.String" />
 		<result property="contract.office.id" column="contract.office.id" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="contract.project.name"  column="contract.project.name" jdbcType="VARCHAR" javaType="java.lang.String" />
 		<result property="status" column="status" jdbcType="INTEGER" javaType="java.lang.Integer" />
 		<result property="value" column="value" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
 		<result property="createBy.id" column="createBy" jdbcType="VARCHAR" javaType="java.lang.String" />
@@ -27,6 +28,7 @@
 		c.code as "contract.code",
 		c.value as "contract.value",
 		c.income as "contract.income",
+		p.name   AS "contract.project.name",
 		a.status AS "status",
 		a.value AS "value",
 		a.create_by AS "createBy.id",
@@ -39,6 +41,7 @@
 	<sql id="incomeJoins">
 		left join sys_user u on u.id=a.create_by
 		left join bm_contract c on c.id=a.contract_id
+		left join bm_project p on p.id=c.project_id
 	</sql>
     
 	<select id="get"  resultMap="incomeMap">

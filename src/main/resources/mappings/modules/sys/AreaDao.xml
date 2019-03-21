@@ -24,9 +24,16 @@
     </sql>
     
 	<select id="get" resultType="Area">
+	SELECT
+	<include refid="areaColumns"/>
+	FROM sys_area a
+	<include refid="areaJoins"/>
+	WHERE a.id = #{id}
+    </select>
+	<select id="getNativePlace" resultType="Area">
 		SELECT
-			<include refid="areaColumns"/>
-		FROM sys_area a
+		<include refid="areaColumns"/>
+		FROM sys_dict_native_place a
 		<include refid="areaJoins"/>
 		WHERE a.id = #{id}
 	</select>
@@ -48,6 +55,31 @@
 		OR a.id = #{currentUser.office.area.id}
 		-->
 		ORDER BY a.code
+	</select>
+	<select id="findNativePlaceList" resultType="Area">
+		SELECT
+		a.id,
+		a.parent_id AS "parent.id",
+		a.parent_ids,
+		a.code,
+		a.name,
+		a.sort,
+		a.type,
+		a.remarks,
+		a.create_by AS "createBy.id",
+		a.create_date,
+		a.update_by AS "updateBy.id",
+		a.update_date,
+		a.del_flag
+		FROM sys_dict_native_place a
+
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="parent != null and parent.id != null and parent.id != ''">
+				AND a.parent_id = #{parent.id}
+			</if>
+		</where>
+		ORDER BY a.sort ASC
 	</select>
 	
 	<select id="findAllList" resultType="Area">

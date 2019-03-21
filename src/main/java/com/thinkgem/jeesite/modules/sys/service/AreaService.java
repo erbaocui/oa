@@ -37,5 +37,13 @@ public class AreaService extends TreeService<AreaDao, Area> {
 		super.delete(area);
 		UserUtils.removeCache(UserUtils.CACHE_AREA_LIST);
 	}
-	
+
+	public Area getNativePlace(String id){
+		return dao.getNativePlace(id);
+	}
+
+	public List<Area> findNativePlaceList(Area area){
+	    return dao.findNativePlaceList(area);
+	}
+
 }

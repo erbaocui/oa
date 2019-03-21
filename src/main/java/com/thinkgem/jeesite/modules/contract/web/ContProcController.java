@@ -493,7 +493,7 @@ public class ContProcController extends BaseController {
 			e.printStackTrace();
 			addMessage(redirectAttributes, "文件上传失败");
 		}
-	/*	Contract contract=contractService.get(contractId);
+	/*	UserContract contract=contractService.get(contractId);
 		List<Comment> comments=actTaskService.getTaskHistoryCommentList( taskIdUpload);
 		ContAttach contAttach=new ContAttach();
 		contAttach.setContractId(contract.getId());
@@ -552,7 +552,7 @@ public class ContProcController extends BaseController {
 
 		contractService.save(contract);
 
-	/*	//Contract contract=contractService.get(id);
+	/*	//UserContract contract=contractService.get(id);
 		List<Comment> comments=actTaskService.getTaskHistoryCommentList(  taskIdContract);
 		ContAttach contAttach=new ContAttach();
 		contAttach.setContractId(contract.getId());

@@ -128,4 +128,32 @@ public class AreaController extends BaseController {
 		}
 		return mapList;
 	}
+
+
+	@ResponseBody
+	@RequestMapping(value = "treeNativePlaceData")
+	public List<Map<String, Object>> treeNativePlaceData(@RequestParam(required=false) String extId,@RequestParam(required=false) String type, HttpServletResponse response) {
+		List<Map<String, Object>> mapList = Lists.newArrayList();
+		List<Area> list = areaService.findNativePlaceList(new Area());
+		for (int i=0; i<list.size(); i++){
+			Area e = list.get(i);
+			if (StringUtils.isBlank(extId) || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1)){
+				Map<String, Object> map = Maps.newHashMap();
+				map.put("id", e.getId());
+				map.put("pId", e.getParentId());
+				map.put("name", e.getName());
+
+				if(!e.getType().equals("3")){
+						map.put("isParent", true);
+				}else{
+					Area parent=areaService.getNativePlace(e.getParentId());
+					map.put("parent",parent);
+				}
+
+				mapList.add(map);
+
+			}
+		}
+		return mapList;
+	}
 }

@@ -242,8 +242,14 @@ public class DistOfficeController extends BaseController {
 	@ResponseBody
 	/*@RequiresPermissions("income:distributeOffice:edit")*/
 	@RequestMapping(value = "delete")
-	public String delete(DistOffice distOffice, Model model, RedirectAttributes redirectAttributes) {
-		distOfficeService.delete(distOffice);
+	public String delete(String ids, Model model, RedirectAttributes redirectAttributes) {
+		String[] idArray=ids.split(",");
+		for(String id:idArray){
+			DistOffice distOffice=new DistOffice();
+			distOffice.setId(id);
+			distOfficeService.delete(distOffice);
+		}
+
 		return "success";
 	}
 	

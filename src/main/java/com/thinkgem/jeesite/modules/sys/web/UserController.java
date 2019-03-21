@@ -62,7 +62,7 @@ public class UserController extends BaseController {
 	@RequiresPermissions("sys:user:view")
 	@RequestMapping(value = {"index"})
 	public String index(User user, Model model) {
-		return "modules/sys/userIndex";
+		return "modules/sys/userList";
 	}
 
 	@RequiresPermissions("sys:user:view")
@@ -81,9 +81,12 @@ public class UserController extends BaseController {
 		return page;
 	}
 
+
+
 	@RequiresPermissions("sys:user:view")
 	@RequestMapping(value = "form")
 	public String form(User user, Model model) {
+		user=get(user.getId());
 		if (user.getCompany()==null || user.getCompany().getId()==null){
 			user.setCompany(UserUtils.getUser().getCompany());
 		}
@@ -92,7 +95,21 @@ public class UserController extends BaseController {
 		}
 		model.addAttribute("user", user);
 		model.addAttribute("allRoles", systemService.findAllRole());
-		return "modules/sys/userForm";
+		return "modules/sys/userBaseForm";
+	}
+
+	@RequiresPermissions("sys:user:view")
+	@RequestMapping(value = "formIndex")
+	public String formIndex(User user, Model model) {
+		if (user.getCompany()==null || user.getCompany().getId()==null){
+			user.setCompany(UserUtils.getUser().getCompany());
+		}
+		if (user.getOffice()==null || user.getOffice().getId()==null){
+			user.setOffice(UserUtils.getUser().getOffice());
+		}
+		model.addAttribute("user", user);
+		model.addAttribute("allRoles", systemService.findAllRole());
+		return "modules/sys/userFormIndex";
 	}
 
    /*
@@ -143,8 +160,8 @@ public class UserController extends BaseController {
 			UserUtils.clearCache();
 			//UserUtils.getCacheMap().clear();
 		}
-		addMessage(redirectAttributes, "保存用户'" + user.getLoginName() + "'成功");
-		return "redirect:" + adminPath + "/sys/user/list?repage";
+		addMessage(redirectAttributes, "保存用户'" + user.getLoginName() + "'基本信息成功");
+		return "redirect:"+Global.getAdminPath()+"/sys/user/form?id="+user.getId()+"&repage";
 	}
 	
 	@RequiresPermissions("sys:user:edit")
@@ -162,7 +179,7 @@ public class UserController extends BaseController {
 			systemService.deleteUser(user);
 			addMessage(redirectAttributes, "删除用户成功");
 		}
-		return "redirect:" + adminPath + "/sys/user/list?repage";
+		return "redirect:" + adminPath + "/sys/user/form?repage";
 	}
 	
 	/**
