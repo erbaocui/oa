@@ -17,6 +17,7 @@
 	<ul class="nav nav-tabs">
 		<li ><a href="${ctx}/act/task/todo/">待办任务</a></li>
 		<li class="active"><a href="${ctx}/act/task/historic/">已办任务</a></li>
+		<li><a href="${ctx}/act/process/creator/">我发起的流程</a></li>
 
 	</ul>
 	<form:form id="searchForm" modelAttribute="act" action="${ctx}/act/task/historic/" method="get" class="breadcrumb form-search">
@@ -74,7 +75,12 @@
 					<td><b title='流程版本号'>V: ${procDef.version}</b></td>
 					<td><fmt:formatDate value="${task.endTime}" type="both"/></td>
 					<td>
+
 						<a href="${ctx}/act/task/commentHistoric?taskId=${task.id}">批注历史</a>
+							<c:if test="${not empty act.procIns.id}">
+						<%--<a target="_blank" href="${pageContext.request.contextPath}/act/diagram-viewer?processDefinitionId=${task.processDefinitionId}&processInstanceId=${task.processInstanceId}">跟踪</a>--%>
+						<a target="_blank" href="${ctx}/act/process/tracingMap?procDefId=${task.processDefinitionId}&proInstId=${task.processInstanceId}">追踪</a>
+							</c:if>
 					</td>
 				</tr>
 			</c:forEach>

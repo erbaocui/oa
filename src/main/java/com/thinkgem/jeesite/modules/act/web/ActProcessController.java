@@ -12,6 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLStreamException;
 
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +45,9 @@ public class ActProcessController extends BaseController {
 
 	@Autowired
 	private ActProcessService actProcessService;
+
+	@Autowired
+	private RepositoryService repositoryService;
 
 	/**
 	 * 流程定义列表
@@ -195,5 +202,46 @@ public class ActProcessController extends BaseController {
 		}
 		return "redirect:" + adminPath + "/act/process/running/";
 	}
-	
+
+
+	/**
+	 *创建者的流程
+	 */
+	@RequestMapping(value = "creator")
+	public String creatorList(HttpServletRequest request, HttpServletResponse response, Model model) {
+		Page<HistoricProcessInstance> page = actProcessService.creatorList(new Page<HistoricProcessInstance>(request, response));
+		model.addAttribute("page", page);
+		return "modules/act/actProcessCreatorList";
+    }
+
+	/**
+	 * 获取跟踪信息
+	 */
+	@RequestMapping(value = "tracingMap")
+	public String tracingMap(String procDefId, String proInstId, Model model)
+			throws Exception {
+		List<ActivityImpl> actImpls=actProcessService.tracingMap(procDefId, proInstId);
+		model.addAttribute("procDefId", procDefId);
+		model.addAttribute("proInstId", proInstId);
+		model.addAttribute("actImpls", actImpls);
+		return "modules/act/actTaskMap";
+	}
+
+	/**
+	 * 显示流程图
+	 */
+	@RequestMapping(value = "processPic")
+	public void processPic(String procDefId, HttpServletResponse response) throws Exception {
+		ProcessDefinition procDef = repositoryService.createProcessDefinitionQuery().processDefinitionId(procDefId).singleResult();
+		String diagramResourceName = procDef.getDiagramResourceName();
+		InputStream imageStream = repositoryService.getResourceAsStream(procDef.getDeploymentId(), diagramResourceName);
+		byte[] b = new byte[1024];
+		int len = -1;
+		while ((len = imageStream.read(b, 0, 1024)) != -1) {
+			response.getOutputStream().write(b, 0, len);
+		}
+	}
+
+
+
 }

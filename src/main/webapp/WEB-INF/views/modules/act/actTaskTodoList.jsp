@@ -27,8 +27,7 @@
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/act/task/todo/">待办任务</a></li>
 		<li><a href="${ctx}/act/task/historic/">已办任务</a></li>
-
-
+		<li><a href="${ctx}/act/process/creator/">我发起的流程</a></li>
 	</ul>
 	<form:form id="searchForm" modelAttribute="act" action="${ctx}/act/task/todo/" method="get" class="breadcrumb form-search">
 		<div>
@@ -89,7 +88,9 @@
 						</c:if>
 
 <%--						<a href="${ctx}/act/task/form?taskId=${task.id}&taskName=${fns:urlEncode(task.name)}&taskDefKey=${task.taskDefinitionKey}&procInsId=${task.processInstanceId}&procDefId=${task.processDefinitionId}&status=${status}">任务办理</a>--%>
-						<a target="_blank" href="${pageContext.request.contextPath}/act/diagram-viewer?processDefinitionId=${task.processDefinitionId}&processInstanceId=${task.processInstanceId}">跟踪</a>
+						<%--
+						<a target="_blank" href="${pageContext.request.contextPath}/act/diagram-viewer?processDefinitionId=${task.processDefinitionId}&processInstanceId=${task.processInstanceId}">跟踪</a>--%>
+						<%----%>
 
 					</td>
 				</tr>

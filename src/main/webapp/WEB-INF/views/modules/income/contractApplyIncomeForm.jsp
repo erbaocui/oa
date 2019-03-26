@@ -218,7 +218,7 @@
 							</div>
 							<div class="span9">
 								<label >收款金额：</label>
-								<input type="text"  class="input-small digits required" id="incomeValue" />
+								<input type="text"  class="input-small " id="incomeValue" onkeyup="onlyFloatTowPoint(this)" />
 							</div>
 							<div class="span1">
 							</div>

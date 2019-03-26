@@ -88,6 +88,7 @@ public class DistProcController extends BaseController {
 			Map<String,Object> variables = new HashMap<String, Object>();
 			variables.put("businessId", id);
 
+
 			String processInstanceId=actTaskService.startProcess(ActConstant.INCOME_DISTRIBUTE_PROCESS_KEY, IncomeConstant.INCOME_TABLE_NAME,id,ActConstant.INCOME_DISTRIBUTE_PROCESS_TITLE,variables);
 			//String processInstanceId=actTaskService.startProcess(ActConstant.INCOME_DISTRIBUTE_PROCESS_KEY, IncomeConstant.INCOME_TABLE_NAME,id,ActConstant.INCOME_DISTRIBUTE_PROCESS_TITLE);
 			actTaskService.completeFirstTask(processInstanceId);

@@ -226,7 +226,7 @@ public class ActTaskService extends BaseService {
 //			e.setTaskVars(histTask.getTaskLocalVariables());
 //			System.out.println(histTask.getId()+"  =  "+histTask.getProcessVariables() + "  ========== " + histTask.getTaskLocalVariables());
 			e.setProcDef(ProcessDefCache.get(histTask.getProcessDefinitionId()));
-//			e.setProcIns(runtimeService.createProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult());
+			e.setProcIns(runtimeService.createProcessInstanceQuery().processInstanceId(histTask.getProcessInstanceId()).singleResult());
 //			e.setProcExecUrl(ActUtils.getProcExeUrl(task.getProcessDefinitionId()));
 			e.setStatus("finish");
 			actList.add(e);

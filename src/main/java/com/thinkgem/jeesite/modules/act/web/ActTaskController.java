@@ -4,6 +4,7 @@
 package com.thinkgem.jeesite.modules.act.web;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.modules.act.entity.BaseReview;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Comment;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -41,6 +50,9 @@ public class ActTaskController extends BaseController {
 
 	@Autowired
 	private ActTaskService actTaskService;
+
+
+
 	
 	/**
 	 * 获取待办列表
@@ -244,66 +256,7 @@ public class ActTaskController extends BaseController {
 		return activityInfos;
 	}
 
-	/**
-	 * 显示流程图
-	 
-	@RequestMapping(value = "processPic")
-	public void processPic(String procDefId, HttpServletResponse response) throws Exception {
-		ProcessDefinition procDef = repositoryService.createProcessDefinitionQuery().processDefinitionId(procDefId).singleResult();
-		String diagramResourceName = procDef.getDiagramResourceName();
-		InputStream imageStream = repositoryService.getResourceAsStream(procDef.getDeploymentId(), diagramResourceName);
-		byte[] b = new byte[1024];
-		int len = -1;
-		while ((len = imageStream.read(b, 0, 1024)) != -1) {
-			response.getOutputStream().write(b, 0, len);
-		}
-	}*/
-	
-	/**
-	 * 获取跟踪信息
-	 
-	@RequestMapping(value = "processMap")
-	public String processMap(String procDefId, String proInstId, Model model)
-			throws Exception {
-		List<ActivityImpl> actImpls = new ArrayList<ActivityImpl>();
-		ProcessDefinition processDefinition = repositoryService
-				.createProcessDefinitionQuery().processDefinitionId(procDefId)
-				.singleResult();
-		ProcessDefinitionImpl pdImpl = (ProcessDefinitionImpl) processDefinition;
-		String processDefinitionId = pdImpl.getId();// 流程标识
-		ProcessDefinitionEntity def = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
-				.getDeployedProcessDefinition(processDefinitionId);
-		List<ActivityImpl> activitiList = def.getActivities();// 获得当前任务的所有节点
-		List<String> activeActivityIds = runtimeService.getActiveActivityIds(proInstId);
-		for (String activeId : activeActivityIds) {
-			for (ActivityImpl activityImpl : activitiList) {
-				String id = activityImpl.getId();
-				if (activityImpl.isScope()) {
-					if (activityImpl.getActivities().size() > 1) {
-						List<ActivityImpl> subAcList = activityImpl
-								.getActivities();
-						for (ActivityImpl subActImpl : subAcList) {
-							String subid = subActImpl.getId();
-							System.out.println("subImpl:" + subid);
-							if (activeId.equals(subid)) {// 获得执行到那个节点
-								actImpls.add(subActImpl);
-								break;
-							}
-						}
-					}
-				}
-				if (activeId.equals(id)) {// 获得执行到那个节点
-					actImpls.add(activityImpl);
-					System.out.println(id);
-				}
-			}
-		}
-		model.addAttribute("procDefId", procDefId);
-		model.addAttribute("proInstId", proInstId);
-		model.addAttribute("actImpls", actImpls);
-		return "modules/act/actTaskMap";
-	}*/
-	
+
 	/**
 	 * 删除任务
 	 * @param taskId 流程实例ID

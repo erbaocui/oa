@@ -17,7 +17,7 @@
 </head>
 <body>
 	<div>
-		<img src="${ctx}/act/task/processPic?procDefId=${procDefId}" class="procPic" />
+		<img src="${ctx}/act/process/processPic?procDefId=${procDefId}" class="procPic" />
 		<c:forEach items="${actImpls}" var="a">
 			<div class="actImpl" style="left:${a.x-2}px;top:${a.y-2}px;width:${a.width}px;height:${a.height}px;"></div>
 		</c:forEach>

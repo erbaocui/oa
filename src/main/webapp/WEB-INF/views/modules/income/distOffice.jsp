@@ -298,7 +298,7 @@
 								</div>
 								<div class="span10">
 									<label >分配金额:</label>
-									<input id="distValue" class="input-small digits required"  onkeyup="onlyNum(this)"/>
+									<input id="distValue" class="input-small"  onkeyup="onlyFloatTowPoint(this)"/>
 
 								</div>
 								<div class="span2">

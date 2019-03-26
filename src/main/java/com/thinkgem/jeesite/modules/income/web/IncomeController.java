@@ -110,7 +110,7 @@ public class IncomeController extends BaseController {
 
 	/*@RequiresPermissions("income:applyPay:view")*/
 	@RequestMapping(value = "applyPay")
-	public String income(String  id, Model model) {
+	public String applyPay(String  id, Model model) {
 		ContApply contApply=contApplyService.get(id);
 		Income income=new Income();
 		income.setApplyId(id);

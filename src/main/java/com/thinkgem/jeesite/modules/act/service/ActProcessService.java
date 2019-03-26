@@ -16,13 +16,26 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import com.google.common.collect.Lists;
+import com.thinkgem.jeesite.modules.act.entity.Act;
+import com.thinkgem.jeesite.modules.act.utils.ProcessDefCache;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricProcessInstanceQuery;
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricTaskInstanceQuery;
+import org.activiti.engine.impl.RepositoryServiceImpl;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
@@ -33,6 +46,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,6 +69,9 @@ public class ActProcessService extends BaseService {
 	private RepositoryService repositoryService;
 	@Autowired
 	private RuntimeService runtimeService;
+	@Autowired
+	private HistoryService historyService;
+
 
 	/**
 	 * 流程定义列表
@@ -305,5 +323,61 @@ public class ActProcessService extends BaseService {
 	public void deleteProcIns(String procInsId, String deleteReason) {
 		runtimeService.deleteProcessInstance(procInsId, deleteReason);
 	}
-	
+
+	/**
+	 * 获取创建者的流程实例列表
+	 * @param  page
+	 * @return
+	 */
+	public Page<HistoricProcessInstance> creatorList(Page<HistoricProcessInstance> page){
+		String userId = UserUtils.getUser().getLoginName();//ObjectUtils.toString(UserUtils.getUser().getId());
+
+		HistoricProcessInstanceQuery creatorProcessInstanceQuery = historyService.createHistoricProcessInstanceQuery().startedBy(userId).orderByProcessInstanceStartTime().desc();
+		page.setCount(creatorProcessInstanceQuery.count());
+		page.setList(creatorProcessInstanceQuery.listPage(page.getFirstResult(), page.getMaxResults()));
+		return page;
+	}
+
+
+
+    public List<ActivityImpl> tracingMap(String procDefId, String proInstId){
+
+        List<ActivityImpl> actImpls = new ArrayList<ActivityImpl>();
+        ProcessDefinition processDefinition = repositoryService
+                .createProcessDefinitionQuery().processDefinitionId(procDefId)
+                .singleResult();
+        ProcessDefinitionImpl pdImpl = (ProcessDefinitionImpl) processDefinition;
+        String processDefinitionId = pdImpl.getId();// 流程标识
+        ProcessDefinitionEntity def = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
+                .getDeployedProcessDefinition(processDefinitionId);
+        List<ActivityImpl> activitiList = def.getActivities();// 获得当前任务的所有节点
+        List<String> activeActivityIds = runtimeService.getActiveActivityIds(proInstId);
+        for (String activeId : activeActivityIds) {
+            for (ActivityImpl activityImpl : activitiList) {
+                String id = activityImpl.getId();
+                if (activityImpl.isScope()) {
+                    if (activityImpl.getActivities().size() > 1) {
+                        List<ActivityImpl> subAcList = activityImpl
+                                .getActivities();
+                        for (ActivityImpl subActImpl : subAcList) {
+                            String subid = subActImpl.getId();
+                            //System.out.println("subImpl:" + subid);
+                            if (activeId.equals(subid)) {// 获得执行到那个节点
+                                actImpls.add(subActImpl);
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (activeId.equals(id)) {// 获得执行到那个节点
+                    actImpls.add(activityImpl);
+                    //System.out.println(id);
+                }
+            }
+        }
+
+        return  actImpls;
+
+    }
+
 }
