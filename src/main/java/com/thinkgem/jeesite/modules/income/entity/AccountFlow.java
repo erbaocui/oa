@@ -94,4 +94,5 @@ public class AccountFlow extends DataEntity<AccountFlow> {
 	public void setContract(Contract contract) {
 		this.contract = contract;
 	}
+
 }

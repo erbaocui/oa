@@ -4,17 +4,21 @@
     
 	<sql id="distOfficeColumns">
 		a.id AS "id",
-		a.income_id AS "incomeId",
+		a.type_id AS "typeId",
+		a.type_id AS "type.id",
+		t.type AS "type.type",
 		a.office_id AS "office.id",
 		a.value AS "value",
 		a.create_by AS "createBy.id",
 		u.name as "createBy.name",
 		a.create_date AS "createDate",
 		o3.name AS "office.name",
-		a.group_id AS  "groupId"
+		a.group_id AS  "groupId",
+		a.income_id AS "incomeId"
 	</sql>
 	
 	<sql id="distOfficeJoins">
+        inner join bm_dist_type t on t.id=a.type_id
 		LEFT JOIN sys_office o3 ON o3.id = a.office_id
 		LEFT JOIN sys_user u ON u.id = a.create_by
 	</sql>
@@ -33,13 +37,16 @@
 		FROM bm_dist_office a
 		<include refid="distOfficeJoins"/>
 		<where>
-			<if test ="incomeId!= null">
-				a.income_id=#{incomeId}
+			<if test ="typeId!= null">
+				a.type_id=#{typeId}
 			</if>
 			<if test ="office!= null">
 				<if test ="office.id!= null">
 				and	a.office_id=#{office.id}
 				</if>
+			</if>
+			<if test ="incomeId!= null||  incomeId!=''">
+				and a.income_id=#{incomeId}
 			</if>
 		</where>
 		<choose>
@@ -49,19 +56,17 @@
 			<otherwise>
 			</otherwise>
 		</choose>
+		order by a.type_id,a.office_id
 	</select>
 	
 	<select id="findAllList" resultType="DistOffice" parameterType="String">
-		SELECT 
-			<include refid="distOfficeColumns"/>
+		SELECT
+		<include refid="distOfficeColumns"/>
 		FROM bm_dist_office a
 		<include refid="distOfficeJoins"/>
-		<where>
-			<if test ="_parameter!= null">
-				a.income_id=#{_parameter}
-			</if>
-		</where>		
-
+		where
+		    a.income_id=#{_parameter}
+		   order by a.type_id,a.office_id
 	</select>
 
 
@@ -73,20 +78,22 @@
 	<insert id="insert">
 		INSERT INTO bm_dist_office(
 			id,
-			income_id,
+			type_id,
 			office_id,
 			value,
 			create_by,
 			create_date,
-			group_id
+			group_id,
+			income_id
 		) VALUES (
 			#{id},
-			#{incomeId},
+			#{typeId},
 			#{office.id},
 			#{value},
 			#{createBy.id},
 			#{createDate},
-			#{groupId}
+			#{groupId},
+			#{incomeId}
 
 
 		)
@@ -94,17 +101,18 @@
 	
 	<update id="update">
 		UPDATE bm_dist_office SET 	
-			income_id = #{incomeId},
+			type_id = #{typeId},
 			office_id = #{office.id},
 			value = #{value},
-			group_id = #{groupId}
+			group_id = #{groupId},
+			income_id = #{incomeId}
 		WHERE id = #{id}
 	</update>
 	<select id="findGroupId" resultType="String" parameterType="Map">
 		select distinct a.group_id from bm_dist_office a
         where 1=1
-		<if test ="incomeId!= null and officeId != ''">
-			 and a.income_id=#{incomeId}
+		<if test ="typeId!= null and typeId != ''">
+			 and a.type_id=#{typeId}
 		</if>
 		<if test ="officeId != null and officeId != ''">
 				and a.office_id=#{officeId}
@@ -114,7 +122,25 @@
 	
 	<update id="delete">
 		DELETE FROM bm_dist_office
-		WHERE id = #{id}
+		WHERE 1=1
+		<if test ="id!= null and id != ''">
+			and id = #{id}
+		</if>
+		<if test ="typeId!= null and typeId != ''">
+			and type_id=#{typeId}
+		</if>
 	</update>
+
+	<select id="findChiefLoginNameList" resultType="String" parameterType="String">
+		SELECT distinct
+		 u.login_name
+		FROM bm_dist_office a
+		inner join sys_office o  on a.office_id=o.id
+		inner join sys_user u on u.id=o.PRIMARY_PERSON
+		where
+		a.income_id=#{_parameter}
+
+
+	</select>
 	
 </mapper>

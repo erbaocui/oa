@@ -30,6 +30,7 @@ public class DistOfficeService extends CrudService<DistOfficeDao, DistOffice> {
 	public List<DistOffice> findList(DistOffice distOffice) {
 		return super.findList(distOffice);
 	}
+
 	
 	public Page<DistOffice> findPage(Page<DistOffice> page, DistOffice distributeOffice) {
 		return super.findPage(page, distributeOffice);
@@ -46,5 +47,8 @@ public class DistOfficeService extends CrudService<DistOfficeDao, DistOffice> {
 	}
 
 	public  String findGroupId(Map paramMap){return dao.findGroupId( paramMap);}
-	
+
+	public  List<String> findChiefLoginNameList(String incomeId){
+		return dao.findChiefLoginNameList(incomeId);
+	}
 }

@@ -24,6 +24,8 @@ public class Income extends DataEntity<Income> {
 	private Integer status;		// 1:未分配；2：分配流程审核中；3：分配完成
 	private BigDecimal value;		// 收款值
 	private String procInsId;		// 流程实例id
+	private Integer plan;
+	private Integer draw;
 
 	private List<DistOffice> distOfficeList;
 	
@@ -85,4 +87,22 @@ public class Income extends DataEntity<Income> {
 	public void setDistOfficeList(List<DistOffice> distOfficeList) {
 		this.distOfficeList = distOfficeList;
 	}
+
+	public Integer getPlan() {
+		return plan;
+	}
+
+	public void setPlan(Integer plan) {
+		this.plan = plan;
+	}
+
+	public Integer getDraw() {
+		return draw;
+	}
+
+
+	public void setDraw(Integer draw) {
+		this.draw = draw;
+	}
+
 }

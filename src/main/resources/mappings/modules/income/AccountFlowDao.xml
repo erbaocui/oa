@@ -102,7 +102,6 @@
 		create_by,
 		income_id,
 		account
-
 		) VALUES
 		<foreach collection="accountFlowList" item="item" index="index" separator=",">
 			(
@@ -113,7 +112,6 @@
 			#{item.createBy.id},
 			#{item.incomeId},
 			#{item.account.account}
-
 			)
 		</foreach>
 	</insert>

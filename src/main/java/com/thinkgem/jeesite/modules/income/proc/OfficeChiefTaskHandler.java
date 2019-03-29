@@ -1,8 +1,10 @@
 package com.thinkgem.jeesite.modules.income.proc;
 
 import com.thinkgem.jeesite.modules.income.entity.DistOffice;
+import com.thinkgem.jeesite.modules.income.entity.DistType;
 import com.thinkgem.jeesite.modules.income.entity.Income;
 import com.thinkgem.jeesite.modules.income.service.DistOfficeService;
+import com.thinkgem.jeesite.modules.income.service.DistTypeService;
 import com.thinkgem.jeesite.modules.income.service.IncomeService;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.service.OfficeService;
@@ -27,16 +29,15 @@ public class OfficeChiefTaskHandler implements TaskListener {
 	@Override
 	public void notify(DelegateTask delegateTask) {
 		WebApplicationContext wac = ContextLoader.getCurrentWebApplicationContext();
-		DistOfficeService distOfficeService=(DistOfficeService)wac.getBean("distOfficeService");
+		DistTypeService distTypeService=(DistTypeService)wac.getBean("distTypeService");
 		OfficeService officeService=(OfficeService)wac.getBean("officeService");
 
 		String incomeId =(String)delegateTask.getVariable("businessId");
-		DistOffice distOffice=new DistOffice();
-		distOffice.setIncomeId(incomeId);
-		List<DistOffice> distOfficeList= distOfficeService.findList(distOffice);
+		DistType distType=new DistType();
+		distType.setIncomeId(incomeId);
+		List<String> officeIds=distTypeService.getDistOfficeIdList(distType);
 		List<String> userLoginNameList=new ArrayList<String>();
-		for( DistOffice item:distOfficeList){
-			String officeId= item.getOffice().getId();
+		for( String  officeId:officeIds){
 			Office office=(Office)officeService.get(officeId);
 			String loginName=office.getPrimaryPerson().getLoginName();
 			userLoginNameList.add(loginName);

@@ -11,7 +11,10 @@
 		a.create_date AS "createDate",
 		a.status AS "status",
 		a.account AS "account",
-		a.income_id AS "incomeId"
+		a.type_id AS "typeId",
+		a.office_id AS "officeId",
+		a.income_id AS "incomeId",
+		a.dist_office_id AS "distOfficeId"
 	</sql>
 	
 	<sql id="distributeJoins">
@@ -57,6 +60,7 @@
 			<otherwise>
 			</otherwise>
 		</choose>
+
 	</select>
 
 	<select id="findGroupId" resultType="String" parameterType="Map">
@@ -65,11 +69,14 @@
 	inner join bm_rule c on b.rule_id=c.id
 	inner join bm_rule_office d on d.rule_id=c.id
 	where 1=1
-		<if test ="incomeId!= null">
-		   and a.income_id=#{incomeId}
+		<if test ="typeId!= null and typeId!=''">
+		   and a.type_id=#{typeId}
 		</if>
-		<if test ="officeId!= null">
+		<if test ="officeId!= null and officeId!=''">
 			and d.office_id=#{officeId}
+		</if>
+		<if test ="incomeId!= null and incomeId!=''">
+			and d.income_id=#{incomeId}
 		</if>
 	</select>
 
@@ -77,28 +84,25 @@
 		SELECT
 		 account as "account",
 		sum(value) as "value",
-		income_id  as "incomeId"
+		type_id  as "typeId",
+        office_id as "officeId"
 		from bm_distribute
-		where 1=1
-		<where>
-			<if test ="incomeId!= null">
-				income_id=#{incomeId}
-			</if>
-		</where>
+		where
+		type_id=#{typeId}
+		and office_id=#{officeId}
+
+		group by type_id,office_id
+
 	</select>
 
 	<select id="findDistAccountSum" resultType="Distribute">
 		SELECT
 		account as "account",
-		sum(value) as "value",
-		income_id  as "incomeId"
+		sum(value) as "value"
 		from bm_distribute
-		<where>
-			<if test ="incomeId!= null">
-				income_id=#{incomeId}
-			</if>
-		</where>
-		group by account
+		where
+		income_id=#{incomeId}
+	    group by account
 	</select>
 	
 	<insert id="insert">
@@ -111,7 +115,11 @@
 			create_date,
 			status,
 			account,
-			income_id
+			type_id,
+			office_id,
+			income_id,
+			dist_office_id
+
 		) VALUES (
 			#{id},
 			#{ruleItemId},
@@ -121,7 +129,10 @@
 			#{createDate},
 			#{status},
 			#{account},
-			#{incomeId}
+			#{typeId},
+			#{officeId},
+			#{incomeId},
+			#{distOfficeId}
 		)
 	</insert>
 
@@ -135,7 +146,10 @@
 		create_date,
 		status,
 		account,
-		income_id
+		type_id,
+		office_id,
+		income_id,
+		dist_office_id
 		) VALUES
 		<foreach collection="distributeList" item="item" index="index" separator=",">
 			(
@@ -147,7 +161,10 @@
 			#{item.createDate},
 			#{item.status},
 			#{item.account},
-			#{item.incomeId}
+			#{item.typeId},
+			#{item.officeId},
+			#{item.incomeId},
+			#{item.distOfficeId}
 			)
 	    </foreach>
 	</insert>
@@ -155,12 +172,26 @@
 	<update id="update">
 		UPDATE bm_distribute
 		SET status = #{status}
-        WHERE income_id= #{incomeId}
+        WHERE type_id= #{typeId}
 	</update>
 	
 	<update id="delete">
 		DELETE FROM bm_distribute
-		WHERE id = #{id}
+
+		WHERE 1=1
+		<if test ="id!= null and id != ''">
+			and id = #{id}
+		</if>
+		<if test ="incomeId!= null and incomeId != ''">
+			and income_id=#{incomeId}
+		</if>
+		<if test ="typeId!= null and typeId != ''">
+			and type_id=#{typeId}
+		</if>
+		<if test ="officeId!= null and officeId != ''">
+			and office_id=#{officeId}
+		</if>
+
 	</update>
 	
 </mapper>

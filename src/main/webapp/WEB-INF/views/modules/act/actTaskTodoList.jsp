@@ -77,7 +77,7 @@
 					<td>${task.description}</td> --%>
 					<td>${procDef.name}</td>
 					<td><b title='流程版本号'>V: ${procDef.version}</b></td>
-					<td><fmt:formatDate value="${task.createTime}" type="both"/></td>
+					<td><fmt:formatDate value="${act.task.createTime}" type="both"/></td>
 					<td>
 						<c:if test="${empty task.assignee}">
 							<a href="javascript:claim('${task.id}');">签收任务</a>

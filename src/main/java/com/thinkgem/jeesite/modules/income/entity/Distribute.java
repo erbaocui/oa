@@ -22,7 +22,11 @@ public class Distribute extends DataEntity<Distribute> {
 	private BigDecimal value;		// value
 	private Integer status;		// 1:未分配；2:已分配
 	private String account;		// 账户
-	private String incomeId;		// 入款id
+	private String typeId;      // 入款id
+	private String officeId;
+	private String incomeId;
+	private String distOfficeId;
+
 	
 	public Distribute() {
 		super();
@@ -75,6 +79,22 @@ public class Distribute extends DataEntity<Distribute> {
 	}
 	
 	@Length(min=0, max=255, message="入款id长度必须介于 0 和 255 之间")
+	public String getTypeId() {
+		return typeId;
+	}
+
+	public void setTypeId(String typeId) {
+		this.typeId = typeId;
+	}
+
+	public String getOfficeId() {
+		return officeId;
+	}
+
+	public void setOfficeId(String officeId) {
+		this.officeId = officeId;
+	}
+
 	public String getIncomeId() {
 		return incomeId;
 	}
@@ -82,5 +102,12 @@ public class Distribute extends DataEntity<Distribute> {
 	public void setIncomeId(String incomeId) {
 		this.incomeId = incomeId;
 	}
-	
+
+	public String getDistOfficeId() {
+		return distOfficeId;
+	}
+
+	public void setDistOfficeId(String distOfficeId) {
+		this.distOfficeId = distOfficeId;
+	}
 }

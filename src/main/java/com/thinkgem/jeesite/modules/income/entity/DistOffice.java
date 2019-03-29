@@ -19,12 +19,14 @@ import java.util.List;
 public class DistOffice extends DataEntity<DistOffice> {
 	
 	private static final long serialVersionUID = 1L;
-	private String incomeId;		// income_id
+	private String typeId;		// income_id
 	private Office office;		// office_id
 	private BigDecimal value;		// value
 	private String ruleId;		// rule_id
 	private String groupId;
+	private DistType type;
 	private List<Rule> ruleList;
+	private String incomeId;
 	
 	public DistOffice() {
 		super();
@@ -35,12 +37,12 @@ public class DistOffice extends DataEntity<DistOffice> {
 	}
 
 	@Length(min=0, max=32, message="income_id长度必须介于 0 和 32 之间")
-	public String getIncomeId() {
-		return incomeId;
+	public String getTypeId() {
+		return typeId;
 	}
 
-	public void setIncomeId(String incomeId) {
-		this.incomeId = incomeId;
+	public void setTypeId(String typeId) {
+		this.typeId = typeId;
 	}
 	
 	public Office getOffice() {
@@ -74,5 +76,29 @@ public class DistOffice extends DataEntity<DistOffice> {
 
 	public void setGroupId(String groupId) {
 		this.groupId = groupId;
+	}
+
+	public DistType getType() {
+		return type;
+	}
+
+	public List<Rule> getRuleList() {
+		return ruleList;
+	}
+
+	public void setRuleList(List<Rule> ruleList) {
+		this.ruleList = ruleList;
+	}
+
+	public void setType(DistType type) {
+		this.type = type;
+	}
+
+	public String getIncomeId() {
+		return incomeId;
+	}
+
+	public void setIncomeId(String incomeId) {
+		this.incomeId = incomeId;
 	}
 }

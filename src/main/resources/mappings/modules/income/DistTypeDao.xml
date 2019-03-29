@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.income.dao.DistTypeDao">
+    
+	<sql id="distTypeColumns">
+		a.id AS "id",
+		a.income_id AS "incomeId",
+		a.type AS "type",
+		a.value AS "value",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate"
+	</sql>
+	
+	<sql id="distTypeJoins">
+	</sql>
+    
+	<select id="get" resultType="DistType">
+		SELECT 
+			<include refid="distTypeColumns"/>
+		FROM bm_dist_type a
+		<include refid="distTypeJoins"/>
+		WHERE 1=1
+		<if test="id != null and id != ''">
+         and a.id = #{id}
+		</if>
+		<if test="incomeId != null and incomeId != ''">
+		 AND a.income_id = #{incomeId}
+		</if>
+		<if test="type != null and type!= ''">
+			AND a.type= #{type}
+		</if>
+	</select>
+	
+	<select id="findList" resultType="DistType">
+		SELECT 
+			<include refid="distTypeColumns"/>
+		FROM bm_dist_type a
+		<include refid="distTypeJoins"/>
+		where a.income_id = #{incomeId}
+	</select>
+	
+	<select id="findAllList" resultType="DistType">
+		SELECT 
+			<include refid="distTypeColumns"/>
+		FROM bm_dist_type a
+		<include refid="distTypeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_dist_type(
+			id,
+			income_id,
+			type,
+			value,
+			create_by,
+			create_date
+		) VALUES (
+			#{id},
+			#{incomeId},
+			#{type},
+			#{value},
+			#{createBy.id},
+			#{createDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_dist_type SET 	
+			income_id = #{incomeId},
+			type = #{type},
+			value = #{value}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bm_dist_type
+		WHERE id = #{id}
+	</update>
+
+	<select id="getDistOfficeIdList" resultType="String">
+		SELECT
+          distinct  b.id as "id"
+		FROM bm_dist_type a
+		inner join bm_dist_office b on a.id=b.type_id
+		where
+		a.income_id= #{incomeId}
+
+
+	</select>
+	
+</mapper>

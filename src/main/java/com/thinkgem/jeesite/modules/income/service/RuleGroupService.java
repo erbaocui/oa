@@ -3,7 +3,9 @@
  */
 package com.thinkgem.jeesite.modules.income.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,9 +32,19 @@ public class RuleGroupService extends CrudService<RuleGroupDao, RuleGroup> {
 		return super.findList(ruleGroup);
 	}
 
-	public List<RuleGroup> findListByOfficeId(String officeId) {
-		return dao.findListByOfficeId(officeId);
+	public List<RuleGroup> findListByOfficeId(String officeId,String type) {
+		 Map<String,String> paramMap=new HashMap<String,String>();
+		paramMap.put("officeId",officeId);
+		if(type!=null&&!type.equals("")) {
+			paramMap.put("type", type);
+		}
+		return dao.findListByOfficeId(paramMap);
 	}
+//	public List<RuleGroup> findListByOfficeId(String officeId) {
+//		Map<String,String> paramMap=new HashMap<String,String>();
+//		paramMap.put("officeId",officeId);
+//		return dao.findListByOfficeId(paramMap);
+//	}
 	public Page<RuleGroup> findPage(Page<RuleGroup> page, RuleGroup ruleGroup) {
 		return super.findPage(page, ruleGroup);
 	}

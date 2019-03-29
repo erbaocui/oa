@@ -20,6 +20,7 @@ public class DistOfficeVo {
 
 	private String id;
 	private String incomeId;		// income_id
+	private String type;
 	private String officeId;
 	private String officeName;// office_id
 	private String  value;		// value
@@ -103,5 +104,13 @@ public class DistOfficeVo {
 
 	public void setRowspan(Integer rowspan) {
 		this.rowspan = rowspan;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

@@ -10,6 +10,9 @@
 			$("#inputForm").validate({
 				submitHandler: function(form){
 					loading('正在提交，请稍等...');
+
+					console.log($("#primaryPersonId").val());
+                    console.log($("#primaryPersonName").val());
 					form.submit();
 				},
 				errorContainer: "#messageBox",
@@ -122,6 +125,7 @@
 		<div class="control-group">
 			<label class="control-label">主负责人:</label>
 			<div class="controls">
+
 				 <sys:treeselect id="primaryPerson" name="primaryPerson.id" value="${office.primaryPerson.id}" labelName="office.primaryPerson.name" labelValue="${office.primaryPerson.name}"
 					title="用户" url="/sys/office/treeData?type=3" allowClear="true" notAllowSelectParent="true"/>
 			</div>

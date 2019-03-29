@@ -5,17 +5,17 @@ package com.thinkgem.jeesite.modules.income.dao;
 
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
-import com.thinkgem.jeesite.modules.income.entity.RuleGroup;
+import com.thinkgem.jeesite.modules.income.entity.DistType;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- * 规则分组DAO接口
+ * 进款分配类型DAO接口
  * @author cuijp
- * @version 2018-05-17
+ * @version 2019-03-26
  */
 @MyBatisDao
-public interface RuleGroupDao extends CrudDao<RuleGroup> {
-    public List<RuleGroup> findListByOfficeId(Map paramMap);
+public interface DistTypeDao extends CrudDao<DistType> {
+    List<String> getDistOfficeIdList(DistType distType);
+	
 }

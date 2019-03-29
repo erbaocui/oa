@@ -9,48 +9,34 @@
 
         });
 
-        function selRule() {
-            $("#inputForm").attr("action", "${ctx}/income/distProc/officeDist");
-            $("#inputForm").submit();
-        }
 
-        function save() {
-            $("#inputForm").attr("action", "${ctx}/income/distOffice/saveDist");
-            $("#inputForm").submit();
-        }
-        function saveAccount() {
-            $("#inputForm").attr("action", "${ctx}/income/distOffice/saveAccount");
-            $("#inputForm").submit();
-        }
 
         function commit(){
-            // var obj=document.getElementsByName("groups");
-            // if(state==1){
-            //     for(var i=0;i<obj.length;i++){
-            //         if(obj[i].value==null||obj[i].value==-1||obj[i].value==''||obj[i].value=="-1"){
-            //             $.jBox.tip("选择规则！", 'error');
-            //             return
-            //         }
-            //     }
-            // }
-            $("#inputForm").attr("action", "${ctx}/income/distProc/officeDistSubmit");
+            if('${income.draw}'=='1'){
+                $.jBox.tip("请完成施工图分配", 'error');
+                return
+            }
+            if('${income.plan}'=='1'){
+                $.jBox.tip("请完成方案分配", 'error');
+                return
+            }
+
+           $("#inputForm").attr("action", "${ctx}/income/distProc/officeDistSubmit");
             $("#inputForm").submit();
+
         }
         function add(){
             $('#addModal').modal({backdrop: 'static', keyboard: true});
         }
         function addSave(){
             if($("#distForm").validate().element($("#distValue"))){
-                if($("#officeId").val()==null||$("#officeId").val()==""){
-                    $.jBox.tip("请选择部门", 'error');
-                    return;
-                }
-                var officeId=$("#officeId").val()+"";
-                var officeIds=$("#officeIds").val().split(",");
+
+                var type=$("#type").val()+"";
+                var typeIds=$("#typeIds").val().split(",");
                 var flag=true;
-                $.each(officeIds,function(index,value){
-                    if(value==officeId){
-                        $.jBox.tip("部门已分配", 'error');
+                $.each(typeIds,function(index,value){
+                    if(value==type){
+                        $.jBox.tip("类型已分配", 'error');
                         flag=false;
                     }
                 });
@@ -58,11 +44,11 @@
                     return;
                 }
                 var sum=parseFloat($("#distValue").val())+parseFloat($("#distSum").val());
-                if(sum>$("#value").val()){
-                    $.jBox.tip("部门分配金额累计大于分配总金额", 'error');
+                if(sum>${income.value}){
+                    $.jBox.tip("分配金额累计大于分配总金额", 'error');
                     return;
                 }
-                $.post("${ctx}/income/distOffice/add",{incomeId:$("#id").val(),officeId:$("#officeId").val(),value:$("#distValue").val()},
+                $.post("${ctx}/income/distType/add",{incomeId:$("#incomeId").val(),type:$("#type").val(),value:$("#distValue").val()},
                     function(result){
                         if(result=="success"){
                             $.jBox.tip("收款保存成功");
@@ -79,14 +65,19 @@
             }
         }
         function del(){
-            var checked=$("input[name='idsSel']:checked");
-            if(checked.length==0) {
-                $.jBox.tip("请选择部门", 'error');
+            var ids=""
+            $('input[name="idsSel"]:checked').each(function(){
+                ids+=$(this).val()+',';
+            });
+
+            if(ids.length==0) {
+                $.jBox.tip("请选择类型", 'error');
                 return;
             }
-            top.$.jBox.confirm('是否要删除部门分配','系统提示',function(v,h,f){
+            ids = ids.substring(0,ids.length - 1);
+            top.$.jBox.confirm('是否要删除方案','系统提示',function(v,h,f){
                 if(v=='ok'){
-                    $.post("${ctx}/income/distOffice/delete",{"ids":checked.val()},
+                    $.post("${ctx}/income/dist/deleteType",{"ids":ids,"incomeId":"${incomeId}"},
                         function(result){
                             if(result=="success"){
                                 //$.jBox.tip("操作成功");
@@ -103,8 +94,13 @@
 </head>
 <body>
 <ul class="nav nav-tabs">
-	<li class="active"><a href="${ctx}/income/distOffice/">进款部门分配</a></li>
-
+	<li class="active"><a href="${ctx}/income/distProc/officeDist?taskId=${taskId}">进款部门分配</a></li>
+	<c:if test="${showDraw}">
+		<li ><a href="${ctx}/income/distProc/officeDistRule?taskId=${taskId}&type=1">施工图</a></li>
+	</c:if>
+	<c:if test="${showPlan}">
+		<li ><a href="${ctx}/income/distProc/officeDistRule?taskId=${taskId}&type=2">方案</a></li>
+	</c:if>
 </ul><br/>
 <sys:message content="${message}"/>
 <div class="form-actions">
@@ -153,85 +149,44 @@
 <c:set var="saveFlag" value="true"></c:set>
 
 <form:form id="inputForm" modelAttribute="distOfficeProc" action="${ctx}/income/distOffice/form" method="post" class="form-horizontal">
-	<form:hidden path="id"/>
-	<form:hidden path="incomeId" value="${incomeId}"/>
-	<form:hidden path="taskId"  value="${taskId}"/>
+
+	<input type="hidden" id="incomeId" name="incomeId" value="${incomeId}"/>
+	<input type="hidden" id="taskId" name="taskId"  value="${taskId}"/>
+
 	<div id="content" >
 		<table id="contentTable" class="table table-striped table-bordered table-condensed">
-			<thead><tr><th>操作</th><th>分配部门</th><th>部门金额</th><th>规则选择</th><th>规则内费用</th><th>费用项</th><th>明细</th></tr></thead>
-			<c:set var="officeIds" value=""></c:set>
+			<thead><tr><th>操作</th><th>分配类型</th><th>分配金额</th></tr></thead>
+			<c:set var="typeIds" value=""></c:set>
 			<c:set var="sum" value="0"></c:set>
-			<c:forEach items="${distOffices}" var="distOffice">
-
+			<c:forEach items="${distTypes}" var="distType">
 				<tr>
-				<td rowspan="${distOffice.rowspan}"><input name="idsSel" type="checkbox" value="${distOffice.id}"/></td>
-				<td rowspan="${distOffice.rowspan}">${distOffice.officeName}</td>
-				<td rowspan="${distOffice.rowspan}">${distOffice.value}</td>
-				<td rowspan="${distOffice.rowspan}">
-
-					<select name="groups" onchange="selRule()" >
-						<c:forEach items="${distOffice.ruleGroups}" var="ruleGroup">
-
-							<c:choose>
-								<c:when test="${distOffice.ruleGroupId == ruleGroup.id}">
-									<option value="${ruleGroup.id}" selected="selected" >${ruleGroup.name}</option>
-								</c:when>
-								<c:otherwise>
-									<option value="${ruleGroup.id}">${ruleGroup.name}</option>
-								</c:otherwise>
-							</c:choose>
-						</c:forEach>
-					</select>
-				</td>
-				<c:if test="${distOffice.ruleGroupId== null||distOffice.ruleGroupId==''}">
-					<c:set value="false" var="saveFlag" />
-				</c:if>
-				<c:if test="${distOffice.rules == null}">
-					<td ></td><td ></td><td ></td>
-				</c:if>
-				<c:forEach items="${distOffice.rules}" var="rule">
-					<td rowspan="${rule.rowspan}">${rule.value}</td>
-					<c:forEach items="${rule.roleItems}" var="roleItem" varStatus="status">
-						<c:if test="${status.index != 0}">
-							<tr>
-						</c:if>
-						<td rowspan="${roleItem.rowspan}">${roleItem.name}:${roleItem.value}</td>
-						<c:forEach items="${roleItem.distributes}" var="distribut">
-							<td>${distribut.name}:${distribut.value}</td>
-							</tr>
-						</c:forEach>
-					</c:forEach>
-				</c:forEach>
-
-
+                  <td><input name="idsSel" type="checkbox" value="${distType.id}"/></td>
+				  <td>${fns:getDictLabel(distType.type, 'income_dist_type', '无')}</td>
+				  <td>${distType.value}</td>
 				</tr>
-
-				<c:set value="${sum + distOffice.value}" var="sum" />
-				<c:set value="${officeIds},${distOffice.officeId}" var="officeIds" />
-
+				<c:set value="${sum + distType.value}" var="sum" />
+				<c:set value="${distType.type},${typeIds}" var="typeIds" />
 			</c:forEach>
 			<tr>
-				<td colspan="7">已分配合计金额：${sum}</td>
+				<td colspan="3">已分配合计金额：${sum}</td>
 				<input type="hidden" id="distSum" value="${sum}" />
-				<input type="hidden" id="officeIds" value="${officeIds}" />
-			</tr>
+				<input type="hidden" id="typeIds" value="${typeIds}" />
 		</table>
 	</div>
 	<ul class="ul-form">
 		<div class="btn-toolbar ">
 			<div class="btn-group">
 				<c:if test="${sum<income.value}">
-					<input id="btnAddOffice" class="btn btn-primary" type="button"  onclick="add()" value="增加部门" />
+					<input id="btnAddType" class="btn btn-primary" type="button"  onclick="add()" value="增加类型" />
 				</c:if>
 				<c:if test="${sum!=0}">
-					<input id="btnDelOffice" class="btn btn-primary" type="button"  onclick="del()" value="删除部门" />
+					<input id="btnDelType" class="btn btn-primary" type="button"  onclick="del()" value="删除类型" />
 				</c:if>
 			</div>
 		</div>
 	</ul>
-	<fmt:formatNumber value="${sum}" pattern="#0" var="num1"></fmt:formatNumber>
-	<fmt:formatNumber value="${income.value}" pattern="#0" var="num2"></fmt:formatNumber>
-	<c:if test="${saveFlag==true && num1==num2}">
+
+	<c:if test="${income.value-sum<=0 }">
 		<div class="form-actions">
 			<div class="container-fluid">
 
@@ -253,7 +208,7 @@
 						</div>
 
 						<div class="span2">
-							<input id="btnSubmit" class="btn btn-primary" type="button"  onclick="commit()" value="保存并提交" />
+							<input id="btnSubmit" class="btn btn-primary" type="button"  onclick="commit()" value="提交" />
 						</div>
 
 						<div class="span5">
@@ -265,7 +220,8 @@
 	</c:if>
 
 </form:form>
-<form id="distForm"   action="${ctx}/income/distOffice/save" method="post" class="form-horizontal">
+<form:form id="distForm" modelAttribute="distType" action="${ctx}/income/distType/save" method="post" class="form-horizontal">
+<%--<form id="distForm"   action="${ctx}/income/distType/save" method="post" class="form-horizontal">--%>
 	<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -274,7 +230,7 @@
 						&times;
 					</button>
 					<h4 class="modal-title" >
-						添加分配部门
+						添加分配类型
 					</h4>
 				</div>
 				<div class="modal-body">
@@ -284,11 +240,12 @@
 								<div class="span1">
 								</div>
 								<div class="span10">
-									<label >签约部门:</label>
-									<sys:treeselect id="office" name="office.id" value="" labelName="office.name" labelValue="" isAll="true"
-													title="部门" url="/sys/office/treeData?type=2" cssClass="input-mini" allowClear="true" notAllowSelectParent="true"/>
+									<label >分配类型:</label>
+									<form:select path="type" class="input-small ">
+										<form:options items="${fns:getDictList('income_dist_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+									</form:select>
 								</div>
-								<div class="span2">
+								<div class="span1">
 								</div>
 							</div>
 						</div>
@@ -298,10 +255,10 @@
 								</div>
 								<div class="span10">
 									<label >分配金额:</label>
-									<input id="distValue" class="input-small"  onkeyup="onlyFloatTowPoint(this)"/>
+									<input id="distValue" class="input-small"  onkeyup="onlyFloatTowPoint(this)" required="true"/>
 
 								</div>
-								<div class="span2">
+								<div class="span1">
 								</div>
 							</div>
 						</div>
@@ -317,7 +274,7 @@
 	</div>
 
 
-</form>
+</form:form>
 <br>
 <%@ include file="/WEB-INF/views/modules/act/comment.jsp" %>
 </body>

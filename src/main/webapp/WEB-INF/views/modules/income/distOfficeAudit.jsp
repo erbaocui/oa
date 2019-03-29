@@ -2,14 +2,13 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
-	<title>进款部门审核</title>
+	<title>进款分配部门审核</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
         $(document).ready(function() {
 
         });
 		function commit(state){
-            //$("#inputForm").attr("action", "${ctx}/income/distProc/officeAuditSubmit");
             $("#state").val(state);
             $("#inputForm").submit();
         }
@@ -19,7 +18,7 @@
 </head>
 <body>
 <ul class="nav nav-tabs">
-	<li class="active"><a href="${ctx}/income/distOffice/">进款部门分配</a></li>
+	<li class="active"><a href="${ctx}/income/distOffice/">进款部门审核</a></li>
 
 </ul><br/>
 <sys:message content="${message}"/>
@@ -70,35 +69,20 @@
 
 <form:form id="inputForm" modelAttribute="distOfficeProc" action="${ctx}/income/distProc/officeAuditSubmit" method="post" class="form-horizontal">
 	<form:hidden path="id"/>
-	<form:hidden path="incomeId" value="${incomeId}"/>
 	<form:hidden path="taskId"  value="${taskId}"/>
 	<form:hidden path="state"  value=""/>
 
 	<div id="content" >
 		<table id="contentTable" class="table table-striped table-bordered table-condensed">
-			<thead><tr><th>分配部门</th><th>部门金额</th><th>规则选择</th><th>规则内费用</th><th>费用项</th><th>明细</th></tr></thead>
+			<thead><tr><th>类型</th><th>分配部门</th><th>部门金额</th><th>规则内费用</th><th>费用项</th><th>明细</th></tr></thead>
 			<c:set var="officeIds" value=""></c:set>
 			<c:forEach items="${distOffices}" var="distOffice">
 
 				<tr>
+				<td rowspan="${distOffice.rowspan}">${fns:getDictLabel(distOffice.type, 'income_dist_type', '无')}</td>
 				<td rowspan="${distOffice.rowspan}">${distOffice.officeName}</td>
 				<td rowspan="${distOffice.rowspan}">${distOffice.value}</td>
-				<td rowspan="${distOffice.rowspan}">
 
-					<select name="groups" onchange="selRule()"  disabled="disabled">
-						<c:forEach items="${distOffice.ruleGroups}" var="ruleGroup">
-
-							<c:choose>
-								<c:when test="${distOffice.ruleGroupId == ruleGroup.id}">
-									<option value="${ruleGroup.id}" selected="selected" >${ruleGroup.name}</option>
-								</c:when>
-								<c:otherwise>
-									<option value="${ruleGroup.id}">${ruleGroup.name}</option>
-								</c:otherwise>
-							</c:choose>
-						</c:forEach>
-					</select>
-				</td>
 				<c:if test="${distOffice.ruleGroupId== null||distOffice.ruleGroupId==''}">
 					<c:set value="false" var="saveFlag" />
 				</c:if>

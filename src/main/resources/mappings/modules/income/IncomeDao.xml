@@ -17,6 +17,9 @@
 		<result property="createBy.name" column="createBy.name" jdbcType="VARCHAR" javaType="java.lang.String" />
 		<result property="createDate" column="createDate" jdbcType="TIMESTAMP" javaType="java.util.Date" />
 		<result property="procInsId" column="procInsId" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="plan" column="plan" jdbcType="INTEGER" javaType="java.lang.Integer" />
+		<result property="draw" column="draw" jdbcType="INTEGER" javaType="java.lang.Integer" />
+
 		<collection property="distOfficeList" ofType="DistOffice" select="com.thinkgem.jeesite.modules.income.dao.DistOfficeDao.findAllList" column="id">
 		</collection>
 	</resultMap>
@@ -35,7 +38,9 @@
 		u.name AS "createBy.name",
 		a.create_date AS "createDate",
 		a.proc_ins_id AS "procInsId",
-		c.office_id as "contract.office.id"
+		c.office_id as "contract.office.id",
+		a.draw AS "draw",
+		a.plan AS "plan"
 	</sql>
 	
 	<sql id="incomeJoins">
@@ -44,12 +49,15 @@
 		left join bm_project p on p.id=c.project_id
 	</sql>
     
-	<select id="get"  resultMap="incomeMap">
+	<select id="get"  resultMap="incomeMap" parameterType="String">
 		SELECT 
 			<include refid="incomeColumns"/>
 		FROM bm_income a
 		<include refid="incomeJoins"/>
-		WHERE a.id = #{id}
+
+		<if test="_parameter!=null">
+		WHERE a.id = #{_parameter}
+		</if>
 	</select>
 	
 	<select id="findList" resultMap="incomeMap">
@@ -99,7 +107,9 @@
 		create_by,
 		create_date,
 		proc_ins_id,
-		contract_id
+		contract_id,
+		plan,
+		draw
 		) VALUES (
 		#{id},
 		#{applyId},
@@ -108,7 +118,9 @@
 		#{createBy.id},
 		#{createDate},
 		#{procInsId},
-		#{contract.id}
+		#{contract.id},
+		#{plan},
+		#{draw}
 		)
 	</insert>
 
@@ -118,7 +130,9 @@
 		status = #{status},
 		value = #{value},
 		proc_ins_id = #{procInsId},
-		contract_id = #{contract.id}
+		contract_id = #{contract.id},
+		plan = #{plan},
+		draw = #{draw}
 		WHERE id = #{id}
 	</update>
 
