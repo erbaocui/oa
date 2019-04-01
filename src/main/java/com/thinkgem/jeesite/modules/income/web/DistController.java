@@ -7,10 +7,14 @@ import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.NumberOperateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
+import com.thinkgem.jeesite.modules.act.entity.BaseReview;
 import com.thinkgem.jeesite.modules.income.entity.*;
 import com.thinkgem.jeesite.modules.income.service.*;
+import com.thinkgem.jeesite.modules.income.vo.DistOfficeProc;
+import com.thinkgem.jeesite.modules.income.vo.DistOfficeVo;
 import com.thinkgem.jeesite.modules.income.vo.RuleItemVo;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
+import org.activiti.engine.task.Comment;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,6 +44,8 @@ public class DistController extends BaseController {
 
 	@Autowired
 	private DistService distService;
+	@Autowired
+	private IncomeService incomeService;
 
 
 	@RequestMapping(value = "addType")
@@ -76,6 +82,23 @@ public class DistController extends BaseController {
 
 		distService.distOfficeDelete(ids,type,incomeId);
 		return "success";
+	}
+
+	//财务确认
+	@RequestMapping(value = "detail")
+	public String detail(String incomeId, Model model)  throws Exception{
+		DistOfficeProc distOfficeProc=new DistOfficeProc();
+		distOfficeProc.setIncomeId(incomeId);
+		String[] groups=null;
+		List<DistOfficeVo> distOffices=new ArrayList<DistOfficeVo>();
+		Income income=incomeService.get(incomeId);
+
+		distService.rule(distOfficeProc,groups,distOffices,null);
+
+		model.addAttribute("incomeId", incomeId);
+		model.addAttribute("income", income);
+		model.addAttribute("distOffices", distOffices);
+		return "modules/income/distDetail";
 	}
 
 

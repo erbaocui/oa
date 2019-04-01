@@ -46,5 +46,10 @@ public class AccountFlowService extends CrudService<AccountFlowDao, AccountFlow>
 	public void delete(AccountFlow accountFlow) {
 		super.delete(accountFlow);
 	}
-	
+
+	@Transactional(readOnly = false)
+	public void saveBatch(List<AccountFlow> accountFlowList){dao.insertBatch( accountFlowList);
+	}
+
+
 }

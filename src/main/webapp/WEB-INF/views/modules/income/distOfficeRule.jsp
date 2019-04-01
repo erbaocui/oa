@@ -55,7 +55,7 @@
                 }
                 console.log(sum);
                 console.log($("#value").val());
-                $.post("${ctx}/income/distOffice/add",
+                $.post("${ctx}/income/dist/addOffice",
 					{
 					    incomeId:$("#incomeId").val(),
                     typeId:$("#typeId").val(),

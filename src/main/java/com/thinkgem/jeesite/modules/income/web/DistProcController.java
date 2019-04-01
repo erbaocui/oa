@@ -165,6 +165,7 @@ public class DistProcController extends BaseController {
 		distType.setType(type);
 		distType=distTypeService.get(distType);
 		distOfficeProc.setTypeId(distType.getId());
+		distOfficeProc.setIncomeId(incomeId);
 		distService.rule(distOfficeProc,groups,distOffices,type);
 		Income income=incomeService.get(incomeId);
 		HttpSession session=request.getSession();

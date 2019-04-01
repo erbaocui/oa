@@ -171,6 +171,9 @@
 						<a href="#" onclick="del('${income.id}');">删除</a>
 					<%--	<a href="#" onclick="return confirmx('确认要删除该收款吗？', this.href)">删除</a>--%>
 						</c:if>
+						<c:if test="${income.status==3}">
+							<a href="${ctx}/income/dist/detail?incomeId=${income.id}">分配详情</a>
+						</c:if>
 
 					</td>
 				</tr>

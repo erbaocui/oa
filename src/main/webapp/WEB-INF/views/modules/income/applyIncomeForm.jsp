@@ -123,9 +123,12 @@
 
 					<td>
 						<c:if test="${income.status==1}">
-						<a href="#" onclick="startProcess('${income.id}')">启动分配流程</a>
-						<a href="${ctx}/income/applyPay/delIncome?applyId=${apply.id}&incomeId=${income.id}" onclick="return confirmx('确认要删除该收款吗？', this.href)">删除</a>
-					<%--	<a href="#" onclick="return confirmx('确认要删除该收款吗？', this.href)">删除</a>--%>
+						  <a href="#" onclick="startProcess('${income.id}')">启动分配流程</a>
+						  <a href="${ctx}/income/applyPay/delIncome?applyId=${apply.id}&incomeId=${income.id}" onclick="return confirmx('确认要删除该收款吗？', this.href)">删除</a>
+						</c:if>
+						income.status${income.status==3}
+						<c:if test="${income.status==3}">
+							<a href="${ctx}/income/dist/detail?incomeId=${income.id}">分配详情</a>
 						</c:if>
 
 					</td>

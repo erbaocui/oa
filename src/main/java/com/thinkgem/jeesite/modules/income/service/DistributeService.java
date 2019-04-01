@@ -90,7 +90,7 @@ public class DistributeService extends CrudService<DistributeDao, Distribute> {
 			Account a=new Account();
 			a.setAccount(d.getAccount());
 			accountFlow.setAccount(a);
-			//accountFlow.setIncomeId(d.getIncomeId());
+			accountFlow.setIncomeId(incomeId);
 			distribute.setTypeId(typeId);
 			accountFlows.add(accountFlow);
 
@@ -104,6 +104,7 @@ public class DistributeService extends CrudService<DistributeDao, Distribute> {
 		for(Account a:accounts){
 			accountDao.updateAdd( a);
 		}
+		distribute.setIncomeId(incomeId);
 		distribute.setStatus(2);
 		dao.update(distribute);
 

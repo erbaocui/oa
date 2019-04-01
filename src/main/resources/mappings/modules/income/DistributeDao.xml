@@ -90,6 +90,7 @@
 		where
 		type_id=#{typeId}
 		and office_id=#{officeId}
+		and status=1
 
 		group by type_id,office_id
 
@@ -102,7 +103,8 @@
 		from bm_distribute
 		where
 		income_id=#{incomeId}
-	    group by account
+		and status=1
+        group by account
 	</select>
 	
 	<insert id="insert">
@@ -172,7 +174,7 @@
 	<update id="update">
 		UPDATE bm_distribute
 		SET status = #{status}
-        WHERE type_id= #{typeId}
+        WHERE income_id= #{incomeId}
 	</update>
 	
 	<update id="delete">

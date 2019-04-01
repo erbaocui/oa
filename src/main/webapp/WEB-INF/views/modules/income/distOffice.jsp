@@ -48,7 +48,7 @@
                     $.jBox.tip("分配金额累计大于分配总金额", 'error');
                     return;
                 }
-                $.post("${ctx}/income/distType/add",{incomeId:$("#incomeId").val(),type:$("#type").val(),value:$("#distValue").val()},
+                $.post("${ctx}/income/dist/addType",{incomeId:$("#incomeId").val(),type:$("#type").val(),value:$("#distValue").val()},
                     function(result){
                         if(result=="success"){
                             $.jBox.tip("收款保存成功");

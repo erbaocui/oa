@@ -66,6 +66,7 @@
 					<c:if test="${apply.status ==2}">
 						<a href="${ctx}/income/income/applyPay?id=${apply.id}">收款</a>
 					</c:if>
+
 				  </td>
 				</shiro:hasPermission>
 			</tr>

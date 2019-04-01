@@ -1,6 +1,7 @@
 package com.thinkgem.jeesite.modules.income.service;
 
 import com.thinkgem.jeesite.common.utils.NumberOperateUtils;
+import com.thinkgem.jeesite.modules.contract.entity.ContApply;
 import com.thinkgem.jeesite.modules.income.constant.IncomeConstant;
 import com.thinkgem.jeesite.modules.income.entity.*;
 import com.thinkgem.jeesite.modules.income.vo.*;
@@ -404,6 +405,58 @@ public class DistService {
         }
         return typeId;
     }
+
+//    @Transactional(readOnly = false)
+//    public void saveAcount(String incomeId,String typeId) {
+//        Distribute distribute=new Distribute();
+//        distribute.setIncomeId(incomeId);
+//        List<Distribute>  distributes= distributeService.findDistAccountSum(distribute);
+//        List<AccountFlow> accountFlows=new ArrayList<AccountFlow>();
+//        List<Account> accounts=new ArrayList<Account>();
+//        for(Distribute d:distributes){
+//            AccountFlow accountFlow=new AccountFlow();
+//            accountFlow.preInsert();
+//            accountFlow.setValue(d.getValue());
+//            accountFlow.setType(1);
+//            Account a=new Account();
+//            a.setAccount(d.getAccount());
+//            accountFlow.setAccount(a);
+//            accountFlow.setIncomeId(incomeId);
+//            distribute.setTypeId(typeId);
+//            accountFlows.add(accountFlow);
+//
+//            Account account=new Account();
+//            account.setAccount(d.getAccount());
+//            account.setValue(d.getValue());
+//            accounts.add(account);
+//        }
+//
+//        accountFlowService.saveBatch(accountFlows);
+//        for(Account a:accounts){
+//            accountService.updateAdd( a);
+//        }
+//        distribute.setStatus(2);
+//        distributeService.(distribute);
+//
+//        Income income=incomeService.get(incomeId);
+//        income.setStatus(3);
+//        incomeService.save(income);
+//        ContApply contApply=contApplyService.get(income.getApplyId());
+//        Double incomeValue=0.0;
+//        Double applyIncomeValue=0.0;
+//        if(income.getValue()!=null){
+//            incomeValue=income.getValue().doubleValue();
+//        }
+//        if(contApply.getIncome()!=null){
+//            applyIncomeValue=contApply.getIncome().doubleValue();
+//        }
+//        Double incomeSum= NumberOperateUtils.add(incomeValue,applyIncomeValue);
+//        contApply.setIncome(new BigDecimal(incomeSum));
+//        if(incomeSum>=contApply.getReceiptValue().doubleValue()){
+//            contApply.setStatus(4);
+//        }
+//        contApplyService.save(contApply);
+//    }
 
 
 //
