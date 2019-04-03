@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.thinkgem.jeesite.common.utils.MD5Util;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.apache.shiro.session.Session;
@@ -223,7 +224,14 @@ public class SystemService extends BaseService implements InitializingBean {
 		byte[] hashPassword = Digests.sha1(plain.getBytes(), salt, HASH_INTERATIONS);
 		return Encodes.encodeHex(salt)+Encodes.encodeHex(hashPassword);
 	}
-	
+
+
+	/**
+	 * 为了数据迁移改成简单的md5加密
+	 */
+	public static String entryptPasswordMd5(String plainPassword) {
+		return MD5Util.md5(plainPassword);
+	}
 	/**
 	 * 验证密码
 	 * @param plainPassword 明文密码
@@ -236,7 +244,18 @@ public class SystemService extends BaseService implements InitializingBean {
 		byte[] hashPassword = Digests.sha1(plain.getBytes(), salt, HASH_INTERATIONS);
 		return password.equals(Encodes.encodeHex(salt)+Encodes.encodeHex(hashPassword));
 	}
-	
+
+	/**
+	 * 验证密码
+	 * @param plainPassword 明文密码
+	 * @param password 密文密码
+	 * @return 验证成功返回true
+	 */
+	public static boolean validatePasswordMd5(String plainPassword, String password) {
+		return password.equals(MD5Util.md5(plainPassword));
+	}
+
+
 	/**
 	 * 获得活动会话
 	 * @return
