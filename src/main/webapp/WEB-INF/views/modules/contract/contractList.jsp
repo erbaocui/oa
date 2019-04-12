@@ -171,7 +171,7 @@
 						${contract.income}
 				</td>
 				<td>
-					<fmt:formatNumber type="number" value="${contract.progress*100}" maxFractionDigits="0"/>%
+					<fmt:formatNumber type="number" value="${(contract.income/contract.value)*100}" maxFractionDigits="2"/>%
 
 				</td>
 				<td>

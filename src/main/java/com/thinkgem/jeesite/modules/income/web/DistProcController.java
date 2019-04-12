@@ -435,7 +435,7 @@ public class DistProcController extends BaseController {
         distributeService.saveAcount(incomeId,distOfficeProc.getTypeId());
         User user=UserUtils.getUser();
 		Authentication.setAuthenticatedUserId(  user.getName()+ "【"+UserUtils.getUser().getLoginName()+"】");// 设置用户id
-		//actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
+		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
 		addMessage(redirectAttributes, "操作成功");
 		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
 
