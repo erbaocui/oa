@@ -81,11 +81,13 @@
 		<c:if test="${not readonly}">
 			<li > <a href="${ctx}/cont/base/form?id=${contract.id}&readonly=${readonly}">合同修改</a></li>
 		</c:if>
-		<li ><a href="${ctx}/cont/applyPay/list?contractId=${contract.id}&readonly=${readonly}">合同请款</a></li>
-		<li><a href="${ctx}/cont/attach/list?contractId=${contract.id}&readonly=${readonly}">合同附件</a></li>
-		<li class="active"><a href="${ctx}/income/income/contractIncome?contractId=${contract.id}&readonly=${readonly}">合同支付</a></li>
 		<li><a href="${ctx}/cont/contItem/list?contractId=${contract.id}&readonly=${readonly}">付费约定</a></li>
+		<li><a href="${ctx}/cont/attach/list?contractId=${contract.id}&readonly=${readonly}">合同附件</a></li>
+		<li><a href="${ctx}/cont/applyPay/list?contractId=${contract.id}&readonly=${readonly}">合同请款</a></li>
+		<li class="active"><a href="${ctx}/income/income/contractIncome?contractId=${contract.id}&readonly=${readonly}">合同支付</a></li>
+
 	</c:if>
+
 </ul><br/>
 <sys:message content="${message}"/>
 
@@ -129,7 +131,7 @@
 
 					<td>
 						<c:if test="${income.status==3}">
-						<a href="${ctx}/income/distOffice/form?incomeId=${income.id}&editable=false"  title="分配详情" target="_blank">查看详情</a>
+						<a href="${ctx}/income/dist/detail?incomeId=${income.id}&editable=false"  title="分配详情" target="_blank">查看详情</a>
 						</c:if>
 
 					</td>
@@ -137,7 +139,7 @@
 				<c:set value="${sum + income.value}" var="sum" />
 			</c:forEach>
 			   <tr>
-				   <td colspan="4">合计金额：${sum}</td>
+				   <td colspan="5">合计金额：${sum}</td>
                    <input type="hidden" id="incomeSum" value="${sum}" />
 			   </tr>
 			</tbody>

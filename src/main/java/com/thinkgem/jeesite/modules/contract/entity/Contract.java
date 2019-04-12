@@ -4,15 +4,20 @@
 package com.thinkgem.jeesite.modules.contract.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.common.base.Joiner;
 import com.thinkgem.jeesite.common.persistence.DataEntity;
 import com.thinkgem.jeesite.modules.project.entity.Project;
 import com.thinkgem.jeesite.modules.sys.entity.Area;
+import com.thinkgem.jeesite.modules.sys.entity.Dict;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import org.hibernate.validator.constraints.Length;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 合同管理Entity
@@ -28,7 +33,7 @@ public class Contract extends DataEntity<Contract> {
 	private User manager;        // manager_id
 	private BigDecimal value;        // value
 	private BigDecimal income;        // income
-	private Integer type;        // type
+	private String type;        // type
 	private Integer status;        // status
 	private Date signedTime;        // signed_time
 	private Date beginTime;        // begin_time
@@ -55,13 +60,19 @@ public class Contract extends DataEntity<Contract> {
 	/*private Area area;*/
 	private String clazz;
 	private String firstParty;  //甲方名称
+	private Boolean hasProgrammeCost;
 	private String programmeCost; //方案费用
 	private String specificItem; //特殊条款
 	private String legalAdvise; //法律意见
 
+	//private List<Dict> typeList =new ArrayList<Dict>();
+
 	private Area province;
 	private Area city;
 	//private String creator;
+
+	//private String types="1,3";
+	//private List<String> testType;
 
 
 	public Contract() {
@@ -284,11 +295,11 @@ public class Contract extends DataEntity<Contract> {
 		this.income = income;
 	}
 
-	public Integer getType() {
+	public String getType() {
 		return type;
 	}
 
-	public void setType(Integer type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 
@@ -398,4 +409,33 @@ public class Contract extends DataEntity<Contract> {
 		this.city = city;
 	}
 
+
+
+	public List<String> getTypeIdList() {
+		List<String> list=null;
+	    if(type==null){
+			list = new ArrayList<String>();
+			//list.add("0");
+		}else{
+
+			list = Arrays.asList(type.split(","));
+		}
+
+
+		return list;
+	}
+
+	public void setTypeIdList(List<String> typeIdList){
+		this.type = Joiner.on(",").join(typeIdList);
+
+
+	}
+
+	public Boolean getHasProgrammeCost() {
+		return hasProgrammeCost;
+	}
+
+	public void setHasProgrammeCost(Boolean hasProgrammeCost) {
+		this.hasProgrammeCost = hasProgrammeCost;
+	}
 }

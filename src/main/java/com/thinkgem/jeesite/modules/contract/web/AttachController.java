@@ -165,7 +165,7 @@ public class AttachController extends BaseController {
 		if(( contAttach.getFile().indexOf("doc")>-1)||( contAttach.getFile().indexOf("docx")>-1)){
 			OfficeConverter officeConverter=new OfficeConverter();
 
-			officeConverter.convert2PDF(path + "/" +  contAttach.getFile(),path + "/"+pdfFileName);
+			officeConverter.convert2PDF(path +  contAttach.getFile(),path +pdfFileName);
 		}
 		Thread.sleep(3000);
 		PdfConverter pdfConverter=new PdfConverter();

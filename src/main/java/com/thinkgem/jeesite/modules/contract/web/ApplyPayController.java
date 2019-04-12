@@ -86,7 +86,7 @@ public class ApplyPayController extends BaseController {
 	public String list(ContApply contApply, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<ContApply> page = contApplyService.findPage(new Page<ContApply>(request, response), contApply);
 		model.addAttribute("page", page);
-		return "modules/contract/contractApplyPayList";
+		return "modules/contract/temp/contractApplyPayList";
 	}
 
 
@@ -123,7 +123,7 @@ public class ApplyPayController extends BaseController {
 
 
 	@RequestMapping(value = "save")
-	public String save(ContApply contApply,String contractId,Boolean readonly, MultipartFile file, Model model, RedirectAttributes redirectAttributes) {
+	public String save(ContApply contApply,String contractId,String readonly,String single, MultipartFile file, Model model, RedirectAttributes redirectAttributes) {
 		try {
 			Contract contract = contService.get( contractId);
 			if(file.getSize()>0) {
@@ -163,7 +163,7 @@ public class ApplyPayController extends BaseController {
 		}
 
 
-		return "redirect:"+Global.getAdminPath()+"/cont/applyPay/list?contractId="+contractId+"&readonly="+readonly;
+		return "redirect:"+Global.getAdminPath()+"/cont/applyPay/list?contractId="+contractId+"&readonly="+readonly+"&single="+single;
 	}
 	
 	/*@RequiresPermissions("cont:base:edit")
@@ -249,15 +249,15 @@ public class ApplyPayController extends BaseController {
 		if((contApply.getFileName().indexOf("doc")>-1)||(contApply.getFileName().indexOf("docx")>-1)){
 			OfficeConverter officeConverter=new OfficeConverter();
 
-			officeConverter.convert2PDF(path + "/" + contApply.getFileName(),path + "/"+pdfFileName);
+			officeConverter.convert2PDF(path + contApply.getFileName(),path+pdfFileName);
 		}
-		Thread.sleep(3000);
+		//Thread.sleep(3000);
 		PdfConverter pdfConverter=new PdfConverter();
 
 
 		pdfConverter.File2Swf(path +pdfFileName,contApply.getFileName().split("[.]")[0]);
-		System.out.println(path + "/"+pdfFileName);
-		System.out.println(contApply.getFileName().split("[.]")[0]);
+		//System.out.println(path ++pdfFileName);
+		//System.out.println(contApply.getFileName().split("[.]")[0]);
 		String swfFileName = contApply.getFileName().split("[.]")[0]+".swf";
 		swfFileName ="/upload/"+swfFileName;
 		model.addAttribute("file",  swfFileName);
@@ -265,7 +265,7 @@ public class ApplyPayController extends BaseController {
 	}
 
 	@RequestMapping(value = "/delete", method=RequestMethod.GET)
-	public String delete(String id,String contractId,boolean readonly,RedirectAttributes redirectAttributes)throws Exception {
+	public String delete(String id,String contractId,boolean readonly,String single,RedirectAttributes redirectAttributes)throws Exception {
 		try {
 			ContApply contApply=contApplyService.get(id);
 			String path = Global.getUserfilesBaseDir();
@@ -279,7 +279,7 @@ public class ApplyPayController extends BaseController {
 		}
 		/*ContApply contApply = new ContApply();
 		contApply.setContractId(contractId);*/
-		return "redirect:"+Global.getAdminPath()+"/cont/applyPay/list?contractId="+contractId+"&readonly="+readonly;
+		return "redirect:"+Global.getAdminPath()+"/cont/applyPay/list?contractId="+contractId+"&readonly="+readonly+"&single="+single;
 	}
 
 

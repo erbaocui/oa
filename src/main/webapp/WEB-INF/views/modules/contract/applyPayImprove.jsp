@@ -51,10 +51,11 @@
 		<li class="active"><a href="#">开票信息补充</a></li>
 	</ul><br/>
 	<form:form id="inputForm" modelAttribute="contApply" action="${ctx}/cont/proc/apply/save" method="post" class="form-horizontal" >
-		<form:input path="id"/>
-		<input type="text" id="taskIdApplyPay" name="taskIdApplyPay" value="${taskId}" />
-		<input type="text" id="contractId" name="contractId" value="${contractId}" />
-		<input type="text" id="readonly" name="readolny" value="${readonly}" />
+		<form:hidden path="id"/>
+		<input type="hidden" id="taskIdApplyPay" name="taskIdApplyPay" value="${taskId}" />
+		<input type="hidden" id="contractId" name="contractId" value="${contractId}" />
+		<input type="hidden" id="contract.id" name="contract.id" value="${contractId}" />
+		<input type="hidden" id="readonly" name="readolny" value="${readonly}" />
 		<sys:message content="${message}"/>
 
 	<div class="container-fluid">

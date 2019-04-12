@@ -102,16 +102,16 @@ public class ContProcController extends BaseController {
 			contract.setStatus(2);
 			//改合同状态
 			contractService.save(contract);
-			//创建者信息
-			List<Task> tasList=actTaskService.processInstanceTaskList(processInstanceId);
-             if(tasList!=null&&tasList.size()>0){
-             	Task task=tasList.get(0);
-             	//任务拾取
-				 actTaskService.claim(task.getId(),contract.getCreateBy().getLoginName());
-				 User user=UserUtils.getUser();
-				 Authentication.setAuthenticatedUserId(  "【合同创建者】" +user.getName());// 设置用户id
-				 actTaskService.complete(task.getId(),processInstanceId,"合同创建",variables);
-			 }
+//			//创建者信息
+//			List<Task> tasList=actTaskService.processInstanceTaskList(processInstanceId);
+//             if(tasList!=null&&tasList.size()>0){
+//             	Task task=tasList.get(0);
+//             	//任务拾取
+//				 actTaskService.claim(task.getId(),contract.getCreateBy().getLoginName());
+//				 User user=UserUtils.getUser();
+//				 Authentication.setAuthenticatedUserId(  "【合同创建者】" +user.getName());// 设置用户id
+//				 actTaskService.complete(task.getId(),processInstanceId,"合同创建",variables);
+//			 }
 			result.put("result","success");
 
 		} catch (Exception e) {
@@ -166,13 +166,12 @@ public class ContProcController extends BaseController {
 	@RequestMapping(value = {"/audit/managerSave"},method= RequestMethod.POST)
 	public String auditManagerSave(ContractReview review,RedirectAttributes redirectAttributes) throws Exception{
 		Task task=actTaskService.getTask( review.getTaskId());
-		//Map<String, Object> variables=task.getTaskLocalVariables();
+		Map<String, Object> variables=task.getTaskLocalVariables();
 
 		String taskId=task.getId();
 		String processId=task.getProcessInstanceId();
 		actTaskService.getTaskVariable(taskId,"businessId");
 		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
-		Map<String, Object> variables=new HashMap<String,Object>();
 		String contractId=(String)actTaskService.getTaskVariable(taskId,"businessId");
 		Contract contract=contractService.get(contractId);
 		contract.setSpecificItem(review.getSpecificItem());
@@ -443,6 +442,7 @@ public class ContProcController extends BaseController {
 		if(review.getComment()==null||review.getComment().equals("")){
 			review.setComment("通过");
 		}
+		variables.put("role","contract");
 		User user=UserUtils.getUser();
 		Authentication.setAuthenticatedUserId("【创建者】"+user.getName());// 设置用户id
 		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
@@ -551,22 +551,7 @@ public class ContProcController extends BaseController {
 	public String save(Contract contract,String taskIdContract,RedirectAttributes redirectAttributes)throws Exception {
 
 		contractService.save(contract);
-
-	/*	//UserContract contract=contractService.get(id);
-		List<Comment> comments=actTaskService.getTaskHistoryCommentList(  taskIdContract);
-		ContAttach contAttach=new ContAttach();
-		contAttach.setContractId(contract.getId());
-		List<ContAttach> list = contAttachService.findList(contAttach);
-		model.addAttribute("contAttachs", list);
-		model.addAttribute("taskId",  taskIdContract);
-		model.addAttribute("contract",contract);
-		model.addAttribute("comments",comments);
-		model.addAttribute("review", new BaseReview());
-		model.addAttribute("readonly",false );
-		model.addAttribute("fileType","1" );
-		addMessage(model, "合同保存成功");*/
 		addMessage(redirectAttributes, "合同保存成功");
-		//return "modules/contract/auditImprove";
 		return "redirect:"+Global.getAdminPath()+"/cont/proc/audit/improve?taskId="+taskIdContract+"&id="+contract.getId();
 	}
 
@@ -693,8 +678,19 @@ public class ContProcController extends BaseController {
 	@RequestMapping(value = "/apply/save")
 	public String applyPaysave(ContApply contApply,String taskIdApplyPay, Model model, RedirectAttributes redirectAttributes) {
 		try {
-
-			contApplyService.save(contApply);
+            ContApply saveContApply=contApplyService.get(contApply.getId());
+            saveContApply.setRemark(contApply.getRemark());
+            saveContApply.setReceiptName(contApply.getReceiptName());
+            saveContApply.setReceiptValue(contApply.getReceiptValue());
+            saveContApply.setReceiptAccount(contApply.getReceiptAccount());
+            saveContApply.setReceiptAddress(contApply.getReceiptAddress());
+            saveContApply.setReceiptBank(contApply.getReceiptBank());
+            saveContApply.setReceiptDate(contApply.getReceiptDate());
+            saveContApply.setReceiptContent(contApply.getReceiptContent());
+            saveContApply.setReceiptPhone(contApply.getReceiptPhone());
+            saveContApply.setReceiptRemark(contApply.getReceiptRemark());
+            saveContApply.setTaxId(contApply.getTaxId());
+            contApplyService.save(saveContApply);
 			addMessage(redirectAttributes, "保存请款信息成功");
 		}catch (Exception e){
 			e.printStackTrace();

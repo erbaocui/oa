@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import com.thinkgem.jeesite.common.utils.MD5Util;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
@@ -311,5 +312,21 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 			return id;
 		}
 
+	}
+
+	@Override
+	protected void assertCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) throws AuthenticationException {
+		UsernamePasswordToken usertoken = (UsernamePasswordToken) token;
+
+		String  tokenCredentials = MD5Util.md5(String.valueOf(usertoken.getPassword()));
+		String accountCredentials = (String)info.getCredentials();
+
+			if (tokenCredentials.equals(accountCredentials )){
+				return;
+			}
+
+
+
+		super.assertCredentialsMatch(token, info);
 	}
 }

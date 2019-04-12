@@ -38,7 +38,7 @@
 				<th>收款金额</th>
 				<th>状态</th>
 				<th>备注</th>
-                 <th>操作</th>
+				<th>操作</th>
 			</tr>
 		</thead>
 		<tbody>

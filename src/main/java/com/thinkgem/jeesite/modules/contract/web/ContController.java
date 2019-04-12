@@ -3,44 +3,30 @@
  */
 package com.thinkgem.jeesite.modules.contract.web;
 
-import com.sun.corba.se.pept.transport.ContactInfo;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.service.converter.OfficeConverter;
-import com.thinkgem.jeesite.common.service.converter.PdfConverter;
-import com.thinkgem.jeesite.common.utils.DateUtils;
-import com.thinkgem.jeesite.common.utils.FTPUtil;
-import com.thinkgem.jeesite.common.utils.FileUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.act.service.ActTaskService;
-import com.thinkgem.jeesite.modules.contract.constant.ContConstant;
-import com.thinkgem.jeesite.modules.contract.entity.ContApply;
 import com.thinkgem.jeesite.modules.contract.entity.ContAttach;
+import com.thinkgem.jeesite.modules.contract.entity.ContItem;
 import com.thinkgem.jeesite.modules.contract.entity.Contract;
-import com.thinkgem.jeesite.modules.contract.entity.QueryContract;
-import com.thinkgem.jeesite.modules.contract.service.ContApplyService;
 import com.thinkgem.jeesite.modules.contract.service.ContAttachService;
+import com.thinkgem.jeesite.modules.contract.service.ContItemService;
+import com.thinkgem.jeesite.modules.contract.vo.QueryContract;
 import com.thinkgem.jeesite.modules.contract.service.ContService;
 import com.thinkgem.jeesite.modules.sys.entity.Area;
 import com.thinkgem.jeesite.modules.sys.service.AreaService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Comment;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -54,6 +40,11 @@ public class ContController extends BaseController {
 
 	@Autowired
 	private ContService contService;
+	@Autowired
+	private ContItemService contItemService;
+	@Autowired
+	private ContAttachService contAttachService;
+
 
 	@Autowired
 	private ActTaskService actTaskService;
@@ -134,6 +125,16 @@ public class ContController extends BaseController {
 	@RequiresPermissions("cont:base:view")
 	@RequestMapping(value = "form")
 	public String form(Contract contract,Boolean readonly, Model model) throws Exception{
+//		List<Dict> list=new ArrayList<Dict>();
+//		Dict dict =new Dict();
+//		//dict.setLabel();
+//		dict.setValue("1");
+//		list.add(dict);
+//		contract.setTypeList(list);
+//		List<String> abc=new ArrayList<String>();
+//		abc.add("1");
+//		abc.add("2");
+//		contract.setTestType(abc);
 		model.addAttribute("contract", contract);
 		model.addAttribute("readonly",  readonly);
 		Area area=new Area();
@@ -174,7 +175,7 @@ public class ContController extends BaseController {
 		}
 		contService.save(contract);
 		addMessage(redirectAttributes, "合同保存成功");
-		return "redirect:"+adminPath+"/cont/base/list/?repage";
+		return "redirect:"+adminPath+"/cont/base/form/?id="+contract.getId()+"&readonly=false&repage";
 	}
 	
 	@RequiresPermissions("cont:creator:edit")
@@ -199,6 +200,36 @@ public class ContController extends BaseController {
 		result.put("result","success");
 
 	    return result;
+	}
+
+	/**
+	 * 验证是否可以启动流程
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+
+	@RequestMapping(value = "checkStartProcess")
+	public Map checkStartProcess(String id) {
+		Map<String,Object> result=new HashMap<String, Object>();
+		result.put("result","success");
+		ContItem contItem=new ContItem();
+		contItem.setContractId(id);
+		List<ContItem> itemlist=contItemService.findList(contItem);
+		if(itemlist==null||itemlist.size()==0){
+			result.put("result","error");
+			result.put("msg","请先设置付款约定");
+		}
+		ContAttach contAttach=new ContAttach();
+		contAttach.setContractId(id);
+		List<ContAttach> attachlist=contAttachService.findList(contAttach);
+		if(attachlist==null||attachlist.size()==0){
+			result.put("result","error");
+			result.put("msg","请先添加合同附件");
+		}
+
+
+			return result;
 	}
 
 

@@ -22,17 +22,28 @@
         	return false;
         }
         function startProcess(id) {
-
-            $.post("${ctx}/cont/proc/audit/start?",{id:id},function(data){
+            $.post("${ctx}/cont/base/checkStartProcess",{id:id},function(data){
                 var code=data.result;
                 if(code=='success'){
-                    top.$.jBox.tip("流程启动成功","success",{persistent:true,opacity:0});
-                    page();
+
+                     $.post("${ctx}/cont/proc/audit/start?",{id:id},function(data){
+                      var code=data.result;
+						 if(code=='success'){
+						  top.$.jBox.tip("流程启动成功","success",{persistent:true,opacity:0});
+					      page();
+
+					       }else{
+					        top.$.jBox.tip("流程启动失败","error",{persistent:true,opacity:0});
+					       }
+					   });
+
 
                 }else{
-                    top.$.jBox.tip("流程启动失败","error",{persistent:true,opacity:0});
+                    top.$.jBox.tip(data.msg,'error',{persistent:true,opacity:0});
                 }
             });
+
+
 
         }
 
@@ -86,61 +97,45 @@
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 
 		<ul class="ul-form">
-			<%--<li><label>所属地区：</label>
-				<sys:treeselect id="area" name="area.id" value="${queryContract.area.id}" labelName="area.name" labelValue="${queryContract.area.name}"
-								title="区域" url="/sys/area/treeData" cssClass="input-small" allowClear="true" notAllowSelectParent="true"/>
-			</li>--%>
 				<li><label>所属地区：</label>
 
-				<form:select path="province.id" class="input-medium" onchange="findCity(this.options[this.options.selectedIndex].value);" >
+				<form:select path="province.id" class="input-mini" onchange="findCity(this.options[this.options.selectedIndex].value);" >
 					<form:option value="" label="请选择"/>
 					<form:options items="${provinceList}" itemLabel="name" itemValue="id" htmlEscape="false"/>
 				</form:select>
 
 				</li>
-
 				<li><label>所属地区：</label>
 					<form:hidden path="city.id"/>
-					<form:select path="city" class="input-medium" onchange="cityChange(this.options[this.options.selectedIndex].value)" >
+					<form:select path="city" class="input-mini" onchange="cityChange(this.options[this.options.selectedIndex].value)" >
 						<form:option value="" label="请选择"/>
 					</form:select>
-
 				</li>
 				<li> <label>签约年份：</label>
-				<form:select path="year" class="input-small">
+				<form:select path="year" class="input-mini">
 					<form:option value="" label="请选择"/>
 					<form:options items="${fns:getDictList('contract_year')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				</form:select>
 			</li>
-
-			<li>
-				<label>合同类型：</label>
-				<form:select path="type" class="form-control input-medium">
-					<form:option value="" label="请选择"/>
-					<form:options items="${fns:getDictList('contract_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-				</form:select>
-			</li>
-
-			<li><label>合同名称：</label>&nbsp;<form:input path="name" value="${name}" htmlEscape="false" maxlength="50" class="input-small"/></li>
-			<li class="clearfix"></li>
 			<li><label>签订部门：</label><sys:treeselect id="office" name="office.id" value="${queryContract.office.id}" labelName="office.name" labelValue="${queryContract.office.name}" isAll="true"
-													title="部门" url="/sys/office/treeData?type=2" cssClass="input-small" allowClear="true" notAllowSelectParent="true"/>
+													title="部门" url="/sys/office/treeData?type=2" cssClass="input-medium" allowClear="true" notAllowSelectParent="true"/>
 			</li>
 
-			<li>
-				<label >合同性质：</label>
-				<form:select path="type" class="form-control input-small">
-					<form:option value="" label="请选择"/>
-					<form:options items="${fns:getDictList('contract_class')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-				</form:select>
-			</li>
+			<li class="clearfix"></li>
 			<li>
 				<label>合同金额：</label>
-				<form:input path="min" value="${min}"  onkeyup="onlyNum(this)"  htmlEscape="false" maxlength="50" class="input-medium"/> -
-				<form:input path="max" value="${max}"  onkeyup="onlyNum(this)" htmlEscape="false" maxlength="50" class="input-medium"/>
+				<form:input path="min" value="${min}"  onkeyup="onlyNum(this)"  htmlEscape="false" maxlength="50" class="input-mini"/> -
+				<form:input path="max" value="${max}"  onkeyup="onlyNum(this)" htmlEscape="false" maxlength="50"  class="input-mini"/>万元
+			</li>
+			<li><label>合同名称：</label>&nbsp;<form:input path="name" value="${name}" htmlEscape="false" maxlength="50" class="input-xlarge"/></li>
+			<li><label>甲方名称：</label>&nbsp;<form:input path="firstParty" value="${firstParty}" htmlEscape="false" maxlength="50" class="input-xlarge"/></li>
+
+			<li class="clearfix"></li>
+			<li><label>合同类型：</label>
+				<form:checkboxes path="typeIds" items="${fns:getDictList('contract_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 			</li>
 
-			<li class="btns">
+				<li class="btns">
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询" onclick="return page();"/>
 			</li>
@@ -152,6 +147,7 @@
 		<thead>
 			<tr>
 				<th>合同名称</th>
+				<th>甲方名称</th>
 				<th>合同额</th>
 				<th>进款额</th>
 				<th>收款进度</th>
@@ -164,6 +160,9 @@
 			<tr>
 				<td>
 					${contract.name}
+				</td>
+				<td>
+					${contract.firstParty}
 				</td>
 				<td>
 					${contract.value}

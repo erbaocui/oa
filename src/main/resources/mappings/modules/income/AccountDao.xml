@@ -40,7 +40,7 @@
 			</if>
 			<if test="office != null">
 			   <if test="office.id != null and office.id != ''">
-				AND a.office_id =${office.id}
+				AND a.office_id =#{office.id}
 
 			   </if>
 			</if>

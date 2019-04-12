@@ -44,7 +44,8 @@
 	<form:form id="inputForm" modelAttribute="contApply" action="${ctx}/cont/applyPay/save" method="post" class="form-horizontal" enctype="multipart/form-data">
 		<form:hidden path="id"/>
 		<input type="hidden" id="contractId" name="contractId" value="${contractId}" />
-		<input type="hidden" id="readonly" name="readolny" value="${readonly}" />
+		<input type="hidden" id="readonly" name="readonly" value="${readonly}" />
+		<input type="hidden" id="single" name="single" value="${single}" />
 		<sys:message content="${message}"/>
 
 	<div class="container-fluid">

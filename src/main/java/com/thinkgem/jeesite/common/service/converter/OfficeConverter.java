@@ -46,11 +46,19 @@ public class OfficeConverter extends AbstractConverter{
             }
         }
 
-        startService();
-        System.out.println("进行文档转换转换:" + inputFile + " --> " + pdfFile);
-        OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
-        converter.convert(new File(inputFile),new File(pdfFile));
-        stopService();
+
+        try {
+            startService();
+            System.out.println("进行文档转换转换:" + inputFile + " --> " + pdfFile);
+            OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager);
+            converter.convert(new File(inputFile), new File(pdfFile));
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }finally {
+            stopService();
+        }
+
         System.out.println();
     }
 
@@ -110,6 +118,6 @@ public class OfficeConverter extends AbstractConverter{
 
     public static  void main( String[] args){
         OfficeConverter officeConverter=new OfficeConverter();
-        officeConverter.convert2PDF("D:\\upload\\contract.doc","D:\\upload\\contract.pdf");
+        officeConverter.convert2PDF("usr/loca/upload/contract.doc","D:\\upload\\contract.pdf");
     }
 }

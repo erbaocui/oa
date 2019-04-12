@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.contract.dao.ContTypeDao">
+    
+	<sql id="contTypeColumns">
+		a.id AS "id",
+		a.type_id AS "typeId",
+		a.contract_id AS "contractId",
+		a.create_date AS "createDate",
+		a.del_flag AS "delFlag",
+		a.create_by AS "createBy.id"
+	</sql>
+	
+	<sql id="contTypeJoins">
+	</sql>
+    
+	<select id="get" resultType="ContType">
+		SELECT 
+			<include refid="contTypeColumns"/>
+		FROM bm_cont_type a
+		<include refid="contTypeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ContType">
+		SELECT 
+			<include refid="contTypeColumns"/>
+		FROM bm_cont_type a
+		<include refid="contTypeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ContType">
+		SELECT 
+			<include refid="contTypeColumns"/>
+		FROM bm_cont_type a
+		<include refid="contTypeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_cont_type(
+			id,
+			type_id,
+			contract_id,
+			create_date,
+			del_flag,
+			create_by
+		) VALUES (
+			#{id},
+			#{typeId},
+			#{contractId},
+			#{createDate},
+			#{delFlag},
+			#{createBy.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_cont_type SET 	
+			type_id = #{typeId},
+			contract_id = #{contractId}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from  bm_cont_type
+
+		WHERE contract_id = #{contractId}
+	</delete>
+	
+</mapper>

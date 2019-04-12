@@ -1,4 +1,6 @@
-package com.thinkgem.jeesite.modules.contract.entity;
+package com.thinkgem.jeesite.modules.contract.vo;
+
+import com.thinkgem.jeesite.modules.contract.entity.Contract;
 
 import java.util.List;
 
@@ -12,6 +14,7 @@ public class QueryContract extends Contract {
    private Integer max;
 
    private  String[] noInArray;
+   private List<String> typeIds;
 
     public QueryContract() {
     }
@@ -46,5 +49,13 @@ public class QueryContract extends Contract {
 
     public void setMax(Integer max) {
         this.max = max;
+    }
+
+    public List<String> getTypeIds() {
+        return typeIds;
+    }
+
+    public void setTypeIds(List<String> typeIds) {
+        this.typeIds = typeIds;
     }
 }

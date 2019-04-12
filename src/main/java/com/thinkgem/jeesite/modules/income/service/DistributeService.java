@@ -10,7 +10,9 @@ import java.util.Map;
 
 import com.thinkgem.jeesite.common.utils.NumberOperateUtils;
 import com.thinkgem.jeesite.modules.contract.dao.ContApplyDao;
+import com.thinkgem.jeesite.modules.contract.dao.ContDao;
 import com.thinkgem.jeesite.modules.contract.entity.ContApply;
+import com.thinkgem.jeesite.modules.contract.entity.Contract;
 import com.thinkgem.jeesite.modules.contract.service.ContApplyService;
 import com.thinkgem.jeesite.modules.income.constant.IncomeConstant;
 import com.thinkgem.jeesite.modules.income.dao.AccountDao;
@@ -45,6 +47,8 @@ public class DistributeService extends CrudService<DistributeDao, Distribute> {
 	private IncomeService incomeService;
 	@Autowired
 	private ContApplyService contApplyService;
+	@Autowired
+	private ContDao contDao;
 
 	public Distribute get(String id) {
 		return super.get(id);
@@ -126,6 +130,19 @@ public class DistributeService extends CrudService<DistributeDao, Distribute> {
 			contApply.setStatus(4);
 		}
 		contApplyService.save(contApply);
+		Contract contract =new Contract();
+		contract.setId(income.getContract().getId());
+		contract=contDao.get( contract);
+		BigDecimal iv=contract.getIncome();
+		if(iv==null){
+			iv=new BigDecimal(0)	;
+		}
+		iv=iv.add(new BigDecimal(incomeValue));
+		contract.setIncome(iv);
+		BigDecimal progress= contract.getIncome().divide(contract.getValue(),2,BigDecimal.ROUND_HALF_UP);
+		contract.setProgress(progress);
+		contDao.update(contract);
+
 	}
 
 

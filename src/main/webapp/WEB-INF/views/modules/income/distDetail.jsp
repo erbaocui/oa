@@ -118,7 +118,9 @@
 				</div>
 
 				<div class="span2">
+					<!--
 					<input id="btnSubmit" class="btn btn-primary" type="button"  onclick="javascript:window.history.back();" value="返回" />
+					-->
 				</div>
 
 				<div class="span5">

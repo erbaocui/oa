@@ -1,7 +1,81 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.thinkgem.jeesite.modules.contract.dao.ContDao">
-    
+
+	<!--<resultMap  id="contractMap" type="Contract">-->
+		<!--<result property="id" column="id" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="code" column="code" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="project.id" column="project.id" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="project.name" column="project.name" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="name" column="name" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="createBy.id" column="createBy" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="createBy.name" column="createBy.name" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="createBy.loginName" column="createBy.loginName" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="createDate" column="createDate" jdbcType="TIMESTAMP" javaType="java.util.Date" />-->
+		<!--<result property="manager.id"  column="manager.id" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="manager.name"  column="manager.name" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="value"  column="value" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="income"  column="income" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="type"  column="type" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="status"  column="status" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="signedTime" column="signedTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />-->
+		<!--<result property="beginTime" column="beginTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />-->
+		<!--<result property="endTime" column="endTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />-->
+		<!--<result property="contact"  column="contact" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="contactPhone"  column="contactPhone" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="remark"  column="remark" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="isSub"  column="isSub" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="blueprintNum"  column="blueprintNum" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="payment"  column="isSub" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="sealTime" column="sealTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />-->
+		<!--<result property="recordTime" column="recordTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />-->
+		<!--<result property="returnTime" column="returnTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />-->
+		<!--<result property="returnFinancialTime" column="returnFinancialTime" jdbcType="TIMESTAMP" javaType="java.util.Date" />-->
+
+
+
+
+
+
+		<!--a.sub_item AS "subItem",-->
+		<!--a.time_limit AS "timeLimit",-->
+		<!--a.price AS "price",-->
+		<!--a.area_value AS "areaValue",-->
+		<!--a.investment AS "investment",-->
+		<!--a.progress AS "progress",-->
+		<!--a.office_id AS "office.id",-->
+		<!--o.name AS "office.name",-->
+		<!--a.class as "clazz",-->
+		<!--a.proc_ins_id AS "procInsId",-->
+		<!--a.first_party as "firstParty",-->
+		<!--a.programme_cost as "programmeCost",-->
+		<!--a.specific_item as "specificItem",-->
+		<!--a.legal_advise as "legalAdvise",-->
+		<!--a.province_id as "province.id",-->
+		<!--pp.name as "province.name",-->
+		<!--a.city_id as "city.id",-->
+		<!--cc.name as "city.name"-->
+
+
+
+
+		<!--<result property="contract.code"  column="contract.code" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="contract.name" column="contract.name" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="contract.office.id" column="contract.office.id" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="contract.project.name"  column="contract.project.name" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="status" column="status" jdbcType="INTEGER" javaType="java.lang.Integer" />-->
+		<!--<result property="value" column="value" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />-->
+		<!--<result property="createBy.id" column="createBy" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="createBy.name" column="createBy.name" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="createDate" column="createDate" jdbcType="TIMESTAMP" javaType="java.util.Date" />-->
+		<!--<result property="procInsId" column="procInsId" jdbcType="VARCHAR" javaType="java.lang.String" />-->
+		<!--<result property="plan" column="plan" jdbcType="INTEGER" javaType="java.lang.Integer" />-->
+		<!--<result property="draw" column="draw" jdbcType="INTEGER" javaType="java.lang.Integer" />-->
+
+		<!--<collection property="distOfficeList" ofType="DistOffice" select="com.thinkgem.jeesite.modules.income.dao.DistOfficeDao.findAllList" column="id">-->
+		<!--</collection>-->
+	<!--</resultMap>-->
+	<!---->
 	<sql id="contractColumns">
 		a.id AS "id",
 		a.code AS "code",
@@ -16,7 +90,7 @@
 		m.name AS "manager.name",
 		a.value AS "value",
 		a.income AS "income",
-		a.type AS "type",
+        (select GROUP_CONCAT(DISTINCT(x.type_id)) from  bm_cont_type x where  x.contract_id=a.id ) AS "type",
 		a.status AS "status",
 		a.signed_time AS "signedTime",
 		a.begin_time AS "beginTime",
@@ -42,6 +116,7 @@
         a.class as "clazz",
         a.proc_ins_id AS "procInsId",
         a.first_party as "firstParty",
+        a.has_programme_cost as "hasProgrammeCost",
         a.programme_cost as "programmeCost",
         a.specific_item as "specificItem",
 	    a.legal_advise as "legalAdvise",
@@ -60,19 +135,37 @@
 		LEFT JOIN sys_user c ON c.id = a.create_by
 		LEFT JOIN sys_area pp ON pp.id = a.province_id
 		LEFT JOIN sys_area cc ON cc.id = a.city_id
+		<if test="typeIds != null and typeIds.size()>0">
+		  inner JOIN bm_cont_type t ON a.id=t.contract_id
+		</if>
+
 
 	</sql>
-    
+	<sql id="contractJoinsGet">
+		left join bm_project p on p.id=a.project_id
+		LEFT JOIN sys_user m ON m.id = a.manager_id
+		LEFT JOIN sys_office o ON o.id = a.office_id
+		LEFT JOIN sys_area aa ON aa.id = a.area_id
+		LEFT JOIN sys_user c ON c.id = a.create_by
+		LEFT JOIN sys_area pp ON pp.id = a.province_id
+		LEFT JOIN sys_area cc ON cc.id = a.city_id
+
+
+	</sql>
+
+
 	<select id="get" resultType="Contract">
-		SELECT 
+		SELECT  distinct
 			<include refid="contractColumns"/>
 		FROM bm_contract a
-		<include refid="contractJoins"/>
+		<include refid="contractJoinsGet"/>
 		WHERE 1=1
 		<if test="id != null and id!= ''">
 		 and	a.id = #{id}
 		</if>
-
+		<if test="code!= null and code!= ''">
+			and	a.code = #{code}
+		</if>
 
 
 	</select>
@@ -80,17 +173,14 @@
 
 	
 	<select id="findList" resultType="Contract" parameterType="QueryContract">
-		SELECT 
+		SELECT distinct
 			<include refid="contractColumns"/>
 		FROM bm_contract a
 		<include refid="contractJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
 			<if test="name != null and name != ''">
-				AND a.name LIKE 
-					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+				AND a.name LIKE concat('%',#{name},'%')
 			</if>
 			<if test="value != null and value != ''">
 				AND a.value = #{value}
@@ -121,13 +211,10 @@
 				and	 class=#{clazz}
 			</if>
 			<if test="min != null and min != ''">
-				and	value>=#{min}
+				and	value>=#{min}*10000
 			</if>
 			<if test="max != null and max != ''">
-				and	#{max}>=value
-			</if>
-			<if test="max != null and max != ''">
-				and	#{max}>=value
+				and	#{max}*10000>=value
 			</if>
 			<if test="office != null">
 				<if test="office.id != null and office.id != ''">
@@ -135,6 +222,17 @@
 				</if>
 
 			</if>
+			<if test="typeIds != null and typeIds.size()>0">
+				 and t.type_id in
+				<foreach collection="typeIds" index="index" item="item" open="(" separator="," close=")">
+					               #{item}
+				 </foreach>
+			</if>
+			<if test="firstParty != null and firstParty != ''">
+			and	a.first_Party like CONCAT('%',#{firstParty},'%')
+
+			</if>
+
 			${sqlMap.dsf}
 		</where>
 		<choose>
@@ -142,12 +240,13 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
+				ORDER BY a.create_date desc
 			</otherwise>
 		</choose>
 	</select>
 	
 	<select id="findAllList" resultType="Contract">
-		SELECT 
+		SELECT distinct
 			<include refid="contractColumns"/>
 		FROM bm_contract a
 		<include refid="contractJoins"/>
@@ -198,6 +297,7 @@
 			office_id,
 			class,
 			first_party,
+			has_programme_cost,
 			programme_cost,
 			specific_item,
 			legal_advise,
@@ -237,6 +337,7 @@
 			#{office.id},
 			#{clazz},
 			#{firstParty},
+			#{hasProgrammeCost},
 			#{programmeCost},
 			#{specificItem},
 			#{legalAdvise},
@@ -281,6 +382,7 @@
 			proc_status=#{procStatus},
 			class=#{clazz},
 			first_party=#{firstParty},
+			has_programme_cost=#{hasProgrammeCost},
 			programme_cost=#{programmeCost},
 			specific_item=#{specificItem},
 			legal_advise=#{legalAdvise},
