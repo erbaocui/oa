@@ -30,14 +30,17 @@
 
             if($("#inputForm").valid()){
                 $("#inputForm").submit();
+
+
             }
 
         }
+
+
 	</script>
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/cont/base/list">合同列表</a></li>
 		<li><a href="${ctx}/cont/applyPay/list?contractId=${contractId}&readonly=${readonly}&single=${single}">合同请款</a></li>
 		<li class="active"><a href="#">合同请款${not empty contApply.id?'详情':'添加'}</a></li>
 	</ul><br/>

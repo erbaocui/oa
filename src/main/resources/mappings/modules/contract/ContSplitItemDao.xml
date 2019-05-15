@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.contract.dao.ContSplitItemDao">
+    
+	<sql id="contSplitItemColumns">
+		a.id AS "id",
+		a.value AS "value",
+		a.split_id AS "splitId",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.type AS "type",
+		a.remark AS "remark"
+	</sql>
+	
+	<sql id="contSplitItemJoins">
+	</sql>
+    
+	<select id="get" resultType="ContSplitItem" parameterType="ContSplitItem">
+		SELECT 
+			<include refid="contSplitItemColumns"/>
+		FROM bm_cont_split_item a
+		<include refid="contSplitItemJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ContSplitItem">
+		SELECT 
+			<include refid="contSplitItemColumns"/>
+		FROM bm_cont_split_item a
+		<include refid="contSplitItemJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="splitId!= null and splitId!= ''">
+				and	a.split_id = #{splitId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		order by a.create_date asc
+	</select>
+	
+	<select id="findAllList" resultType="ContSplitItem">
+		SELECT 
+			<include refid="contSplitItemColumns"/>
+		FROM bm_cont_split_item a
+		<include refid="contSplitItemJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_cont_split_item(
+			id,
+			value,
+			split_id,
+			create_by,
+			create_date,
+			type,
+			remark,
+			del_flag
+		) VALUES (
+			#{id},
+			#{value},
+			#{splitId},
+			#{createBy.id},
+			#{createDate},
+			#{type},
+			#{remark},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_cont_split_item SET 	
+			value = #{value},
+			split_id = #{splitId},
+			type = #{type},
+			remark = #{remark},
+			del_flag = #{delFlag}
+
+		WHERE id = #{id}
+	</update>
+
+	<update id="delete">
+		DELETE FROM bm_cont_split_item
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

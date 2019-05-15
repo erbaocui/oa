@@ -142,7 +142,7 @@ public class IncomeController extends BaseController {
 
 
 /*	@RequiresPermissions("income:applyPay:edit")*/
-  @ResponseBody
+    @ResponseBody
 	@RequestMapping(value = "delete")
 
 	public String  delete(String id, Model model) {

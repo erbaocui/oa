@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.contract.dao.ContSplitDetailDao">
+    
+	<sql id="contSplitDetailColumns">
+		a.id AS "id",
+		a.remark AS "remark",
+		a.status AS "status",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		u.login_name AS "createBy.loginName",
+		a.proc_ins_id AS "procInsId",
+		a.contract_id AS "contractId",
+		a.total AS "total"
+
+	</sql>
+	
+	<sql id="contSplitDetailJoins">
+		left join sys_user u on u.id=a.create_by
+	</sql>
+    
+	<select id="get" resultType="ContSplitDetail">
+		SELECT 
+			<include refid="contSplitDetailColumns"/>
+		FROM bm_cont_split_detail a
+		<include refid="contSplitDetailJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ContSplitDetail">
+		SELECT 
+			<include refid="contSplitDetailColumns"/>
+		FROM bm_cont_split_detail a
+		<include refid="contSplitDetailJoins"/>
+		<where>
+			a.contract_id = #{contractId}
+		</where>
+		order by a.create_date asc
+
+	</select>
+	
+	<select id="findAllList" resultType="ContSplitDetail">
+		SELECT 
+			<include refid="contSplitDetailColumns"/>
+		FROM bm_cont_split_detail a
+		<include refid="contSplitDetailJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_cont_split_detail(
+			id,
+			remark,
+			status,
+			create_by,
+			create_date,
+			proc_ins_id,
+			contract_id,
+			total
+		) VALUES (
+			#{id},
+			#{remark},
+			#{status},
+			#{createBy.id},
+			#{createDate},
+			#{procInsId},
+			#{contractId},
+			#{total}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_cont_split_detail SET 	
+			remark = #{remark},
+			status = #{status},
+			proc_ins_id = #{procInsId},
+			contract_id = #{contractId},
+			total = #{total}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bm_cont_split_detail
+		WHERE id = #{id}
+	</update>
+
+	<select id="findChiefLoginNameList" resultType="String" parameterType="String">
+		SELECT distinct
+		 u.login_name
+		FROM bm_cont_split_detail a
+		inner join bm_cont_split_detail_item b  on a.id=b.detail_id
+		inner join bm_cont_split_detail_office c on c.item_id=b.id
+		inner join sys_office o  on c.office_id=o.id
+		inner join sys_user u on u.id=o.PRIMARY_PERSON
+		where
+		a.id=#{detailId}
+
+    </select>
+
+
+</mapper>

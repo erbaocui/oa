@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.contract.dao.ContSplitDetailOfficeDao">
+    
+	<sql id="contSplitDetailOfficeColumns">
+		a.id AS "id",
+		a.office_id AS "office.id",
+		a.item_id AS "itemId",
+		a.value AS "value",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.remark AS "remark",
+		o2.name AS "office.name"
+	</sql>
+	
+	<sql id="contSplitDetailOfficeJoins">
+		LEFT JOIN sys_office o2 ON o2.id = a.office_id
+
+	</sql>
+    
+	<select id="get" resultType="ContSplitDetailOffice" >
+		SELECT 
+			<include refid="contSplitDetailOfficeColumns"/>
+		FROM bm_cont_split_detail_office a
+		<include refid="contSplitDetailOfficeJoins"/>
+		WHERE a.id=#{id}
+		<!--<if test="_parameter != null and _parameter != ''">-->
+			<!--and	a.id = #{_parameter}-->
+		<!--</if>-->
+		<!--<if test="itemId!= null and itemId!= ''">-->
+			<!--and	a.item_id = #{itemId}-->
+		<!--</if>-->
+		<!--<if test="office!= null">-->
+		    <!--<if test="office.id!= null and office.id!= ''">-->
+			<!--and	a.office_id = #{office.id}-->
+			<!--</if>-->
+		<!--</if>-->
+
+	</select>
+	<select id="getOne" resultType="ContSplitDetailOffice" >
+		SELECT
+		<include refid="contSplitDetailOfficeColumns"/>
+		FROM bm_cont_split_detail_office a
+		<include refid="contSplitDetailOfficeJoins"/>
+		WHERE 1=1
+		<if test="itemId!= null and itemId!= ''">
+		   and	a.item_id = #{itemId}
+		</if>
+		<if test="office!= null">
+			<if test="office.id!= null and office.id!= ''">
+			and	a.office_id = #{office.id}
+			</if>
+		</if>
+
+	</select>
+	
+	<select id="findList" resultType="ContSplitDetailOffice">
+		SELECT 
+			<include refid="contSplitDetailOfficeColumns"/>
+		FROM bm_cont_split_detail_office a
+		<include refid="contSplitDetailOfficeJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		order by a.create_date asc
+	</select>
+	
+	<select id="findAllList" resultType="ContSplitDetailOffice">
+		SELECT 
+			<include refid="contSplitDetailOfficeColumns"/>
+		FROM bm_cont_split_detail_office a
+		<include refid="contSplitDetailOfficeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<select id="findListByDetailId" resultType="ContSplitDetailOffice">
+		SELECT
+		<include refid="contSplitDetailOfficeColumns"/>
+		FROM bm_cont_split_detail_office a
+		<include refid="contSplitDetailOfficeJoins"/>
+		<where>
+        	a.item_id = #{id}
+		</where>
+		order by a.create_date asc
+
+	</select>
+	<select id="findListByOfficeId" resultType="ContSplitDetailOffice" parameterType="Map">
+		select
+		a.id AS "id",
+		a.office_id AS "office.id",
+		a.item_id AS "itemId",
+		d.label AS "itemName",
+		a.value AS "value",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.remark AS "remark",
+		o2.name AS "office.name"
+		FROM bm_cont_split_detail_office a
+		LEFT JOIN sys_office o2 ON o2.id = a.office_id
+		LEFT JOIN bm_cont_split_detail_item b ON b.id = a.item_id
+		LEFT JOIN sys_dict d ON d.type='contract_split_detail_type' and d.value=b.type
+
+		where a.office_id = #{officeId}
+         and  b.detail_id = #{detailId}
+		order by a.create_date asc
+
+	</select>
+
+
+	<select id="detailSum" resultType="BigDecimal" parameterType="String">
+		SELECT sum(a.value) AS "detailSum"
+		FROM bm_cont_split_detail_office a
+		inner join bm_cont_split_detail_item b on a.item_id=b.id
+		where
+		      b.detail_id=#{detailId}
+
+	</select>
+
+
+
+	<insert id="insert">
+		INSERT INTO bm_cont_split_detail_office(
+			id,
+			office_id,
+			item_id,
+			value,
+			create_by,
+			create_date,
+			remark
+		) VALUES (
+			#{id},
+			#{office.id},
+			#{itemId},
+			#{value},
+			#{createBy.id},
+			#{createDate},
+			#{remark}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_cont_split_detail_office SET 	
+			office_id = #{office.id},
+			item_id = #{itemId},
+            value = #{value},
+            remark = #{remark}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bm_cont_split_detail_office
+		WHERE 1=1
+		<if test="id!= null and id!= ''">
+			and id = #{id}
+		</if>
+		<if test="itemId!= null and itemId!= ''">
+			and	item_id = #{itemId}
+		</if>
+	</update>
+	
+</mapper>

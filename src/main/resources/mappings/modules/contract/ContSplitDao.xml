@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.contract.dao.ContSplitDao">
+    
+	<sql id="contSplitColumns">
+		a.id AS "id",
+		a.status AS "status",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.proc_ins_id AS "procInsId",
+		a.contract_id AS "contractId",
+		a.plan AS "plan",
+		a.draw AS "draw"
+	</sql>
+	
+	<sql id="contSplitJoins">
+	</sql>
+    
+	<select id="get" resultType="ContSplit">
+		SELECT 
+			<include refid="contSplitColumns"/>
+		FROM bm_cont_split a
+		<include refid="contSplitJoins"/>
+		WHERE 1=1
+		and	id = #{id}
+		<!--<if test="id != null and id!= ''">-->
+			<!--and	id = #{id}-->
+		<!--</if>-->
+		<!--<if test="contractId != null and contractId!= ''">-->
+			<!--and	a.contract_id = #{contractId}-->
+		<!--</if>-->
+
+	</select>
+	<select id="getOne" resultType="ContSplit">
+		SELECT
+		<include refid="contSplitColumns"/>
+		FROM bm_cont_split a
+		<include refid="contSplitJoins"/>
+		WHERE 1=1
+		<if test="contractId != null and contractId!= ''">
+		and	a.contract_id = #{contractId}
+		</if>
+
+	</select>
+	
+	<select id="findList" resultType="ContSplit">
+		SELECT 
+			<include refid="contSplitColumns"/>
+		FROM bm_cont_split a
+		<include refid="contSplitJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ContSplit">
+		SELECT 
+			<include refid="contSplitColumns"/>
+		FROM bm_cont_split a
+		<include refid="contSplitJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_cont_split(
+			id,
+			status,
+			create_by,
+			create_date,
+			proc_ins_id,
+			contract_id,
+			plan,
+			draw
+		) VALUES (
+			#{id},
+			#{status},
+			#{createBy.id},
+			#{createDate},
+			#{procInsId},
+			#{contractId},
+			#{plan},
+			#{draw}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_cont_split SET 	
+			status = #{status},
+			proc_ins_id = #{procInsId},
+			contract_id = #{contractId},
+			plan = #{plan},
+			draw = #{draw}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bm_cont_split
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

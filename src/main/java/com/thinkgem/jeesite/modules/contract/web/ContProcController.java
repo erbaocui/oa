@@ -28,7 +28,6 @@ import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,7 +47,7 @@ import java.util.Map;
  * @version 2018-04-19
  */
 @Controller
-@RequestMapping(value = "${adminPath}/cont/proc")
+@RequestMapping(value = "${adminPath}/cont/audit/proc")
 public class ContProcController extends BaseController {
 
 	@Autowired
@@ -160,7 +159,7 @@ public class ContProcController extends BaseController {
 		area.setParent(parent);
 		List<Area> cityList =areaService.findList(area);
 		model.addAttribute("cityList",  cityList );
-		return "modules/contract/auditManager";
+		return "modules/contract/proc/audit/auditManager";
 	}
 
 	@RequestMapping(value = {"/audit/managerSave"},method= RequestMethod.POST)
@@ -237,7 +236,7 @@ public class ContProcController extends BaseController {
 		List<Area> cityList =areaService.findList(area);
 		model.addAttribute("cityList",  cityList );
 		//model.addAttribute("fileClass","2" );
-		return "modules/contract/auditRisk";
+		return "modules/contract/proc/audit/auditRisk";
 	}
 
 	@RequestMapping(value = {"/audit/riskSave"},method= RequestMethod.POST)
@@ -297,7 +296,7 @@ public class ContProcController extends BaseController {
 		area.setParent(parent);
 		List<Area> cityList =areaService.findList(area);
 		model.addAttribute("cityList",  cityList );
-		return "modules/contract/auditLaw";
+		return "modules/contract/proc/audit/auditLaw";
 	}
 
 
@@ -359,7 +358,7 @@ public class ContProcController extends BaseController {
 		area.setParent(parent);
 		List<Area> cityList =areaService.findList(area);
 		model.addAttribute("cityList",  cityList );
-		return "modules/contract/auditBusiness";
+		return "modules/contract/proc/audit/auditBusiness";
 	}
 
 
@@ -425,7 +424,7 @@ public class ContProcController extends BaseController {
 		area.setParent(parent);
 		List<Area> cityList =areaService.findList(area);
 		model.addAttribute("cityList",  cityList );
-		return "modules/contract/auditImprove";
+		return "modules/contract/proc/audit/auditImprove";
 	}
 
 
@@ -555,151 +554,151 @@ public class ContProcController extends BaseController {
 		return "redirect:"+Global.getAdminPath()+"/cont/proc/audit/improve?taskId="+taskIdContract+"&id="+contract.getId();
 	}
 
-
-	/**
-	 * 发起请款审批
-	 *
-	 * @param id //合同id
-	 * @return
-	 * @throws Exception
-	 */
-	@RequestMapping("/apply/start")
-	@ResponseBody
-	public Map applyStart(String id) throws Exception {
-		ContApply contApply=contApplyService.get(id);
-		Map<String,Object> result=new HashMap<String, Object>();
-		try {
-			Map<String,Object> variables = null;
-			variables = new HashMap<String, Object>();
-			variables.put("businessId", id);
-			variables.put("role","finance");
-			String processInstanceId=actTaskService.startProcess(ActConstant.APPLY_PAY_PROCESS_KEY, ContConstant.CONT_APPYLY_TABLE_NAME,id, contApply.getReceiptName(),variables);
-			actTaskService.completeFirstTask(processInstanceId);
-			contApply=contApplyService.get(id);
-			contApply.setStatus(2);
-			//改合同状态
-			contApplyService.save(contApply);
-			result.put("result","success");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			result.put("result","error");
-
-		} finally {
-			return result;
-		}
-
-
-	}
-
-	@RequestMapping(value = {"/apply/finance"})
-	public String   applyFinanceView(String id,String taskId, Model model) throws Exception{
-		ContApply contApply=contApplyService.get(id);
-
-		FinanceVO finance=new FinanceVO();
-		finance.setName(contApply.getReceiptName());
-		finance.setTaxId(contApply.getTaxId());
-		finance.setAddressPhone(contApply.getReceiptAddress()+" "+contApply.getReceiptPhone());
-		finance.setBankAccount(contApply.getReceiptBank()+" "+contApply.getReceiptAccount());
-		finance.setContent(contApply.getReceiptContent());
-		finance.setValue(contApply.getReceiptValue().doubleValue());
-		finance.setReceiptRemark(contApply.getReceiptRemark());
-		//
-		finance.setRemark(contApply.getRemark());
-		finance.setReceiptDate(contApply.getReceiptDate());
-		model.addAttribute("finance", finance);
-		List<Comment> comments=actTaskService.getTaskHistoryCommentList( taskId);
-		model.addAttribute("taskId", taskId);
-		model.addAttribute("contApply",contApply);
-		model.addAttribute("comments",comments);
-		model.addAttribute("review", new BaseReview());
-		model.addAttribute("readonly",true);
-		return "modules/contract/applyPayFinance";
-	}
-
-	@RequestMapping(value = {"/apply/financeSave"},method= RequestMethod.POST)
-	public String  applyFinanceSave(BaseReview review,RedirectAttributes redirectAttributes) {
-		Task task=actTaskService.getTask( review.getTaskId());
-		String taskId=task.getId();
-		String contApplyId=(String)actTaskService.getTaskVariable(taskId,"businessId");
-		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
-		Map<String, Object> variables=new HashMap<String,Object>();
-		variables.put("msg", "pass");
-		int state=review.getState();
-		if( state==1){
-			if(review.getComment()==null||review.getComment().equals("")){
-				review.setComment("通过");
-			}
-
-			variables.put("msg", "pass");
-		}else if(state==2){
-			variables.put("msg", "reject");
-		}
-		User user=UserUtils.getUser();
-		Authentication.setAuthenticatedUserId("【财务】"+user.getName());// 设置用户id
-		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
-		if( state==1) {
-			ContApply contApply = contApplyService.get(contApplyId);
-			contApply.setStatus(3);
-			contApplyService.save(contApply);
-		}
-		addMessage(redirectAttributes, "操作成功");
-		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
-	}
-
-	@RequestMapping(value = {"/apply/improve"})
-	public String   applyImproveView(String id,String taskId, Model model) throws Exception{
-		ContApply contApply=contApplyService.get(id);
-		List<Comment> comments=actTaskService.getTaskHistoryCommentList( taskId);
-		model.addAttribute("taskId", taskId);
-		model.addAttribute("contApply",contApply);
-		model.addAttribute("comments",comments);
-		model.addAttribute("review", new BaseReview());
-		model.addAttribute("readonly",false);
-		return "modules/contract/applyPayImprove";
-	}
-
-	@RequestMapping(value = {"/apply/improveSave"},method= RequestMethod.POST)
-	public String  applyImproveSave(BaseReview review,RedirectAttributes redirectAttributes) {
-		Task task=actTaskService.getTask( review.getTaskId());
-		String taskId=task.getId();
-		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
-		Map<String, Object> variables=new HashMap<String,Object>();
-		variables.put("msg", "pass");
-		int state=review.getState();
-		User user=UserUtils.getUser();
-		Authentication.setAuthenticatedUserId("【创建者】"+user.getName());// 设置用户id
-		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
-		addMessage(redirectAttributes, "操作成功");
-		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
-	}
-
-
-	@RequestMapping(value = "/apply/save")
-	public String applyPaysave(ContApply contApply,String taskIdApplyPay, Model model, RedirectAttributes redirectAttributes) {
-		try {
-            ContApply saveContApply=contApplyService.get(contApply.getId());
-            saveContApply.setRemark(contApply.getRemark());
-            saveContApply.setReceiptName(contApply.getReceiptName());
-            saveContApply.setReceiptValue(contApply.getReceiptValue());
-            saveContApply.setReceiptAccount(contApply.getReceiptAccount());
-            saveContApply.setReceiptAddress(contApply.getReceiptAddress());
-            saveContApply.setReceiptBank(contApply.getReceiptBank());
-            saveContApply.setReceiptDate(contApply.getReceiptDate());
-            saveContApply.setReceiptContent(contApply.getReceiptContent());
-            saveContApply.setReceiptPhone(contApply.getReceiptPhone());
-            saveContApply.setReceiptRemark(contApply.getReceiptRemark());
-            saveContApply.setTaxId(contApply.getTaxId());
-            contApplyService.save(saveContApply);
-			addMessage(redirectAttributes, "保存请款信息成功");
-		}catch (Exception e){
-			e.printStackTrace();
-			addMessage(redirectAttributes, "保存请款信息失败");
-		}
-
-
-		return "redirect:"+Global.getAdminPath()+"/cont/proc/apply/improve?taskId="+taskIdApplyPay+"&id="+contApply.getId();
-	}
+//
+//	/**
+//	 * 发起请款审批
+//	 *
+//	 * @param id //合同id
+//	 * @return
+//	 * @throws Exception
+//	 */
+//	@RequestMapping("/apply/start")
+//	@ResponseBody
+//	public Map applyStart(String id) throws Exception {
+//		ContApply contApply=contApplyService.get(id);
+//		Map<String,Object> result=new HashMap<String, Object>();
+//		try {
+//			Map<String,Object> variables = null;
+//			variables = new HashMap<String, Object>();
+//			variables.put("businessId", id);
+//			variables.put("role","finance");
+//			String processInstanceId=actTaskService.startProcess(ActConstant.APPLY_PAY_PROCESS_KEY, ContConstant.CONT_APPYLY_TABLE_NAME,id, contApply.getReceiptName(),variables);
+//			actTaskService.completeFirstTask(processInstanceId);
+//			contApply=contApplyService.get(id);
+//			contApply.setStatus(2);
+//			//改合同状态
+//			contApplyService.save(contApply);
+//			result.put("result","success");
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			result.put("result","error");
+//
+//		} finally {
+//			return result;
+//		}
+//
+//
+//	}
+//
+//	@RequestMapping(value = {"/apply/finance"})
+//	public String   applyFinanceView(String id,String taskId, Model model) throws Exception{
+//		ContApply contApply=contApplyService.get(id);
+//
+//		FinanceVO finance=new FinanceVO();
+//		finance.setName(contApply.getReceiptName());
+//		finance.setTaxId(contApply.getTaxId());
+//		finance.setAddressPhone(contApply.getReceiptAddress()+" "+contApply.getReceiptPhone());
+//		finance.setBankAccount(contApply.getReceiptBank()+" "+contApply.getReceiptAccount());
+//		finance.setContent(contApply.getReceiptContent());
+//		finance.setValue(contApply.getReceiptValue().doubleValue());
+//		finance.setReceiptRemark(contApply.getReceiptRemark());
+//		//
+//		finance.setRemark(contApply.getRemark());
+//		finance.setReceiptDate(contApply.getReceiptDate());
+//		model.addAttribute("finance", finance);
+//		List<Comment> comments=actTaskService.getTaskHistoryCommentList( taskId);
+//		model.addAttribute("taskId", taskId);
+//		model.addAttribute("contApply",contApply);
+//		model.addAttribute("comments",comments);
+//		model.addAttribute("review", new BaseReview());
+//		model.addAttribute("readonly",true);
+//		return "modules/contract/proc/applyPay/applyPayFinance";
+//	}
+//
+//	@RequestMapping(value = {"/apply/financeSave"},method= RequestMethod.POST)
+//	public String  applyFinanceSave(BaseReview review,RedirectAttributes redirectAttributes) {
+//		Task task=actTaskService.getTask( review.getTaskId());
+//		String taskId=task.getId();
+//		String contApplyId=(String)actTaskService.getTaskVariable(taskId,"businessId");
+//		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
+//		Map<String, Object> variables=new HashMap<String,Object>();
+//		variables.put("msg", "pass");
+//		int state=review.getState();
+//		if( state==1){
+//			if(review.getComment()==null||review.getComment().equals("")){
+//				review.setComment("通过");
+//			}
+//
+//			variables.put("msg", "pass");
+//		}else if(state==2){
+//			variables.put("msg", "reject");
+//		}
+//		User user=UserUtils.getUser();
+//		Authentication.setAuthenticatedUserId("【财务】"+user.getName());// 设置用户id
+//		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
+//		if( state==1) {
+//			ContApply contApply = contApplyService.get(contApplyId);
+//			contApply.setStatus(3);
+//			contApplyService.save(contApply);
+//		}
+//		addMessage(redirectAttributes, "操作成功");
+//		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
+//	}
+//
+//	@RequestMapping(value = {"/apply/improve"})
+//	public String   applyImproveView(String id,String taskId, Model model) throws Exception{
+//		ContApply contApply=contApplyService.get(id);
+//		List<Comment> comments=actTaskService.getTaskHistoryCommentList( taskId);
+//		model.addAttribute("taskId", taskId);
+//		model.addAttribute("contApply",contApply);
+//		model.addAttribute("comments",comments);
+//		model.addAttribute("review", new BaseReview());
+//		model.addAttribute("readonly",false);
+//		return "modules/contract/proc/applyPay/applyPayImprove";
+//	}
+//
+//	@RequestMapping(value = {"/apply/improveSave"},method= RequestMethod.POST)
+//	public String  applyImproveSave(BaseReview review,RedirectAttributes redirectAttributes) {
+//		Task task=actTaskService.getTask( review.getTaskId());
+//		String taskId=task.getId();
+//		String processInstanceId = task.getProcessInstanceId(); // 获取流程实例id
+//		Map<String, Object> variables=new HashMap<String,Object>();
+//		variables.put("msg", "pass");
+//		int state=review.getState();
+//		User user=UserUtils.getUser();
+//		Authentication.setAuthenticatedUserId("【创建者】"+user.getName());// 设置用户id
+//		actTaskService.complete(taskId,processInstanceId,review.getComment(),variables);
+//		addMessage(redirectAttributes, "操作成功");
+//		return "redirect:"+adminPath+ ActConstant.MY_TASK_LIST;
+//	}
+//
+//
+//	@RequestMapping(value = "/apply/save")
+//	public String applyPaysave(ContApply contApply,String taskIdApplyPay, Model model, RedirectAttributes redirectAttributes) {
+//		try {
+//            ContApply saveContApply=contApplyService.get(contApply.getId());
+//            saveContApply.setRemark(contApply.getRemark());
+//            saveContApply.setReceiptName(contApply.getReceiptName());
+//            saveContApply.setReceiptValue(contApply.getReceiptValue());
+//            saveContApply.setReceiptAccount(contApply.getReceiptAccount());
+//            saveContApply.setReceiptAddress(contApply.getReceiptAddress());
+//            saveContApply.setReceiptBank(contApply.getReceiptBank());
+//            saveContApply.setReceiptDate(contApply.getReceiptDate());
+//            saveContApply.setReceiptContent(contApply.getReceiptContent());
+//            saveContApply.setReceiptPhone(contApply.getReceiptPhone());
+//            saveContApply.setReceiptRemark(contApply.getReceiptRemark());
+//            saveContApply.setTaxId(contApply.getTaxId());
+//            contApplyService.save(saveContApply);
+//			addMessage(redirectAttributes, "保存请款信息成功");
+//		}catch (Exception e){
+//			e.printStackTrace();
+//			addMessage(redirectAttributes, "保存请款信息失败");
+//		}
+//
+//
+//		return "redirect:"+Global.getAdminPath()+"/cont/proc/apply/improve?taskId="+taskIdApplyPay+"&id="+contApply.getId();
+//	}
 
 
 

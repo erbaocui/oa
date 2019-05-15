@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.contract.dao.ContSplitDetailItemDao">
+	<resultMap id="detailItemMap" type="ContSplitDetailItem" >
+		<result property="id" column="id" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="remark"  column="remark" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="value"  column="value" jdbcType="DECIMAL" javaType="java.math.BigDecimal" />
+		<result property="type"  column="type" jdbcType="INTEGER" javaType="java.lang.Integer" />
+		<result property="createBy.id"   column="createBy.id" jdbcType="VARCHAR" javaType="java.lang.String" />
+		<result property="createDate"   column="createDate" jdbcType="TIMESTAMP" javaType="java.util.Date" />
+		<collection property="officeList" ofType="ContSplitDetailOffice" select="com.thinkgem.jeesite.modules.contract.dao.ContSplitDetailOfficeDao.findListByDetailId" column="id">
+		</collection>
+	</resultMap>
+	<sql id="contSplitDetailItemColumns">
+		a.id AS "id",
+		a.detail_id AS "detailId",
+		a.value AS "value",
+		a.type AS "type",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.remark
+	</sql>
+	
+	<sql id="contSplitDetailItemJoins">
+	</sql>
+    
+	<select id="get" resultMap="detailItemMap">
+		SELECT 
+			<include refid="contSplitDetailItemColumns"/>
+		FROM bm_cont_split_detail_item a
+		<include refid="contSplitDetailItemJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	<select id="getOne" resultMap="detailItemMap">
+		SELECT
+		<include refid="contSplitDetailItemColumns"/>
+		FROM bm_cont_split_detail_item a
+		<include refid="contSplitDetailItemJoins"/>
+		WHERE 1=1
+		<if test="type!= null">
+			and	a.type = #{type}
+		</if>
+		<if test="detailId!= null">
+			and	a.detail_id = #{detailId}
+		</if>
+	</select>
+	
+	<select id="findList" resultMap="detailItemMap">
+		SELECT 
+			<include refid="contSplitDetailItemColumns"/>
+		FROM bm_cont_split_detail_item a
+		<include refid="contSplitDetailItemJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		order by a.create_date asc
+	</select>
+	
+	<select id="findAllList" resultType="ContSplitDetailItem">
+		SELECT 
+			<include refid="contSplitDetailItemColumns"/>
+		FROM bm_cont_split_detail_item a
+		<include refid="contSplitDetailItemJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bm_cont_split_detail_item(
+			id,
+			detail_id,
+			value,
+			type,
+			create_by,
+			create_date,
+			remark
+		) VALUES (
+			#{id},
+			#{detailId},
+			#{value},
+			#{type},
+			#{createBy.id},
+			#{createDate},
+			#{remark}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bm_cont_split_detail_item SET 	
+			detail_id = #{detailId},
+			value = #{value},
+			type = #{type},
+			remark =#{remark}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bm_cont_split_detail_item
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

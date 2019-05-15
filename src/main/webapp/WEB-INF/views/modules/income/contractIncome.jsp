@@ -85,6 +85,7 @@
 		<li><a href="${ctx}/cont/attach/list?contractId=${contract.id}&readonly=${readonly}">合同附件</a></li>
 		<li><a href="${ctx}/cont/applyPay/list?contractId=${contract.id}&readonly=${readonly}">合同请款</a></li>
 		<li class="active"><a href="${ctx}/income/income/contractIncome?contractId=${contract.id}&readonly=${readonly}">合同支付</a></li>
+		<li><a href="${ctx}/cont/split/list?contractId=${contract.id}&readonly=${readonly}">合同拆解</a></li>
 
 	</c:if>
 
@@ -94,7 +95,7 @@
 
 
 
-<div class="container-fluid">
+   <div class="container-fluid">
 
 		<div class="row-fluid">
 			<div class="span1">

@@ -3,6 +3,8 @@
  */
 package com.thinkgem.jeesite.common.persistence;
 
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 /**
@@ -18,7 +20,7 @@ public interface CrudDao<T> extends BaseDao {
 	 * @param id
 	 * @return
 	 */
-	public T get(String id);
+	public T get( String id);
 	
 	/**
 	 * 获取单条数据
