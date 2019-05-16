@@ -30,25 +30,26 @@
             //alert($("#comment").val()==null);
 			var comment=$("#comment").val().trim();
             $("#state").val(state);
-            if(state==2){
+			if(state==2){
 				if(comment==null||comment==""){
-						$.jBox.tip("提请填写审核意见！", 'error');
-						return;
-					}
+					$.jBox.tip("提请填写审核意见！", 'error');
+					return;
+				}
             }
             $("#reviewForm").submit();
 
 
         }
+
 	</script>
 </head>
 <body>
 <ul class="nav nav-tabs">
-	<li class="active"><a>合同运营审核</a></li>
+	<li class="active"><a>合同审核-风险</a></li>
 </ul><br/>
 <sys:message content="${message}"/>
 <%@ include file="auditInfo.jsp" %>
-<form:form id="reviewForm" modelAttribute="review"   action="${ctx}/cont/proc/audit/busiSave" method="post" class="form-horizontal">
+<form:form id="reviewForm" modelAttribute="review"   action="${ctx}/cont/audit/proc/risk/submit" method="post" class="form-horizontal">
 	<form:hidden path="taskId"  value="${taskId}"/>
 	<form:hidden path="state"  />
 	<div class="container-fluid">
@@ -70,9 +71,9 @@
 		</div>
 	</div>
 	<br>
-
 </form:form>
-<%@ include file="auditComment.jsp"%>
+<br>
+<%@ include file="/WEB-INF/views/modules/act/comment.jsp" %>
 </body>
 
 

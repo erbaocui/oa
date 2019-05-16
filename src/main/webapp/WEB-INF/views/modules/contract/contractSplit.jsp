@@ -343,7 +343,7 @@
 				<div class="span1">
 				</div>
 				<div class="span10">
-					<shiro:hasPermission name="cont:creator:create" >
+					<shiro:hasPermission name="cont:manager:edit" >
 					<c:if test="${contSplit.status==0}">
 						<c:if test="${contract.value>sum}">
 					<input id="btnAdd" class="btn btn-primary" type="button" value="合同拆分添加" onclick="itemAdd()"/>&nbsp;
