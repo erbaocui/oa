@@ -2,23 +2,23 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.tjzysj.com" id="m1477718968235" name="">
   <process id="contractAuditProcess" name="合同审核流程" isExecutable="true" isClosed="false" processType="None">
     <endEvent id="endevent1" name="End"></endEvent>
-    <userTask id="usertask6" name="合同管理员审核" activiti:formKey="/cont/proc/audit/manager">
+    <userTask id="usertask6" name="合同管理员审核" activiti:formKey="/cont/audit/proc/administrator">
       <extensionElements>
         <activiti:taskListener event="create" class="com.thinkgem.jeesite.modules.act.utils.RoleTaskHandler"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <startEvent id="startevent1"></startEvent>
-    <userTask id="usertask8" name="风险审核" activiti:formKey="/cont/proc/audit/risk">
+    <userTask id="usertask8" name="风险审核" activiti:formKey="/cont/audit/proc/risk">
       <extensionElements>
         <activiti:taskListener event="create" class="com.thinkgem.jeesite.modules.act.utils.RoleTaskHandler"></activiti:taskListener>
       </extensionElements>
     </userTask>
-    <userTask id="usertask9" name="经营审核" activiti:formKey="/cont/proc/audit/busi">
+    <userTask id="usertask9" name="经营审核" activiti:formKey="/cont/audit/proc/business">
       <extensionElements>
         <activiti:taskListener event="create" class="com.thinkgem.jeesite.modules.act.utils.RoleTaskHandler"></activiti:taskListener>
       </extensionElements>
     </userTask>
-    <userTask id="usertask10" name="补充合同信息" activiti:formKey="/cont/proc/audit/improve">
+    <userTask id="usertask10" name="补充合同信息" activiti:formKey="/cont/audit/proc/improve">
       <extensionElements>
         <activiti:taskListener event="create" class="com.thinkgem.jeesite.modules.contract.proc.CreatorTaskHandler"></activiti:taskListener>
       </extensionElements>
@@ -37,7 +37,7 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${msg=='pass'}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flow26" sourceRef="startevent1" targetRef="usertask6"></sequenceFlow>
-    <userTask id="usertask11" name="法律顾问" activiti:formKey="/cont/proc/audit/law">
+    <userTask id="usertask11" name="法律顾问" activiti:formKey="/cont/audit/proc/law">
       <extensionElements>
         <activiti:taskListener event="create" class="com.thinkgem.jeesite.modules.contract.proc.LawTaskHandler"></activiti:taskListener>
       </extensionElements>
