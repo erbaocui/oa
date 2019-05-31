@@ -26,7 +26,7 @@
         <completionCondition>${nrOfCompletedInstances==nrOfInstances}</completionCondition>
       </multiInstanceLoopCharacteristics>
     </userTask>
-    <userTask id="usertask13" name="运营审核" activiti:formKey="/income/distProc/busAudit">
+    <userTask id="usertask13" name="经营审核" activiti:formKey="/income/distProc/busAudit">
       <extensionElements>
         <activiti:taskListener event="create" class="com.thinkgem.jeesite.modules.act.utils.RoleTaskHandler"></activiti:taskListener>
       </extensionElements>
@@ -102,7 +102,7 @@
         <omgdi:waypoint x="213.0" y="290.0"></omgdi:waypoint>
         <omgdi:waypoint x="213.0" y="161.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="100.0" x="576.0" y="270.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="32.0" x="576.0" y="270.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow37" id="BPMNEdge_flow37">
@@ -124,7 +124,7 @@
         <omgdi:waypoint x="694.0" y="133.0"></omgdi:waypoint>
         <omgdi:waypoint x="750.0" y="133.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="100.0" x="694.0" y="133.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="32.0" x="694.0" y="133.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow42" id="BPMNEdge_flow42">
@@ -134,7 +134,7 @@
         <omgdi:waypoint x="213.0" y="31.0"></omgdi:waypoint>
         <omgdi:waypoint x="213.0" y="106.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="16.0" width="100.0" x="421.0" y="21.0"></omgdc:Bounds>
+          <omgdc:Bounds height="16.0" width="32.0" x="421.0" y="21.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
