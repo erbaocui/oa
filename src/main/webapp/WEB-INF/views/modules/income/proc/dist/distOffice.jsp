@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
-	<title>进款部门分配</title>
+	<title>进款分配-部门分配</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
         $(document).ready(function() {
@@ -94,7 +94,7 @@
 </head>
 <body>
 <ul class="nav nav-tabs">
-	<li class="active"><a href="${ctx}/income/distProc/officeDist?taskId=${taskId}">进款部门分配</a></li>
+	<li class="active"><a href="${ctx}/income/distProc/officeDist?taskId=${taskId}">进款分配-部门分配</a></li>
 	<c:if test="${showDraw}">
 		<li ><a href="${ctx}/income/distProc/officeDistRule?taskId=${taskId}&type=1">施工图</a></li>
 	</c:if>

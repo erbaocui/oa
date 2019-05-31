@@ -44,7 +44,7 @@
 <body>
 	<ul class="nav nav-tabs">
 
-		<li class="active"><a href="#">请款财务</a></li>
+		<li class="active"><a href="#">合同请款-财务确认</a></li>
 	</ul><br/>
 <sys:message content="${message}"/>
 	<form:form id="inputForm" modelAttribute="finance" action="" method="post" class="form-horizontal" enctype="multipart/form-data">
@@ -57,7 +57,7 @@
 					<div class="span1">
 					</div>
 					<div class="span10">
-						<label>开票名称：</label>
+						<label>&nbsp;开&nbsp;&nbsp;票&nbsp;&nbsp;名&nbsp;&nbsp;称：</label>
 						<form:input path="name" htmlEscape="false" maxlength="255" class="input-xlarge required" readonly="${readonly}"/>
 
 					</div>
@@ -83,7 +83,7 @@
 					<div class="span1">
 					</div>
 					<div class="span10">
-						<label>地址与电话：</label>
+						<label>地&nbsp;址&nbsp;与&nbsp;电&nbsp;话：</label>
 						<form:input path="addressPhone" htmlEscape="false" maxlength="255" class="input-xlarge required" readonly="${readonly}"/>
 
 					</div>
@@ -96,8 +96,8 @@
 				<div class="span1">
 				</div>
 				<div class="span10">
-					<label>银行与账户：</label>
-					<form:input path="addressPhone" htmlEscape="false" maxlength="255" class="input-xlarge required" readonly="${readonly}"/>
+					<label>银&nbsp;行&nbsp;与&nbsp;账&nbsp;户：</label>
+					<form:input path="bankAccount" htmlEscape="false" maxlength="255" class="input-xlarge required" readonly="${readonly}"/>
 
 				</div>
 				<div class="span1">
@@ -109,7 +109,7 @@
 					<div class="span1">
 					</div>
 					<div class="span5">
-						<label>内容：</label>
+						<label>&nbsp;&nbsp;内&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;容&nbsp;&nbsp;：</label>
 						<form:input path="content" htmlEscape="false" maxlength="255" class="input-xlarge required" readonly="${readonly}"/>
 
 					</div>
@@ -131,7 +131,7 @@
 					<div class="span1">
 					</div>
 					<div class="span10">
-						<label >发票备注：</label>
+						<label >&nbsp;&nbsp;发&nbsp;&nbsp;票&nbsp;&nbsp;备&nbsp;&nbsp;注：</label>
 						<form:textarea path="receiptRemark" htmlEscape="false" rows="3" maxlength="500" class="input-xxlarge" readonly="${readonly}"/>
 					</div>
 					<div class="span1">
@@ -160,7 +160,7 @@
 					<div class="span1">
 					</div>
 					<div class="span10">
-						<label >备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
+						<label >&nbsp;&nbsp;备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
 						<form:textarea path="remark" htmlEscape="false" rows="3" maxlength="500" class="input-xxlarge" readonly="${readonly}"/>
 					</div>
 					<div class="span1">
@@ -179,7 +179,7 @@
 					<div class="span1">
 					</div>
 					<div class="span6">
-						<label >审核意见:</label>
+						<label >&nbsp;审&nbsp;&nbsp;&nbsp;核&nbsp;&nbsp;意&nbsp;见：</label>
 						<form:textarea path="comment" htmlEscape="false" rows="3" maxlength="500" class="input-xxlarge" />
 					</div>
 					<div class="span1">
@@ -188,7 +188,7 @@
 			</div>
 			<div class="form-actions">
 				<input id="btnSubmit" class="btn btn-primary" type="button" value="通过"  onclick="review(1)"/>&nbsp;
-				<input id="btnCancel" class="btn " type="button" value="驳回" onclick="review(2)"/>
+				<input id="btnCancel" class="btn btn-primary" type="button" value="驳回" onclick="review(2)"/>
 			</div>
 		</div>
 		<br>

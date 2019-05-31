@@ -5,6 +5,7 @@ package com.thinkgem.jeesite.modules.contract.service;
 
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
+import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.contract.dao.ContDao;
 import com.thinkgem.jeesite.modules.contract.dao.ContTypeDao;
 import com.thinkgem.jeesite.modules.contract.entity.ContType;
@@ -38,8 +39,15 @@ public class ContService extends CrudService<ContDao, Contract> {
 	}
 	
 	public Page<Contract> findPage(Page<Contract> page, Contract contract) {
-		System.out.println(dataScopeFilter(UserUtils.getUser(), "o", "c"));
-		contract.getSqlMap().put("dsf",dataScopeFilter(UserUtils.getUser(), "o", "c"));
+		//System.out.println(dataScopeFilter(UserUtils.getUser(), "o", "c"));
+		String dsf=dataScopeFilter(UserUtils.getUser(), "o", "c");
+		//去掉个人
+		if(StringUtils.isNotEmpty(dsf)) {
+			if( dsf.lastIndexOf("OR")>0) {
+				dsf = dsf.substring(0, dsf.lastIndexOf("OR")) + ")";
+			}
+		}
+		contract.getSqlMap().put("dsf",dsf);
 		return super.findPage(page, contract);
 	}
 	

@@ -90,9 +90,9 @@
 		m.name AS "manager.name",
 		a.value AS "value",
 		a.income AS "income",
-        (select GROUP_CONCAT(DISTINCT(x.type_id)) from  bm_cont_type x where  x.contract_id=a.id ) AS "type",
+--         (select GROUP_CONCAT(DISTINCT(x.type_id)) from  bm_cont_type x where  x.contract_id=a.id ) AS "type",
+        a.type AS "type",
 		a.status AS "status",
-		a.signed_time AS "signedTime",
 		a.begin_time AS "beginTime",
 		a.end_time AS "endTime",
 		a.contact AS "contact",
@@ -205,7 +205,7 @@
 				</if>
 			</if>
 			<if test="year != null and year != ''">
-				and	DATE_FORMAT(a.signed_time,"%Y") = #{year}
+				and	DATE_FORMAT(a.create_date,"%Y") = #{year}
 			</if>
 			<if test="clazz != null and clazz != ''">
 				and	 class=#{clazz}
@@ -218,7 +218,7 @@
 			</if>
 			<if test="office != null">
 				<if test="office.id != null and office.id != ''">
-					and    p.office_id = #{office.id}
+					and    a.office_id = #{office.id}
 				</if>
 
 			</if>
@@ -275,7 +275,6 @@
 			income,
 			type,
 			status,
-			signed_time,
 			begin_time,
 			end_time,
 			contact,
@@ -284,7 +283,6 @@
 			is_sub,
 			blueprint_num,
 			payment,
-			seal_time,
 			record_time,
 			return_time,
 			return_financial_time,
@@ -302,7 +300,8 @@
 			specific_item,
 			legal_advise,
 			province_id,
-			city_id
+			city_id,
+			seal_time
 		) VALUES (
 			#{id},
 			#{code},
@@ -315,7 +314,6 @@
 			#{income},
 			#{type},
 			#{status},
-			#{signedTime},
 			#{beginTime},
 			#{endTime},
 			#{contact},
@@ -324,7 +322,6 @@
 			#{isSub},
 			#{blueprintNum},
 			#{payment},
-			#{sealTime},
 			#{recordTime},
 			#{returnTime},
 			#{returnFinancialTime},
@@ -342,7 +339,8 @@
 			#{specificItem},
 			#{legalAdvise},
 			#{province.id},
-			#{city.id}
+			#{city.id},
+			#{sealTime}
 		)
 	</insert>
 	
@@ -358,7 +356,6 @@
 			income = #{income},
 			type = #{type},
 			status = #{status},
-			signed_time = #{signedTime},
 			begin_time = #{beginTime},
 			end_time = #{endTime},
 			contact = #{contact},

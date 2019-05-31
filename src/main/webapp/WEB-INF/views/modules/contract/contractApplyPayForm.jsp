@@ -158,12 +158,12 @@
 
 					<c:if test="${readonly}">
 						<input name="receiptDate" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate required "
-							   value="<fmt:formatDate value="${contApply.receiptDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"
+							   value="<fmt:formatDate value="${contApply.receiptDate}" pattern="yyyy-MM-dd"/>"
 							   onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});" disabled="disabled"/>
 					</c:if>
 					<c:if test="${not readonly}">
-						<input name="signedTime" type="text" readonly="readonly" maxlength="20" class="iform-control input-small Wdate"
-							   value="<fmt:formatDate value="${contract.signedTime}" pattern="yyyy-MM-dd"/>"
+						<input name="receiptDate" type="text" readonly="readonly" maxlength="20" class="iform-control input-small Wdate"
+							   value="<fmt:formatDate value="${contract.receiptDate}" pattern="yyyy-MM-dd"/>"
 							   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" />
 					</c:if>
 

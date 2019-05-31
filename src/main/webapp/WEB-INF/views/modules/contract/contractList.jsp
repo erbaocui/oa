@@ -146,39 +146,61 @@
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead>
 			<tr>
-				<th>合同名称</th>
-				<th>甲方名称</th>
-				<th>合同额</th>
-				<th>进款额</th>
-				<th>收款进度</th>
-				<th>合同状态</th>
-				<th>操作</th>
+				<th style="text-align:center">合同名称</th>
+				<th style="text-align:center">甲方名称</th>
+				<th style="text-align:center">部门</th>
+				<th style="text-align:center">合同额</th>
+				<th style="text-align:center">进款额</th>
+				<th style="text-align:center">收款进度</th>
+				<th style="text-align:center">合同状态</th>
+				<th style="text-align:center">操作</th>
 			</tr>
 		</thead>
 		<tbody>
 		<c:forEach items="${page.list}" var="contract">
 			<tr>
-				<td>
-					${contract.name}
+				<td width="25%" title="${contract.name}">
+					<c:if test="${fn:length(contract.name)<=22}">
+						<a href="${ctx}/cont/base/form?id=${contract.id}&readonly=true&single=multi">${contract.name}</a>
+
+					</c:if>
+					<c:if test="${fn:length(contract.name)>22}">
+						<a href="${ctx}/cont/base/form?id=${contract.id}&readonly=true&single=multi">${fn:substring(contract.name,0,21)}...</a>
+
+					</c:if>
 				</td>
-				<td>
-					${contract.firstParty}
+				<td width="20%"  title="${contract.firstParty}">
+					<c:if test="${fn:length(contract.firstParty)<=17}">
+						${contract.firstParty}
+					</c:if>
+					<c:if test="${fn:length(contract.firstParty)>17}">
+						${fn:substring(contract.firstParty,0,16)}...
+					</c:if>
 				</td>
-				<td>
+				<td width="16%">
+					${contract.office.name}
+				</td>
+				<td width="7%" style="text-align:right">
 					${contract.value}
 				</td>
-				<td>
-						${contract.income}
+				<td width="7%" style="text-align:right">
+					${contract.income}
 				</td>
-				<td>
-					<fmt:formatNumber type="number" value="${(contract.income/contract.value)*100}" maxFractionDigits="2"/>%
+				<td width="5%" style="text-align:right">
+					<c:if test="${contract.value >0}">
+					 <fmt:formatNumber type="number" value="${(contract.income/contract.value)*100}" maxFractionDigits="2"/>%
+					</c:if>
+					<c:if test="${contract.value <=0}">
+					  0%
+					</c:if>
+
 
 				</td>
-				<td>
+				<td width="5%">
 						${fns:getDictLabel(contract.status, 'contract_status', '无')}
 				</td>
-				<td>
-				<a href="${ctx}/cont/base/form?id=${contract.id}&readonly=true&single=multi">查看</a>
+				<td width="15%">
+
 					<shiro:hasPermission name="cont:creator:create" >
 						<c:if test="${contract.status == 1}">
 							<a href=" #;" onclick="startProcess('${contract.id}')">启动流程</a>

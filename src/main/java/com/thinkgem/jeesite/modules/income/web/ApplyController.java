@@ -59,7 +59,7 @@ public class ApplyController extends BaseController {
 	public String list(Apply apply, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<Apply> page = applyService.findPage(new Page<Apply>(request, response), apply);
 		model.addAttribute("page", page);
-		return "modules/income/applyPayList";
+		return "modules/income/apply/applyPayList";
 	}
 
 	@RequiresPermissions("income:applyPay:view")
@@ -67,7 +67,7 @@ public class ApplyController extends BaseController {
 	public String form(Apply apply, Model model) {
 		apply=get(apply.getId());
 		model.addAttribute("apply", apply);
-		return "modules/income/applyPayForm";
+		return "modules/income/apply/applyPayForm";
 	}
 
 	@RequiresPermissions("income:applyPay:view")
@@ -75,7 +75,7 @@ public class ApplyController extends BaseController {
 	public String income(Apply apply, Model model) {
 		apply=get(apply.getId());
 		model.addAttribute("apply", apply);
-		return "modules/income/applyIncomeForm";
+		return "modules/income/apply/applyIncomeForm";
 	}
 
 
@@ -104,7 +104,7 @@ public class ApplyController extends BaseController {
 	public String receive(Apply apply, Model model) {
 		apply=get(apply.getId());
 		model.addAttribute("apply", apply);
-		return "modules/income/applyPayForm";
+		return "modules/income/apply/applyPayForm";
 	}
 /*
 	@RequiresPermissions("income:applyPay:edit")
@@ -154,7 +154,7 @@ public class ApplyController extends BaseController {
 		//redirectAttributes.addAttribute("apply", apply);
 		//addMessage(redirectAttributes, "删除合同成功");
 		//return "redirect:"+Global.getAdminPath()+"/income/applyPay/?repage";
-		return "modules/income/applyIncomeForm";
+		return "modules/income/apply/applyIncomeForm";
 	}
 
 

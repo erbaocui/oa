@@ -48,7 +48,7 @@
 <body>
 	<ul class="nav nav-tabs">
 
-		<li class="active"><a href="#">开票信息补充</a></li>
+		<li class="active"><a href="#">合同请款-补充开票信息</a></li>
 	</ul><br/>
 	<form:form id="inputForm" modelAttribute="contApply" action="${ctx}/cont/apply/pay/proc/save" method="post" class="form-horizontal" >
 		<form:hidden path="id"/>
@@ -163,8 +163,8 @@
 				<div class="span10">
 					<label>希望开票日期：</label>
 					<input name="receiptDate" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate required "
-						   value="<fmt:formatDate value="${contApply.receiptDate}" pattern="yyyy-MM-dd HH:mm:ss"/>"
-						   onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false});"/>
+						   value="<fmt:formatDate value="${contApply.receiptDate}" pattern="yyyy-MM-dd"/>"
+						   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 					<span class="help-inline"><font color="red">*</font> </span>
 				</div>
 				<div class="span1"></div>
@@ -176,7 +176,7 @@
 				<div class="span1">
 				</div>
 				<div class="span10">
-					<label >备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
+					<label >&nbsp;&nbsp;&nbsp;&nbsp;备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注&nbsp;&nbsp;&nbsp;&nbsp;：</label>
 					<form:textarea path="remark" htmlEscape="false" rows="3" maxlength="500" class="input-xxlarge" readonly="${readonly}"/>
 				</div>
 				<div class="span1">
@@ -198,7 +198,7 @@
 					<div class="span1">
 					</div>
 					<div class="span6">
-						<label >审核意见:</label>
+						<label >&nbsp;审&nbsp;&nbsp;核&nbsp;&nbsp;意&nbsp;&nbsp;见：</label>
 						<form:textarea path="comment" htmlEscape="false" rows="3" maxlength="500" class="input-xxlarge" />
 					</div>
 					<div class="span1">

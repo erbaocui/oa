@@ -1,6 +1,4 @@
-/**
- * Copyright &copy; 2012-2016 <a href="https://github.com/thinkgem/jeesite">JeeSite</a> All rights reserved.
- */
+
 package com.thinkgem.jeesite.modules.income.web;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +50,7 @@ public class AccountController extends BaseController {
 		Page<Account> page = accountService.findPage(new Page<Account>(request, response), account); 
 		model.addAttribute("page", page);
 		model.addAttribute("account",account);
-		return "modules/income/accountList";
+		return "modules/income/account/accountList";
 	}
 
 	@RequiresPermissions("income:account:view")

@@ -86,7 +86,8 @@ public class ApplyPayController extends BaseController {
 	public String list(ContApply contApply, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<ContApply> page = contApplyService.findPage(new Page<ContApply>(request, response), contApply);
 		model.addAttribute("page", page);
-		return "modules/contract/temp/contractApplyPayList";
+        model.addAttribute("contApply", contApply);
+		return "modules/contract/contractApplyPayList";
 	}
 
 

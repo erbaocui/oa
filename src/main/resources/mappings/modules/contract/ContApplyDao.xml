@@ -63,6 +63,10 @@
 					<if test="contract.id != null and contract.id!= ''">
 							a.contract_id = #{contract.id}
 					</if>
+
+				</if>
+				<if test="receiptName != null and receiptName!= ''">
+					a.receipt_name LIKE concat('%',#{receiptName},'%')
 				</if>
 		</where>
 	       ORDER BY a.update_date DESC

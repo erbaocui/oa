@@ -18,10 +18,10 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/income/applyPay/list">收款列表</a></li>
+		<li class="active"><a href="${ctx}/income/applyPay">收款列表</a></li>
 <%--		<shiro:hasPermission name="income:applyPay:edit"><li><a href="${ctx}/income/applyPay/form">请款添加</a></li></shiro:hasPermission>--%>
 	</ul>
-	<form:form id="searchForm" modelAttribute="apply" action="${ctx}/income/applyPay/" method="post" class="breadcrumb form-search">
+	<form:form id="searchForm" modelAttribute="apply" action="${ctx}/income/applyPay/list" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<ul class="ul-form">

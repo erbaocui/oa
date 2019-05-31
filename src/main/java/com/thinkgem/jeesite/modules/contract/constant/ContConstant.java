@@ -24,8 +24,8 @@ public class ContConstant {
             //
     public static final String APPLY_PAY_FILE_PATH= "applypay";
     public static final String APPLY_PAY_FILE_PREFIX= "applypay";
-    public static final String CONTRACT_FILE_PATH= "contrat";
-    public static final String CONTRACT_FILE_PREFIX= "contrat";
+    public static final String CONTRACT_FILE_PATH= "contract";
+    public static final String CONTRACT_FILE_PREFIX= "contract";
 
 
 

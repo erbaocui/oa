@@ -304,6 +304,25 @@
 				</div>
 			</div>
 	   </div>
+		<shiro:hasPermission name="cont:manager:edit" >
+		<c:if test="${contract.id!=null &&contract.status!=1 && contract.status!=2 }">
+		<div class="control-group">
+			<div class="row-fluid">
+				<div class="span1">
+				</div>
+
+				<div class="span10">
+					<label >&nbsp;&nbsp;&nbsp;&nbsp;合同状态:</label>
+					<form:select path="status" class="input-mini" disabled="${readonly}" >
+						<form:options items="${statusList}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					</form:select>
+				</div>
+				<div class="span1">
+				</div>
+			</div>
+		</div>
+		</c:if>
+		</shiro:hasPermission>
 		<div class="control-group">
                 <div class="row-fluid">
                     <div class="span1">
@@ -527,8 +546,8 @@
 
 				<div class="span5">
 					<label >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;图纸数量:</label>
-					<form:input path="blueprintNum" htmlEscape="false" maxlength="200" class=" input-lg" readonly="${readonly}" required="true"/>
-					<span class="help-inline"><font color="red">*</font> </span>
+					<form:input path="blueprintNum" htmlEscape="false" maxlength="200" class=" input-lg" readonly="${readonly}" />
+					<%--<span class="help-inline"><font color="red">*</font> </span>--%>
 
 				</div>
 				<div class="span2">
@@ -572,16 +591,12 @@
 				</div>
 				<div class="span3">
 					<label >&nbsp;&nbsp;&nbsp;&nbsp;注册时间:</label>
-					<c:if test="${readonly}">
-						<input name="signedTime" type="text" readonly="readonly" maxlength="20" class="iform-control input-small Wdate"
-							   value="<fmt:formatDate value="${contract.signedTime}" pattern="yyyy-MM-dd"/>"
+
+						<input name="createDate" type="text" readonly="readonly" maxlength="20" class="iform-control input-small Wdate"
+							   value="<fmt:formatDate value="${contract.createDate}" pattern="yyyy-MM-dd"/>"
 							   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" disabled="disabled"/>
-					</c:if>
-					<c:if test="${not readonly}">
-						<input name="signedTime" type="text" readonly="readonly" maxlength="20" class="iform-control input-small Wdate"
-							   value="<fmt:formatDate value="${contract.signedTime}" pattern="yyyy-MM-dd"/>"
-							   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" />
-					</c:if>
+
+
 				</div>
 				<div class="span3">
 					<label >盖章时间:</label>

@@ -456,7 +456,7 @@ public class ContProcAuditController extends BaseController {
 			contAttach.setUrl(ftpPath+fileName);
 			contAttach.setPath(ftpPath);
 
-			contAttach.setType(fileClassUpload);
+			contAttach.setType(Integer.valueOf(fileClassUpload));
 			contAttach.preInsert();
 			contAttach.setIsNewRecord(true);
 			contAttach.setRemark(fileRemark);

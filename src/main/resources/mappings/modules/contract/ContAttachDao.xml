@@ -14,7 +14,9 @@
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
 		a.contract_id AS "contractId",
-		a.type AS "type"
+		a.type AS "type",
+		a.postfix AS "postfix",
+		a.file_name AS "fileName"
 	</sql>
 	
 	<sql id="contAttachJoins">
@@ -80,7 +82,9 @@
 			update_by,
 			update_date,
 			contract_id,
-			type
+			type,
+			postfix,
+			file_name
 		) VALUES (
 			#{id},
 			#{remark},
@@ -92,7 +96,9 @@
 			#{updateBy.id},
 			#{updateDate},
 			#{contractId},
-			#{type}
+			#{type},
+			#{postfix},
+			#{fileName}
 		)
 	</insert>
 	
@@ -105,7 +111,9 @@
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			contract_id = #{contractId},
-			type=#{type}
+			type=#{type},
+			postfix=#{postfix},
+			file_name=#{fileName}
 		WHERE id = #{id}
 	</update>
 	

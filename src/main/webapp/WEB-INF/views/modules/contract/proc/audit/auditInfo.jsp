@@ -528,8 +528,7 @@
 
 				<div class="span5">
 					<label >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;图纸数量:</label>
-					<form:input path="blueprintNum" htmlEscape="false" maxlength="200" class=" input-lg" readonly="${readonly}" required="true"/>
-					<span class="help-inline"><font color="red">*</font> </span>
+					<form:input path="blueprintNum" htmlEscape="false" maxlength="200" class=" input-lg" readonly="${readonly}" />
 
 				</div>
 				<div class="span2">
@@ -573,16 +572,11 @@
 				</div>
 				<div class="span3">
 					<label >&nbsp;&nbsp;&nbsp;&nbsp;注册时间:</label>
-					<c:if test="${readonly}">
+
 						<input name="signedTime" type="text" readonly="readonly" maxlength="20" class="iform-control input-small Wdate"
-							   value="<fmt:formatDate value="${contract.signedTime}" pattern="yyyy-MM-dd"/>"
+							   value="<fmt:formatDate value="${contract.createDate}" pattern="yyyy-MM-dd"/>"
 							   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" disabled="disabled"/>
-					</c:if>
-					<c:if test="${not readonly}">
-						<input name="signedTime" type="text" readonly="readonly" maxlength="20" class="iform-control input-small Wdate"
-							   value="<fmt:formatDate value="${contract.signedTime}" pattern="yyyy-MM-dd"/>"
-							   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});" />
-					</c:if>
+
 				</div>
 				<div class="span3">
 					<label >盖章时间:</label>
@@ -667,7 +661,7 @@
 							<td> ${fns:getDictLabel(contAttach.type, 'contract_attach_type', '无')}</td>
 							<td>
 								<a href="#" onclick="downloadFile('${contAttach.id}')">下载</a>
-								<a href="#" onclick="preview('${contAttach.id}')">预览</a>
+
 
 									<c:if test="${fileClass=='1'&&contAttach.type=='1'}">
 									<a href="${ctx}/cont/audit/proc/attach/delete?id=${contAttach.id}&taskId=${taskId}&fileClass=${fileClass}" onclick="return confirmx('确认要删除附件吗？', this.href)">删除</a>

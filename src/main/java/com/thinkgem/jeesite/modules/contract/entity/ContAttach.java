@@ -19,7 +19,9 @@ public class ContAttach extends DataEntity<ContAttach> {
 	private String path;
 	private String contractId;		// contract_id
 	private String remark;
-	private String type;
+	private Integer type;
+	private String  postfix;
+	private String  fileName;
 
 	public ContAttach() {
 		super();
@@ -71,11 +73,27 @@ public class ContAttach extends DataEntity<ContAttach> {
 		this.path = path;
 	}
 
-	public String getType() {
+	public Integer getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public String getPostfix() {
+		return postfix;
+	}
+
+	public void setPostfix(String postfix) {
+		this.postfix = postfix;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 }

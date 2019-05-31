@@ -96,6 +96,7 @@ public class AttachController extends BaseController {
 			Contract contract = contService.get(contractId);
 			Date date = contract.getCreateDate();
 			String year = DateUtils.formatDate(date, "yyyy");
+			String originalFileName=file.getOriginalFilename().split("[.]")[0];
 			String fileType = file.getOriginalFilename().split("[.]")[1];
 
 			String ftpPath = "/" + ContConstant.CONTRACT_FILE_PATH + "/" + year+"/";
@@ -114,12 +115,14 @@ public class AttachController extends BaseController {
 			ContAttach contAttach = new ContAttach();
 			contAttach.setContractId(contract.getId());
 			contAttach.setUrl(ftpPath+fileName);
-			contAttach.setType("1");
+			contAttach.setType(1);
 			contAttach.setPath(ftpPath);
 			contAttach.preInsert();
 			contAttach.setIsNewRecord(true);
 			contAttach.setRemark(remark);
 			contAttach.setFile(fileName);
+			contAttach.setFileName(originalFileName);
+			contAttach.setPostfix(fileType);
 			contAttachService.save(contAttach);
 			addMessage( redirectAttributes, "合同附件上传成功");
 		}catch (Exception e){
@@ -139,13 +142,27 @@ public class AttachController extends BaseController {
 	download(String id, Model model)throws Exception {
 		//下载文件路径
 		ContAttach contAttach=contAttachService.get(id);
-		String path = Global.getUserfilesBaseDir();
+		String downPath = Global.getUserfilesBaseDir();
 		FTPUtil ftpUtil = new FTPUtil();
-		ftpUtil.downloadFile(contAttach.getPath(),contAttach.getFile(),path);
-		File file = new File(path + "/" + contAttach.getFile());
+		String fileName=contAttach.getUrl().substring(contAttach.getUrl().lastIndexOf("/")+1);
+		String path="/"+ContConstant.CONTRACT_FILE_PATH+contAttach.getUrl().substring(0,contAttach.getUrl().lastIndexOf("/"));
+		ftpUtil.downloadFile(path,fileName,downPath);
+		File file = new File(downPath + "/" +fileName);
 		HttpHeaders headers = new HttpHeaders();
 		//下载显示的文件名，解决中文名称乱码问题
-		String downloadFielName = new String(contAttach.getFile().getBytes("UTF-8"),"iso-8859-1");
+		String downloadFielName=null;
+		if(contAttach.getFileName()==null||contAttach.getFileName().equals("")) {
+			downloadFielName = new String(fileName.getBytes("UTF-8"), "iso-8859-1");
+
+		}
+
+		else {
+			downloadFielName = new String(contAttach.getFileName().getBytes("UTF-8"), "iso-8859-1");
+		}
+		if(downloadFielName.indexOf(".")<0){
+			downloadFielName =downloadFielName+"."+contAttach.getPostfix();
+		}
+
 		//通知浏览器以attachment（下载方式）打开图片
 		headers.setContentDispositionFormData("attachment", downloadFielName);
 		//application/octet-stream ： 二进制流数据（最常见的文件下载）。

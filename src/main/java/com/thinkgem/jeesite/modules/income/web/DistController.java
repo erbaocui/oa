@@ -3,33 +3,17 @@
  */
 package com.thinkgem.jeesite.modules.income.web;
 
-import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.utils.NumberOperateUtils;
-import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
-import com.thinkgem.jeesite.modules.act.entity.BaseReview;
 import com.thinkgem.jeesite.modules.income.entity.*;
 import com.thinkgem.jeesite.modules.income.service.*;
 import com.thinkgem.jeesite.modules.income.vo.DistOfficeProc;
 import com.thinkgem.jeesite.modules.income.vo.DistOfficeVo;
-import com.thinkgem.jeesite.modules.income.vo.RuleItemVo;
-import com.thinkgem.jeesite.modules.sys.entity.Office;
-import org.activiti.engine.task.Comment;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +82,7 @@ public class DistController extends BaseController {
 		model.addAttribute("incomeId", incomeId);
 		model.addAttribute("income", income);
 		model.addAttribute("distOffices", distOffices);
-		return "modules/income/distDetail";
+		return "modules/income/dist/distDetail";
 	}
 
 

@@ -318,8 +318,11 @@
 					<td width="10%">
 						<shiro:hasPermission name="cont:manager:edit" >
 						<c:if test="${contSplit.status==0}">
+
+
 						<%--<a href="#" onclick="itemEdit('${contSplitItem.id}','${contSplitItem.type}','${contSplitItem.value}','${contSplitItem.remark}')">编辑</a>--%>
 							<a href="#" onclick="itemDelete('${contSplitItem.id}')">删除</a>
+
 						</c:if>
 						</shiro:hasPermission>
 
@@ -344,12 +347,14 @@
 				</div>
 				<div class="span10">
 					<shiro:hasPermission name="cont:manager:edit" >
-					<c:if test="${contSplit.status==0}">
+
+						<c:if test="${contSplit.status==0}">
 						<c:if test="${contract.value>sum}">
 					<input id="btnAdd" class="btn btn-primary" type="button" value="合同拆分添加" onclick="itemAdd()"/>&nbsp;
 					<input id="btnSubmit" class="btn btn-primary" type="button" value="发起流程" onclick="startProcess('${contSplit.id}')"/>&nbsp;
+
+					    </c:if>
 						</c:if>
-					</c:if>
 					</shiro:hasPermission>
 
 				</div>
@@ -393,12 +398,16 @@
 					<td width="10%">${fns:getDictLabel(contSplitDetail.status, 'contract_split_status', '无')}</td>
 
 					<td width="20%">
-						<c:if test="${contSplitDetail.status==0}">
-							<a href="#" onclick="detailSet('${contSplitDetail.id}')">配置</a>
-							<a href="#" onclick="detailDelete('${contSplitDetail.id}')">删除</a>
-							<a href="#" onclick="startDetailProcess('${contSplitDetail.id}')">启动流程</a>
-						</c:if>
-						<c:if test="${contSplitDetail.status!=0}">
+						   <shiro:hasPermission name="cont:creator:create" >
+						      <c:if test="${contSplitDetail.status==0}">
+
+								<a href="#" onclick="detailSet('${contSplitDetail.id}')">配置</a>
+								<a href="#" onclick="detailDelete('${contSplitDetail.id}')">删除</a>
+								<a href="#" onclick="startDetailProcess('${contSplitDetail.id}')">启动流程</a>
+
+						      </c:if>
+						   </shiro:hasPermission>
+						<c:if test="${(contSplitDetail.status!=0)||(readonly)}">
 							<a href="#" onclick="detailSet('${contSplitDetail.id}')">详情</a>
 						</c:if>
 					</td>
@@ -420,12 +429,15 @@
 		<div class="span1">
 		</div>
 		<div class="span10">
+
 			<shiro:hasPermission name="cont:creator:create" >
+
 			<c:if test="${sum<contract.value}">
-				<c:if test="${contSplit.status==0}">
+
 					<input id="btnAdd" class="btn btn-primary" type="button" value="合同细化添加" onclick="detailAdd()"/>&nbsp;
-				</c:if>
+
 			</c:if>
+
 			</shiro:hasPermission>
 		</div>
 		<div class="span1">

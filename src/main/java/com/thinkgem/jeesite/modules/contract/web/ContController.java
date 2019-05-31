@@ -16,7 +16,11 @@ import com.thinkgem.jeesite.modules.contract.service.ContItemService;
 import com.thinkgem.jeesite.modules.contract.vo.QueryContract;
 import com.thinkgem.jeesite.modules.contract.service.ContService;
 import com.thinkgem.jeesite.modules.sys.entity.Area;
+import com.thinkgem.jeesite.modules.sys.entity.Dict;
+import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.service.AreaService;
+import com.thinkgem.jeesite.modules.sys.service.DictService;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.activiti.engine.task.Comment;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +54,8 @@ public class ContController extends BaseController {
 	private ActTaskService actTaskService;
 	@Autowired
 	private AreaService areaService;
+	@Autowired
+	private DictService dictService;
 
 
 
@@ -161,6 +167,26 @@ public class ContController extends BaseController {
 				model.addAttribute("comments",comments);
 			}
 		}
+		//
+		Dict dict =new Dict();
+		dict.setType("contract_status");
+		List<Dict> statusList= dictService.findList(dict);
+		for(int i=0;i<statusList.size();i++){
+			dict=statusList.get(i);
+			if(dict.getValue().equals("1")){
+				statusList.remove(i);
+			}
+
+		}
+		for(int i=0;i<statusList.size();i++){
+			dict=statusList.get(i);
+			if(dict.getValue().equals("2")){
+				statusList.remove(i);
+			}
+
+		}
+
+		model.addAttribute("statusList",statusList);
 
 		return "modules/contract/contractForm";
 	}
@@ -172,9 +198,13 @@ public class ContController extends BaseController {
 		}
 		if(StringUtils.isEmpty(contract.getId())){
 			contract.setStatus(1);
+            Office office = UserUtils.getUser().getOffice();
+            contract.setOffice(office);
 		}
+
 		contService.save(contract);
 		addMessage(redirectAttributes, "合同保存成功");
+		//return "redirect:"+Global.getAdminPath()+"/cont/base/list/?repage";
 		return "redirect:"+adminPath+"/cont/base/form/?id="+contract.getId()+"&readonly=false&repage";
 	}
 	

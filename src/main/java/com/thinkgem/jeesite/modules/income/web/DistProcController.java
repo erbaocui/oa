@@ -3,18 +3,10 @@
  */
 package com.thinkgem.jeesite.modules.income.web;
 
-import com.thinkgem.jeesite.common.utils.MacUtils;
-import com.thinkgem.jeesite.common.utils.NumberOperateUtils;
-import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.act.constant.ActConstant;
 import com.thinkgem.jeesite.modules.act.entity.BaseReview;
 import com.thinkgem.jeesite.modules.act.service.ActTaskService;
-import com.thinkgem.jeesite.modules.contract.constant.ContConstant;
-import com.thinkgem.jeesite.modules.contract.entity.ContApply;
-import com.thinkgem.jeesite.modules.contract.entity.Contract;
-import com.thinkgem.jeesite.modules.contract.service.ContApplyService;
-import com.thinkgem.jeesite.modules.contract.service.ContService;
 import com.thinkgem.jeesite.modules.income.constant.IncomeConstant;
 import com.thinkgem.jeesite.modules.income.entity.*;
 import com.thinkgem.jeesite.modules.income.service.*;
@@ -27,17 +19,13 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -151,7 +139,7 @@ public class DistProcController extends BaseController {
 		model.addAttribute("drawSave",session.getAttribute("drawSave"));
 		model.addAttribute("planSave",session.getAttribute("planSave"));
 
-		return "modules/income/distOffice";
+		return "modules/income/proc/dist/distOffice";
 	}
 
 	//部门分配规则
@@ -178,7 +166,7 @@ public class DistProcController extends BaseController {
 		model.addAttribute("showPlan",session.getAttribute("showPlan"));
 		model.addAttribute("type",type);
 		model.addAttribute("distType",distType);
-		return "modules/income/distOfficeRule";
+		return "modules/income/proc/dist/distOfficeRule";
 	}
 
 
@@ -221,7 +209,7 @@ public class DistProcController extends BaseController {
 
 
 		}
-		return "modules/income/distOfficeRule";
+		return "modules/income/proc/dist/distOfficeRule";
 
 
 
@@ -276,7 +264,7 @@ public class DistProcController extends BaseController {
 		model.addAttribute("incomeId", incomeId);
 		model.addAttribute("income",income);
 		model.addAttribute("distOffices", distOffices);
-		return "modules/income/distOfficeAudit";
+		return "modules/income/proc/dist/distOfficeAudit";
 	}
 
 
@@ -327,7 +315,7 @@ public class DistProcController extends BaseController {
 		model.addAttribute("incomeId", incomeId);
 		model.addAttribute("income", income);
 		model.addAttribute("distOffices", distOffices);
-		return "modules/income/distContAudit";
+		return "modules/income/proc/dist/distContAudit";
 	}
 	@RequestMapping(value = {"contAuditSubmit"},method= RequestMethod.POST)
 	public String contAuditSubmit(DistOfficeProc distOfficeProc,String[] groups, BaseReview review,RedirectAttributes redirectAttributes)  throws Exception{
@@ -372,7 +360,7 @@ public class DistProcController extends BaseController {
 		model.addAttribute("incomeId", incomeId);
 		model.addAttribute("income", income);
 		model.addAttribute("distOffices", distOffices);
-		return "modules/income/distBusAudit";
+		return "modules/income/proc/dist/distBusAudit";
 	}
 
 
@@ -416,7 +404,7 @@ public class DistProcController extends BaseController {
 		model.addAttribute("incomeId", incomeId);
 		model.addAttribute("income", income);
 		model.addAttribute("distOffices", distOffices);
-		return "modules/income/distFinAudit";
+		return "modules/income/proc/dist/distFinAudit";
 	}
 
     //财务提交

@@ -2,14 +2,13 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
-	<title>进款分配部门审核</title>
+	<title>进款分配-财务确认</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
         $(document).ready(function() {
 
         });
-		function commit(state){
-            $("#state").val(state);
+        function commit(){
             $("#inputForm").submit();
         }
 
@@ -18,7 +17,7 @@
 </head>
 <body>
 <ul class="nav nav-tabs">
-	<li class="active"><a href="${ctx}/income/distOffice/">进款部门审核</a></li>
+	<li class="active"><a href="#">进款分配-财务确认</a></li>
 
 </ul><br/>
 <sys:message content="${message}"/>
@@ -67,7 +66,7 @@
 
 
 
-<form:form id="inputForm" modelAttribute="distOfficeProc" action="${ctx}/income/distProc/officeAuditSubmit" method="post" class="form-horizontal">
+<form:form id="inputForm" modelAttribute="distOfficeProc" action="${ctx}/income/distProc/finAuditSubmit" method="post" class="form-horizontal">
 	<form:hidden path="id"/>
 	<form:hidden path="taskId"  value="${taskId}"/>
 	<form:hidden path="state"  value=""/>
@@ -82,7 +81,6 @@
 				<td rowspan="${distOffice.rowspan}">${fns:getDictLabel(distOffice.type, 'income_dist_type', '无')}</td>
 				<td rowspan="${distOffice.rowspan}">${distOffice.officeName}</td>
 				<td rowspan="${distOffice.rowspan}">${distOffice.value}</td>
-
 				<c:if test="${distOffice.ruleGroupId== null||distOffice.ruleGroupId==''}">
 					<c:set value="false" var="saveFlag" />
 				</c:if>
@@ -111,38 +109,35 @@
 
 		</table>
 	</div>
-	    <div class="form-actions">
-			<div class="container-fluid">
+	<div class="form-actions">
+		<div class="container-fluid">
 
-				<div class="row-fluid">
+			<div class="row-fluid">
+				<div class="span1">
+				</div>
+				<div class="span10">
+					<label>备注:</label>
+					<form:textarea path="comment" htmlEscape="false" rows="3" maxlength="500" class="input-xxlarge" />
 					<div class="span1">
 					</div>
-					<div class="span10">
-						<label >部门意见:</label>
-						<form:textarea path="comment" htmlEscape="false" rows="3" maxlength="500" class="input-xxlarge" />
-						<div class="span1">
-						</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span12">
 					</div>
-					<div class="row-fluid">
-						<div class="span12">
-						</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span4">
 					</div>
-					<div class="row-fluid">
-						<div class="span4">
-						</div>
-						<div class="span2">
-							<input id="btnAgree" class="btn btn-primary" type="button"  onclick="commit(1)" value="同意" />
-						</div>
-						<div class="span2">
-							<input id="btnDisagree" class="btn btn-primary" type="button"  onclick="commit(2)" value="不同意" />
-						</div>
+					<div class="span8">
+						<input id="btnAgree" class="btn btn-primary" type="button"  onclick="commit()" value="确认" />
+					</div>
 
-						<div class="span4">
-						</div>
+					<div class="span4">
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>
 
 
 </form:form>

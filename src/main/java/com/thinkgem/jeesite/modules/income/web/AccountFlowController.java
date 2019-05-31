@@ -51,7 +51,7 @@ public class AccountFlowController extends BaseController {
 	public String list(AccountFlow accountFlow, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<AccountFlow> page = accountFlowService.findPage(new Page<AccountFlow>(request, response), accountFlow); 
 		model.addAttribute("page", page);
-		return "modules/income/accountFlowList";
+		return "modules/income/account/accountFlowList";
 	}
 
 	@RequiresPermissions("income:accountFlow:view")

@@ -147,7 +147,7 @@
 						</c:if>
 						<c:if test="${not empty contApply.fileName}">
 							<a href="#" onclick="downloadFile('${contApply.id}')">附件下载</a>
-							<a href="#" onclick="preview('${contApply.id}')">附件预览</a>
+							<%--<a href="#" onclick="preview('${contApply.id}')">附件预览</a>--%>
 						</c:if>
 					</td>
 				</tr>
@@ -171,7 +171,9 @@
 				</div>
 				<div class="span10">
 			<c:if test="${not readonly}">
+				<c:if test="${contract.status!=1}">
 		    <input id="btnAddFile" class="btn btn-primary" type="button" value="添加" onclick="add();"/>&nbsp;
+				</c:if>
 			</c:if>
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 				</div>

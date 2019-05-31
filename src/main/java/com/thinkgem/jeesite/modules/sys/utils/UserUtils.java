@@ -80,6 +80,13 @@ public class UserUtils {
 		//User user = (User)CacheUtils.get(USER_CACHE, USER_CACHE_LOGIN_NAME_ + loginName);
 		//if (user == null){
 			User user = userDao.getByLoginName(new User(null, loginName));
+			//为了不区分大小写
+		    if (user == null){
+				user = userDao.getByLoginName(new User(null, loginName.toUpperCase()));
+			}
+			if (user == null){
+				user = userDao.getByLoginName(new User(null, loginName.toLowerCase()));
+			}
 			if (user == null){
 				return null;
 			}
@@ -346,5 +353,8 @@ public class UserUtils {
 //		}
 //		return new HashMap<String, Object>();
 //	}
-	
+
+
+
+
 }

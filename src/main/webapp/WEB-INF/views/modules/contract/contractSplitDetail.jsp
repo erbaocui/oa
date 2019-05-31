@@ -292,9 +292,13 @@
 								<td width="10%"> ${contSplitDetailItem.value}</td>
 								<td width="40%">${contSplitDetailItem.remark}</td>
 								<td width="20%">
+									<shiro:hasPermission name="cont:creator:create" >
+
 									<c:if test="${contSplitDetail.status==0}">
 										<a href="#" onclick="itemDelete('${contSplitDetailItem.id}')">删除</a>
 									</c:if>
+
+									</shiro:hasPermission>
 								</td>
 							</tr>
 							<c:set value="${itemSum + contSplitDetailItem.value}" var="itemSum" />
@@ -315,12 +319,15 @@
 					<div class="span1">
 					</div>
 					<div class="span10">
+						<shiro:hasPermission name="cont:creator:create" >
+
 						<c:if test="${contSplitDetail.status==0}">
 						  <c:if test="${contSplitDetail.total>itemSum}">
 							<input class="btn btn-primary" type="button" value="添加业务种类" onclick="itemAdd()"/>&nbsp;
 
-						 </c:if>
 						</c:if>
+						</c:if>
+						</shiro:hasPermission>
 						<input class="btn btn-primary" type="button" value="返回" onclick="back()" />&nbsp;
 
 					</div>
@@ -370,12 +377,15 @@
 							<td WIDTH="10%"> ${office.value}</td>
 							<td WIDTH="50%"> ${office.remark}</td>
 							<td WIDTH="20%">
+								<shiro:hasPermission name="cont:creator:create" >
+
 								<c:if test="${contSplitDetail.status==0}">
 									<%--<!----%>
 									<%--<a href="${ctx}/cont/split/detail/office/delete?id=${office.id}&detailId=${contSplitDetail.id}&contractId=${contractId}&readonly=${readonly}" onclick="return confirmx('确认要删除该合同拆分项吗？', this.href)">删除</a>--%>
 
 								   <a href="#" onclick="officeDelete('${office.id}')">删除</a>
 								</c:if>
+								</shiro:hasPermission>
 							</td>
 						</tr>
 						<c:set value="${sum + office.value}" var="sum" />
@@ -396,7 +406,10 @@
 				<div class="span1">
 				</div>
 				<div class="span10">
+					<shiro:hasPermission name="cont:creator:create" >
+
 					<input  class="btn btn-primary" type="button" value="添加部门" onclick="officeAdd('${contSplitDetailItem.id}','${contSplitDetailItem.value}')"/>
+					</shiro:hasPermission>
 				</div>
 				<div class="span1">
 				</div>

@@ -2,13 +2,14 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
-	<title>进款分配经营管理审核</title>
+	<title>进款分配-合同管理员审核</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
         $(document).ready(function() {
 
         });
         function commit(state){
+            //$("#inputForm").attr("action", "${ctx}/income/distProc/officeAuditSubmit");
             $("#state").val(state);
             $("#inputForm").submit();
         }
@@ -18,7 +19,7 @@
 </head>
 <body>
 <ul class="nav nav-tabs">
-	<li class="active"><a href="${ctx}/income/distOffice/">进款分配经营管理审核</a></li>
+	<li class="active"><a href="#">进款分配-合同管理员审核</a></li>
 
 </ul><br/>
 <sys:message content="${message}"/>
@@ -67,7 +68,7 @@
 
 
 
-<form:form id="inputForm" modelAttribute="distOfficeProc" action="${ctx}/income/distProc/busAuditSubmit" method="post" class="form-horizontal">
+<form:form id="inputForm" modelAttribute="distOfficeProc" action="${ctx}/income/distProc/contAuditSubmit" method="post" class="form-horizontal">
 	<form:hidden path="id"/>
 	<form:hidden path="taskId"  value="${taskId}"/>
 	<form:hidden path="state"  value=""/>

@@ -106,7 +106,7 @@
 					<td> ${contAttach.remark}</td>
 					<td>
 						<a href="#" onclick="downloadFile('${contAttach.id}')">下载</a>
-						<a href="#" onclick="preview('${contAttach.id}')">预览</a>
+						<%--<a href="#" onclick="preview('${contAttach.id}')">预览</a>--%>
 						<c:if test="${not readonly}">
 						<a href="${ctx}/cont/attach/delete?id=${contAttach.id}&contractId=${contAttach.contractId}&readonly=${readonly}" onclick="return confirmx('确认要删除该合同传附件吗？', this.href)">删除</a>
 						</c:if>

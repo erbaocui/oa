@@ -81,7 +81,7 @@ public class ContProcApplyPayController extends BaseController {
 			Map<String,Object> variables = null;
 			variables = new HashMap<String, Object>();
 			variables.put("businessId", id);
-			variables.put("role","finance");
+			variables.put("role","cashier");
 			String processInstanceId=actTaskService.startProcess(ContConstant.PROCESS_KEY_CONTRACT_APPLY_PAY, ContConstant.TABLE_NAME_CONT_APPYLY,id, contApply.getReceiptName(),variables);
 			actTaskService.completeFirstTask(processInstanceId);
 			contApply=contApplyService.get(id);

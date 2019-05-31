@@ -10,7 +10,6 @@ import com.thinkgem.jeesite.modules.contract.entity.ContApply;
 import com.thinkgem.jeesite.modules.contract.entity.Contract;
 import com.thinkgem.jeesite.modules.contract.service.ContApplyService;
 import com.thinkgem.jeesite.modules.contract.service.ContService;
-import com.thinkgem.jeesite.modules.income.entity.Apply;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -64,7 +63,7 @@ public class IncomeController extends BaseController {
 	public String list(Income income, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<Income> page = incomeService.findPage(new Page<Income>(request, response), income);
 		model.addAttribute("page", page);
-		return "modules/income/incomeList";
+		return "modules/income/income/incomeList";
 	}
 
 
@@ -78,7 +77,7 @@ public class IncomeController extends BaseController {
 		model.addAttribute("incomes",list);
 		model.addAttribute("contract",contract);
 		model.addAttribute("readonly",readonly);
-		return "modules/income/contractIncome";
+		return "modules/income/income/contractIncome";
 	}
 
 	/*@RequiresPermissions("income:income:view")*/
@@ -86,7 +85,7 @@ public class IncomeController extends BaseController {
 	public String form(Income income, Model model) {
 		//income=get(income.getId());
 		model.addAttribute("income", income);
-		return "modules/income/incomeForm";
+		return "modules/income/income/incomeForm";
 	}
 
 /*	@RequiresPermissions("income:income:edit")*/
@@ -117,7 +116,7 @@ public class IncomeController extends BaseController {
 		List<Income> incomes=incomeService.findList(income);
 		model.addAttribute("contApply", contApply);
 		model.addAttribute("incomes",incomes);
-		return "modules/income/contractApplyIncomeForm";
+		return "modules/income/income/contractApplyIncomeForm";
 	}
 
 	@ResponseBody

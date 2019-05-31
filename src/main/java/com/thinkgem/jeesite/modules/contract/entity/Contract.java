@@ -50,7 +50,7 @@ public class Contract extends DataEntity<Contract> {
 	private Date returnFinancialTime;        // return_financial_time
 	private String subItem;        // sub_item
 	private String timeLimit;        // time_limit
-	private BigDecimal price;        // price
+	private String price;        // price
 	private BigDecimal areaValue;        // area
 	private BigDecimal investment;        // investment
 	private BigDecimal progress;        // progress
@@ -246,14 +246,13 @@ public class Contract extends DataEntity<Contract> {
 		this.timeLimit = timeLimit;
 	}
 
-	public BigDecimal getPrice() {
+	public String getPrice() {
 		return price;
 	}
 
-	public void setPrice(BigDecimal price) {
+	public void setPrice(String price) {
 		this.price = price;
 	}
-
 
 	public BigDecimal getInvestment() {
 		return investment;
