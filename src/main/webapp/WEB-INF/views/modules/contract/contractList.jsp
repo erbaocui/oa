@@ -26,7 +26,7 @@
                 var code=data.result;
                 if(code=='success'){
 
-                     $.post("${ctx}/cont/proc/audit/start?",{id:id},function(data){
+                     $.post("${ctx}/cont/audit/proc/start?",{id:id},function(data){
                       var code=data.result;
 						 if(code=='success'){
 						  top.$.jBox.tip("流程启动成功","success",{persistent:true,opacity:0});

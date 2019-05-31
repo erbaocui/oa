@@ -51,7 +51,9 @@
 		FROM bm_cont_split_detail_item a
 		<include refid="contSplitDetailItemJoins"/>
 		<where>
-			
+			<if test="detailId!= null">
+				and	a.detail_id = #{detailId}
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

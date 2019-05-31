@@ -4,13 +4,17 @@ package com.thinkgem.jeesite.modules.contract.constant;
  * Created by USER on 2018/4/25.
  */
 public class ContConstant {
+
+    public static final String PROCESS_KEY_CONTRACT_AUDIT = "contractAuditProcess";
     public static final String PROCESS_KEY_CONTRACT_SPLIT_DETAIL ="contractSplitDetailProcess";
     public static final String PROCESS_KEY_CONTRACT_SPLIT ="contractSplitProcess";
     public static final String PROCESS_KEY_CONTRACT_APPLY_PAY="contractApplyPayProcess";
 
+
+    public static final String PROCESS_TITLE_AUDIT="合同审批流程";
     public static final String PROCESS_TITLE_CONTRACT_SPLIT_DETAIL="合同拆解细化流程";
     public static final String PROCESS_TITLE_CONTRACT_SPLIT="合同拆解流程";
-    public static final String PROCESS_TITLE_CONTRACT_APPLY_PAY="合同请款";
+    public static final String PROCESS_TITLE_CONTRACT_APPLY_PAY="合同请款流程";
 
 
     public static final String CONTRACT_TABLE_NAME= "bm_contract";
