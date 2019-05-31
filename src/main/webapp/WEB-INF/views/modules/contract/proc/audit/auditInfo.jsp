@@ -269,7 +269,7 @@
 
 
 
-<form:form id="inputForm" modelAttribute="contract" action="${ctx}/cont/audit/proc/save" method="post" class="form-horizontal">
+<form:form id="inputForm" modelAttribute="contract" action="${ctx}/cont/proc/audit/save" method="post" class="form-horizontal">
 	<form:hidden path="id"/>
 	<input type="hidden" id="taskIdContract" name="taskIdContract" value="${taskId}"/>
 
@@ -664,10 +664,10 @@
 
 
 									<c:if test="${fileClass=='1'&&contAttach.type=='1'}">
-									<a href="${ctx}/cont/audit/proc/attach/delete?id=${contAttach.id}&taskId=${taskId}&fileClass=${fileClass}" onclick="return confirmx('确认要删除附件吗？', this.href)">删除</a>
+									<a href="${ctx}/cont/proc/audit/delete?id=${contAttach.id}&taskId=${taskId}&fileClass=${fileClass}" onclick="return confirmx('确认要删除附件吗？', this.href)">删除</a>
 									</c:if>
 									<c:if test="${fileClass=='2'&&contAttach.type=='2'}">
-										<a href="${ctx}/cont/audit/proc/attach/delete?id=${contAttach.id}&taskId=${taskId}&fileClass=${fileClass}" onclick="return confirmx('确认要删除该附件吗？', this.href)">删除</a>
+										<a href="${ctx}/cont/proc/audit/delete?id=${contAttach.id}&taskId=${taskId}&fileClass=${fileClass}" onclick="return confirmx('确认要删除该附件吗？', this.href)">删除</a>
 									</c:if>
 							</td>
 						</tr>
@@ -693,7 +693,7 @@
 	</div>
 </form:form>
 
-<form id="uploadFileForm"  action="${ctx}/cont/audit/proc/attach/upload" method="post" enctype="multipart/form-data" class="form-horizontal">
+<form id="uploadFileForm"  action="${ctx}/cont/proc/audit/upload" method="post" enctype="multipart/form-data" class="form-horizontal">
 	<input type="hidden" id="contractId" name="contractId" value="${contract.id}"/>
 	<input type="hidden" id="taskIdUpload" name="taskIdUpload" value="${taskId}"/>
 	<input type="hidden" id="fileClassUpload" name="fileClassUpload" value="${fileClass}"/>

@@ -670,7 +670,7 @@
 
 	</form:form>
 	<c:if test="${(contract.status!=1) && (contract.status!=2) }">
-		<%@ include file="temp/auditComment.jsp"%>
+		<%@ include file="proc/audit/auditComment.jsp"%>
 	</c:if>
 </body>
 </html>
