@@ -47,11 +47,11 @@
 </head>
 <body>
 <ul class="nav nav-tabs">
-	<li class="active"><a>合同审核-法律</a></li>
+	<li class="active"><a>合同法律意见</a></li>
 </ul><br/>
 <sys:message content="${message}"/>
 <%@ include file="auditInfo.jsp" %>
-<form:form id="reviewForm" modelAttribute="review"   action="${ctx}/cont/audit/proc/law/submit" method="post" class="form-horizontal">
+<form:form id="reviewForm" modelAttribute="review"   action="${ctx}/cont/proc/audit/lawSave" method="post" class="form-horizontal">
 	<form:hidden path="taskId"  value="${taskId}"/>
 	<form:hidden path="state"  />
 	<div class="container-fluid">
@@ -76,8 +76,7 @@
 	</div>
 	<br>
 </form:form>
-<br>
-<%@ include file="/WEB-INF/views/modules/act/comment.jsp" %>
+<%@ include file="auditComment.jsp"%>
 
 
 </body>

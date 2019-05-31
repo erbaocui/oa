@@ -26,6 +26,8 @@
 		});
 
 		function review(state){
+            //alert($("#comment").val()=="");
+            //alert($("#comment").val()==null);
             $("#state").val(state);
             if(state==2){
 				if($("#comment").val()==null||$("#comment").val()==""){
@@ -40,11 +42,11 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li class="active"><a>合同审核-合同管理员</a></li>
+		<li class="active"><a>合同管理员审核</a></li>
 	</ul><br/>
 	<sys:message content="${message}"/>
 	<%@ include file="auditInfo.jsp" %>
-	<form:form id="reviewForm" modelAttribute="review"   action="${ctx}/cont/audit/proc/administrator/submit" method="post" class="form-horizontal">
+	<form:form id="reviewForm" modelAttribute="review"   action="${ctx}/cont/proc/audit/managerSave" method="post" class="form-horizontal">
 		<form:hidden path="taskId"  value="${taskId}"/>
 		<form:hidden path="state"  />
 	<div class="container-fluid">
@@ -73,7 +75,7 @@
 	</div>
 	</form:form>
 	<br>
-	<%@ include file="/WEB-INF/views/modules/act/comment.jsp" %>
+	<%@ include file="auditComment.jsp"%>
 </body>
 
 
